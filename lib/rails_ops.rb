@@ -41,3 +41,56 @@ module RailsOps
     Thread.current[AUTH_THREAD_STORAGE_KEY] = previous_value
   end
 end
+
+# ---------------------------------------------------------------
+# Require Gem active_type and monkey patch
+# ---------------------------------------------------------------
+require 'active_type'
+require 'active_type/type_caster'
+require 'rails_ops/patches/active_type_patch'
+
+# ---------------------------------------------------------------
+# Require RailsOps
+# ---------------------------------------------------------------
+require 'rails_ops/authorization_backend/abstract.rb'
+require 'rails_ops/authorization_backend/can_can_can.rb'
+require 'rails_ops/configuration.rb'
+require 'rails_ops/context.rb'
+require 'rails_ops/controller_mixin.rb'
+require 'rails_ops/exceptions.rb'
+require 'rails_ops/hooked_job.rb'
+require 'rails_ops/hookup.rb'
+require 'rails_ops/hookup/dsl.rb'
+require 'rails_ops/hookup/dsl_validator.rb'
+require 'rails_ops/hookup/hook.rb'
+require 'rails_ops/log_subscriber.rb'
+require 'rails_ops/mixins/authorization.rb'
+require 'rails_ops/mixins/log_settings.rb'
+require 'rails_ops/mixins/model.rb'
+require 'rails_ops/mixins/model/authorization.rb'
+require 'rails_ops/mixins/model/nesting.rb'
+require 'rails_ops/mixins/policies.rb'
+require 'rails_ops/mixins/require_context.rb'
+require 'rails_ops/mixins/routes.rb'
+require 'rails_ops/mixins/schema_validation.rb'
+require 'rails_ops/mixins/sub_ops.rb'
+require 'rails_ops/model_casting.rb'
+require 'rails_ops/model_mixins.rb'
+require 'rails_ops/model_mixins/ar_extension.rb'
+require 'rails_ops/model_mixins/parent_op.rb'
+require 'rails_ops/model_mixins/protected_attributes.rb'
+require 'rails_ops/model_mixins/virtual_attributes.rb'
+require 'rails_ops/model_mixins/virtual_attributes/virtual_column_wrapper.rb'
+require 'rails_ops/model_mixins/virtual_has_one.rb'
+require 'rails_ops/operation.rb'
+require 'rails_ops/operation/model.rb'
+require 'rails_ops/operation/model/create.rb'
+require 'rails_ops/operation/model/destroy.rb'
+require 'rails_ops/operation/model/load.rb'
+require 'rails_ops/operation/model/search.rb'
+require 'rails_ops/operation/model/update.rb'
+require 'rails_ops/profiler.rb'
+require 'rails_ops/profiler/node.rb'
+require 'rails_ops/railtie.rb'
+require 'rails_ops/scoped_env.rb'
+require 'rails_ops/virtual_model.rb'
