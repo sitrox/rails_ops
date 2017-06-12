@@ -1,0 +1,83 @@
+AllCops:
+  TargetRubyVersion: 2.3
+
+  Exclude:
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+
+  DisplayCopNames: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: only_fail
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/IndentArray:
+  EnforcedStyle: consistent
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Max: 5
+  CountKeywordArgs: false
+
+Metrics/AbcSize:
+  Enabled: False
+
+Metrics/CyclomaticComplexity:
+  Enabled: False
+
+Metrics/PerceivedComplexity:
+  Enabled: False
+
+Metrics/LineLength:
+  Max: 160
+
+Metrics/BlockNesting:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/RedundantReturn:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+  EnforcedStyle: compact
+  SupportedStyles:
+    - nested
+    - compact
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/FormatString:
+  Enabled: false
