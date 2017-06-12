@@ -1,4 +1,3 @@
-# TODORELEASE: Get rid of profy requirement or else bundle it with this Gem.
 module RailsOps
   # This class subscribes to Rails Ops events via the ActiveSupport
   # instrumentation API.
@@ -12,7 +11,7 @@ module RailsOps
 
       message = 'OP'
 
-      profile = Profy.node(op.object_id)
+      profile = ::RailsOps::Profiler.node(op.object_id)
       message += " (#{profile.t_self_ms.round(1)}ms / #{profile.t_kids_ms.round(1)}ms)"
       profile.free
 
