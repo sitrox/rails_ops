@@ -1,7 +1,7 @@
-require "bundler/gem_tasks"
-require "rake/testtask"
+require 'bundler/gem_tasks'
+require 'rake/testtask'
 
-task :default => :test
+task default: :test
 
 task :gemspec do
   gemspec = Gem::Specification.new do |spec|
@@ -18,7 +18,7 @@ task :gemspec do
     spec.add_development_dependency 'rake'
     spec.add_development_dependency 'sqlite3'
     spec.add_development_dependency 'yard'
-    spec.add_development_dependency 'rubocop', '0.37.1'
+    spec.add_development_dependency 'rubocop', '0.47.1'
     spec.add_development_dependency 'redcarpet'
     spec.add_dependency 'active_type', '~> 0.7.1'
     spec.add_dependency 'minitest'

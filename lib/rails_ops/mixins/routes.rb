@@ -7,7 +7,15 @@ module RailsOps::Mixins::Routes
     end
 
     def method_missing(name, *args)
-      Rails.application.routes.url_helpers.send(name, *args, @url_options)
+      if Rails.application.routes.url_helpers.respond_to?(name)
+        Rails.application.routes.url_helpers.send(name, *args, @url_options)
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(*_args)
+      true
     end
   end
 

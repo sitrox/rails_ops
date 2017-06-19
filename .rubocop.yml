@@ -5,6 +5,7 @@ AllCops:
     - 'vendor/**/*'
     - 'tmp/**/*'
     - 'log/**/*'
+    - '*.gemspec'
 
   DisplayCopNames: true
 

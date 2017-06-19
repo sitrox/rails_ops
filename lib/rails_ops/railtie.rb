@@ -1,7 +1,7 @@
 module SitroxRails
   # @private
   class Railtie < Rails::Railtie
-    initializer "rails_ops" do |app|
+    initializer 'rails_ops' do |_app|
       # ---------------------------------------------------------------
       # Load hookup config eagerly at application startup unless
       # in development mode.
