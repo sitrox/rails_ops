@@ -1202,3 +1202,7 @@ entirely. Operations using the `Load` base class can authorize using `:read`,
 while more specific operations can use `:update` or whatever. If we really need
 to check for `:read` when updating an object, it can be implemented in the
 ability class.
+
+## Copyright
+
+Copyright (c) 2017 Sitrox. See `LICENSE` for further details.
