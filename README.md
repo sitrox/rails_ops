@@ -100,7 +100,7 @@ Every single operation follows a few basic principles:
   operation. This is usually overridden in each operation and called exclusively
   by `run` or `run!`.
 
-- They can have a *Context*. See the respective chapter for more information.
+- They have a *Context*. See the respective chapter for more information.
 
 So, an example of a very simple operation would be:
 
@@ -164,14 +164,14 @@ fetched in the operation, create custom accessor methods:
 
 ```ruby
 class Operations::GenerateHelloWorld < RailsOps::Operation
-  attr_reader :string
+  attr_reader :result
 
   def perform
-    @string = "Hello #{params[:name]}"
+    @result = "Hello #{params[:name]}"
   end
 end
 
-puts Operations::GenerateHelloWorld.run!(name: 'John Doe').string
+puts Operations::GenerateHelloWorld.run!(name: 'John Doe').result
 ```
 
 Params Handling
@@ -235,13 +235,13 @@ an operation. This can be done in several ways:
   end
   ```
 
-- Using a schema:
+- Using a [schemacop](https://github.com/sitrox/schemacop) schema:
 
   ```ruby
   class Operations::PrintHelloWorld < RailsOps::Operation
-    schema(
-      name: { type: :string, null: false }
-    )
+    schema do
+      req :name, :string
+    end
 
     def perform
       puts "Hello #{params[:name]}"
@@ -261,12 +261,11 @@ Policies
 --------
 
 Policies are nothing more than blocks of code that run either at operation
-instantiation, at parameters assignment or before / after execution of the
-`perform` method and can be used to check conditions such as params or
-permissions. Policies are inherited to subclasses of operations.
+instantiation or before / after execution of the `perform` method and can be
+used to check conditions such as params or permissions.
 
-They're specified using the static method `policy`, inherited to any sub-classes
-and executed in the order they were defined.
+Policies are specified using the static method `policy`, inherited to any
+sub-classes and executed in the order they were defined.
 
 ```ruby
 class Operations::PrintHelloWorld < RailsOps::Operation
@@ -415,6 +414,9 @@ operations. Contexts can include the following data:
   automatically generated when calling a sub-op or triggering an op using an
   event (see chapter *Events* for more information on that).
 
+  TODO: This may induce memory issues. Is keeping the operation's chain worth
+  this trade-off?
+
 - URL options
 
   Rails uses a hash named `url_options` for generating URLs with correct prefix.
@@ -448,6 +450,12 @@ Contexts are assigned to operations via the operation's constructor:
 ```ruby
 my_context = RailsOps::Context.new
 op = Operations::PrintHelloWorld.new(my_context, foo: :bar)
+```
+
+For your convenience, contexts also provide `run` and `run!` methods:
+
+```ruby
+my_context.run Operations::PrintHelloWorld, foo: :bar
 ```
 
 ### Sub-operations
