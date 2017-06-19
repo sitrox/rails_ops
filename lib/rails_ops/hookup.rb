@@ -1,6 +1,6 @@
 class RailsOps::Hookup
   REQUEST_STORE_KEY = 'RailsOps::Hookup'.freeze
-  CONFIG_PATH = Rails.root.join('config/hookup.rb').freeze
+  CONFIG_PATH = 'config/hookup.rb'.freeze
 
   attr_reader :hooks
 
@@ -22,7 +22,7 @@ class RailsOps::Hookup
   def load_config
     unless @config_loaded
       @config_loaded = true
-      load CONFIG_PATH
+      load Rails.root.join(CONFIG_PATH)
     end
 
     unless @drawn
