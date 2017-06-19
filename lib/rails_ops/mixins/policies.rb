@@ -4,7 +4,6 @@
 # inherited to subclasses of operations.
 module RailsOps::Mixins::Policies
   extend ActiveSupport::Concern
-  include ClassInstanceAttribute
 
   POLICY_CHAIN_KEYS = [:on_init, :before_perform, :after_perform].freeze
 
