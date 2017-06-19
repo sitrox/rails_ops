@@ -18,7 +18,7 @@ module RailsOps
     end
 
     def self.forget_all
-      Thread.current[:sitrox_ops_profiler][:nodes] = {}
+      Thread.current[:rails_ops_profiler][:nodes] = {}
     end
 
     def self.forget(object_id)
@@ -30,18 +30,18 @@ module RailsOps
     end
 
     def self.tstore_current_parent
-      Thread.current[:sitrox_ops_profiler] ||= {}
-      Thread.current[:sitrox_ops_profiler][:current_parent]
+      Thread.current[:rails_ops_profiler] ||= {}
+      Thread.current[:rails_ops_profiler][:current_parent]
     end
 
     def self.tstore_current_parent=(parent)
-      Thread.current[:sitrox_ops_profiler] ||= {}
-      Thread.current[:sitrox_ops_profiler][:current_parent] = parent
+      Thread.current[:rails_ops_profiler] ||= {}
+      Thread.current[:rails_ops_profiler][:current_parent] = parent
     end
 
     def self.tstore_nodes
-      Thread.current[:sitrox_ops_profiler] ||= {}
-      Thread.current[:sitrox_ops_profiler][:nodes] ||= {}
+      Thread.current[:rails_ops_profiler] ||= {}
+      Thread.current[:rails_ops_profiler][:nodes] ||= {}
     end
   end
 end
