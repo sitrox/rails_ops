@@ -1,4 +1,4 @@
-module SitroxRails
+module RailsOps
   # @private
   class Railtie < Rails::Railtie
     initializer 'rails_ops' do |_app|
