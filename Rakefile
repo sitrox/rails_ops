@@ -20,7 +20,7 @@ task :gemspec do
     spec.add_development_dependency 'yard'
     spec.add_development_dependency 'rubocop', '0.37.1'
     spec.add_development_dependency 'redcarpet'
-    spec.add_dependency 'active_type', '~> 0.6'
+    spec.add_dependency 'active_type', '~> 0.7.1'
     spec.add_dependency 'minitest'
     spec.add_dependency 'activesupport'
     spec.add_dependency 'activerecord'
