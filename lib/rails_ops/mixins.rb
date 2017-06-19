@@ -1,0 +1,2 @@
+module RailsOps::Mixins
+end
