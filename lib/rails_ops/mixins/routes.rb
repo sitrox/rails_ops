@@ -1,16 +1,13 @@
 module RailsOps::Mixins::Routes
   extend ActiveSupport::Concern
 
-  included do
-  end
-
   class RoutingContainer
-    include Rails.application.routes.url_helpers
-
-    attr_reader :url_options
-
     def initialize(url_options)
       @url_options = url_options
+    end
+
+    def method_missing(name, *args)
+      Rails.application.routes.url_helpers.send(name, *args, @url_options)
     end
   end
 
@@ -20,8 +17,10 @@ module RailsOps::Mixins::Routes
         fail RailsOps::Exceptions::RoutingNotAvailable,
              'Can not access routes helpers, no url_options given in context.'
       end
+
       @routes = RoutingContainer.new(context.url_options)
     end
+
     return @routes
   end
 end
