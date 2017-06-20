@@ -8,7 +8,7 @@ task :gemspec do
     spec.name          = 'rails_ops'
     spec.version       = IO.read('VERSION').chomp
     spec.authors       = ['Sitrox']
-    spec.summary       = 'A skeleton that allows extracting queries into atomic, reusable classes.'
+    spec.summary       = 'An operations service layer for rails projects.'
     spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
     spec.executables   = []
     spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
