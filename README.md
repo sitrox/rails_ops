@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/rails_ops.svg)](https://badge.fury.io/rb/rails_ops)
+
 rails_ops
 =========
 
