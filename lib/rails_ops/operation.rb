@@ -92,7 +92,7 @@ class RailsOps::Operation
   # be called once per operation instance. This is a bang method that raises at
   # any validation exception.
   def run!
-    ActiveSupport::Notifications.instrument('run.operation', operation: self) do
+    ActiveSupport::Notifications.instrument('run.rails_ops', operation: self) do
       ::RailsOps::Profiler.profile(object_id, inspect) do
         fail 'An operation can only be performed once.' if performed?
         @performed = true
