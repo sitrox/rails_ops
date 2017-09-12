@@ -34,6 +34,7 @@ module RailsOps
       return @op
     end
 
+    # Determines whether an operation has been set.
     def op?
       !!@op
     end
@@ -65,20 +66,30 @@ module RailsOps
       return success
     end
 
+    # Returns the current operation's `model`. Fails with an exception if the
+    # current operation does not respond to the `model` (i.e. is not a model
+    # operation).
     def model
       return @model if @model
       fail 'Current operation does not support `model` method.' unless op.respond_to?(:model)
       return op.model
     end
 
+    # Filters the `params` hash for use with RailsOps. This removes certain
+    # web-specific parameters based on `EXCEPT_PARAMS`.
     def filter_op_params(params)
       (params || {}).except(*EXCEPT_PARAMS)
     end
 
+    # Filters operation params using `filter_op_params`, permits them using
+    # strong params and converts them to a hash. This method can be overridden
+    # for passing custom params to an operation for an entire controller.
     def op_params
       filter_op_params(params.permit!).to_h
     end
 
+    # Constructs and returns the operation context used for instantiating
+    # operations from within this controller.
     def op_context
       @op_context ||= begin
         context = RailsOps::Context.new
