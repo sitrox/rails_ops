@@ -7,9 +7,9 @@ rails_ops
 
 This Gem introduces an additional service layer for Rails: *Operations*. An
 operation is in most cases a *business action* or *use case* and may or may not
-involve one or multiple models. Rails Ops allow creating more modular
-applications by splitting them up into its different operations. Each operation
-is specified in a single, testable class.
+involve one or multiple models. Rails Ops allows creating more modular
+applications by splitting them up into their different operations. Each
+operation is specified in a single, testable class.
 
 To achieve this goal, this Gem provides the following building blocks:
 
@@ -23,13 +23,13 @@ Operation Basics
 
 ### Placing and naming operations
 
-- Operations generally reside in `app/operations` and can be nested using various
-  subdirectories. They're all inside of the `Operations` namespace.
+- Operations generally reside in `app/operations` and can be nested using
+  various subdirectories. They're all inside of the `Operations` namespace.
 
 - Operations operating on a specific model should generally be namespaced with
   the model's class name. So for instance, the operation `Create` for the `User`
-  model should generally live under `app/operations/user/create.rb` and therefore
-  be called `Operations::User::Create`.
+  model should generally live under `app/operations/user/create.rb` and
+  therefore should be called `Operations::User::Create`.
 
 - Operations inheriting from other operations should generally be nested within
   their parent operation. See the next section for more details.
@@ -51,8 +51,8 @@ When declaring an operation within a namespace,
 - Determine whether the namespace you're using is a module or a class. Make sure
   you don't accidentally redefine a module as a class or vice-versa.
 
-- If the operation resides within a module, make a module definition on the first
-  line and the operation class on the second. Example:
+- If the operation resides within a module, make a module definition on the
+  first line and the operation class on the second. Example:
 
   ```ruby
   module Operations::Frontend::Navigation
@@ -958,7 +958,7 @@ source code for implementation details.
 ## Model authorization
 
 While you can use the standard `authorize!` method (see chapter *Authorization*)
-for authorizing models, RailsOps provides you a more convenient integration.
+for authorizing models, RailsOps provides a more convenient integration.
 
 ### Basic authorization
 
@@ -966,7 +966,7 @@ Model authorization can be performed via the operation instance methods
 `authorize_model!` and `authorize_model_with_authorize_only!` (see chapter
 *Authorization* for more information on the difference between these two).
 
-There two methods provide a simple wrapper around `authorize!` and
+These two methods provide a simple wrapper around `authorize!` and
 `authorize_only!` that casts the given model class or instance to an active
 record object. This is necessary if the given model class or instance is a
 (possibly anonymous) extension of an active record class for certain
