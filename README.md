@@ -1213,6 +1213,15 @@ while more specific operations can use `:update` or whatever. If we really need
 to check for `:read` when updating an object, it can be implemented in the
 ability class.
 
+## Change log
+
+### 1.0.0.beta4
+
+* Fix a bug where nested models are saved at build time in update operations in
+  some cases.
+
+* Start of change log.
+
 ## Copyright
 
 Copyright (c) 2017 Sitrox. See `LICENSE` for further details.

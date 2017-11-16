@@ -137,14 +137,18 @@ module RailsOps::Mixins::Model::Nesting
       # Instantiate nested operation
       @nested_model_ops[attribute] = sub_op(config[:klass], wrapped_params)
 
-      # Inject model of nested operation to our own model
+      # Inject model of nested operation to our own model. We directly set the
+      # association's target instead of using the standard setter method as the
+      # latter one can save the models in some occasions.
       nested_model = @nested_model_ops[attribute].model
-      model.send("#{attribute}=", nested_model)
+      model.association(attribute).target = nested_model
 
       # Inject our own model to model of nested operation (if the inverse
-      # reflection can be resolved)
+      # reflection can be resolved). We directly set the association's target
+      # instead of using the standard setter method as the latter one can save
+      # the models in some occasions.
       if (inverse_reflection = model.class.reflect_on_association(attribute).inverse_of)
-        nested_model.send("#{inverse_reflection.name}=", model)
+        nested_model.association(inverse_reflection.name).target = model
       end
     end
   end
