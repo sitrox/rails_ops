@@ -789,7 +789,7 @@ class SomeOperation < RailsOps::Operation::Model
   model User do
     # This code only runs in a dynamically created subclass of `User` and does
     # not affect the original model class.
-    attr_accessible :name
+    validates :name, presence: true
   end
 end
 ```
