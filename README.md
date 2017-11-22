@@ -1193,7 +1193,7 @@ Operation Inheritance
 Caveats
 -------
 
-## Eager loading in development mode
+### Eager loading in development mode
 
 Eager loading operation classes containing models with nested models or
 operations can be very slow in performance. In production mode, the same process
@@ -1205,7 +1205,7 @@ setting in production mode though.
 Open points
 -----------
 
-## Load model authorization
+### Load model authorization
 
 It is possible that we can eliminate the load model authorization functionality
 entirely. Operations using the `Load` base class can authorize using `:read`,
@@ -1213,7 +1213,8 @@ while more specific operations can use `:update` or whatever. If we really need
 to check for `:read` when updating an object, it can be implemented in the
 ability class.
 
-## Change log
+Change log
+----------
 
 ### 1.0.0.beta4
 
