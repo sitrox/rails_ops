@@ -769,7 +769,7 @@ inherit from {RailsOps::Operation::Model} (which in turn inherits from
 The key principle behind these model classes is to associate *one model class*
 and *one model instance* with a particular operation.
 
-## Setting a model class
+### Setting a model class
 
 Using the static method `model`, you can assign a model class that is used in
 the scope of this operation.
@@ -807,7 +807,7 @@ class SomeOperation < RailsOps::Operation::Model
 end
 ```
 
-## Obtaining a model instance
+### Obtaining a model instance
 
 Model instances can be obtained using the *instance* method `model`, which is
 not to be confused with the *class* method of the same name. Other than the
@@ -836,7 +836,7 @@ If no cached instance is found, one is built using the instance method
 but only implemented in its subclasses. You can implement and override this
 method to your liking though.
 
-## Loading models
+### Loading models
 
 Using the base operation class {RailsOps::Operation::Model::Load}, a model can
 be loaded. This is done by implementing the `build_model` mentioned above. In
@@ -866,7 +866,7 @@ op = Operations::User::Load.new(id: 5)
 op.model.id # => 5
 ```
 
-### Specifying ID field
+#### Specifying ID field
 
 Per default, the model instance is looked up using the field `id` and the ID
 obtained from the method params using `params[:id]`. However, you can customize
@@ -882,7 +882,7 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
 end
 ```
 
-### Locking
+#### Locking
 
 In most cases when you load a model, you might want to lock the corresponding
 database record. RailsOps is configured to automatically perform this locking
@@ -899,7 +899,7 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
 end
 ```
 
-## Creating models
+### Creating models
 
 For creating models, you can use the base class
 {RailsOps::Operation::Model::Create}.
@@ -916,7 +916,7 @@ The `perform` method saves the record using `save!`.
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
 
-## Updating models
+### Updating models
 
 For creating models, you can use the base class
 {RailsOps::Operation::Model::Update} which is an extension of the `Load` base
@@ -934,7 +934,7 @@ The `perform` method saves the record using `save!`.
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
 
-## Destroying models
+### Destroying models
 
 For destroying models, you can use the base class
 {RailsOps::Operation::Model::Destroy} which is an extension of the `Load` base
@@ -946,7 +946,7 @@ destroys the model using its `destroy!` method.
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
 
-## Parameter extraction for create and update
+### Parameter extraction for create and update
 
 As mentioned before, the `Create` and `Update` base classes provide an
 implementation of `build_model` that assigns parameters to a model.
@@ -955,12 +955,12 @@ The attributes are determined by the operation instance method
 `extract_attributes_from_params` - the name being self-explaining. See its
 source code for implementation details.
 
-## Model authorization
+### Model authorization
 
 While you can use the standard `authorize!` method (see chapter *Authorization*)
 for authorizing models, RailsOps provides a more convenient integration.
 
-### Basic authorization
+#### Basic authorization
 
 Model authorization can be performed via the operation instance methods
 `authorize_model!` and `authorize_model_with_authorize_only!` (see chapter
@@ -976,7 +976,7 @@ methods instead of the basic authorization methods for authorizing models.
 If no model is given, the model authorization methods automatically obtain the
 model from the instance method `model`.
 
-### Automatic authorization
+#### Automatic authorization
 
 All model operation classes provide the operation instance method
 `model_authorization` which is automatically run at model instantiation (this is
@@ -1001,7 +1001,7 @@ end
 Note that using the different model base classes, this is already set to a
 sensible default. See the respective class' source code for details.
 
-## Model nesting
+### Model nesting
 
 TODO
 
