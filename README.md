@@ -16,6 +16,35 @@ To achieve this goal, this Gem provides the following building blocks:
 
 - A way of abstracting model classes for a specific business action.
 
+Requirements & Installation
+---------------------------
+
+### Requirements
+
+- RailsOps only works with Rails applications and has been tested with Rails >=
+  5.0.
+- Prior Rails versions may be supported but this has not been verified.
+- Rails Ops' model operations require ActiveRecord but are database / adapter
+  agnostic
+
+### Installation
+
+1. Add the following to your Rails application's `Gemfile`:
+
+   ```ruby
+   gem 'rails_ops'
+   ```
+
+2. Create an initializer file `config/initializers/rails_ops.rb` with the
+   following contents:
+
+   ```ruby
+   RailsOps.configure do |config|
+     # Replace this with your authorization backend.
+     config.authorization_backend = 'RailsOps::AuthorizationBackend::CanCanCan'
+   end
+   ```
+
 Operation Basics
 ----------------
 
