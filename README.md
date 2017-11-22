@@ -416,9 +416,6 @@ operations. Contexts can include the following data:
   automatically generated when calling a sub-op or triggering an op using an
   event (see chapter *Events* for more information on that).
 
-  TODO: This may induce memory issues. Is keeping the operation's chain worth
-  this trade-off?
-
 - URL options
 
   Rails uses a hash named `url_options` for generating URLs with correct prefix.
@@ -483,7 +480,7 @@ additional ones it's triggering:
   using `Operations::Group::Create`. *This is an example for sub-ops*.
 
 - `Operations::User::Create` creates a user. Whenever a user is created, another
-  part of the application needs to generate a TODO for the admin to approve this
+  part of the application needs to generate a todo for the admin to approve this
   user. *This would be an example for hooks*.
 
 Hooks are pretty simple: Using the file `config/hookup.rb`, you can
@@ -712,8 +709,11 @@ Rails Ops offers multiple ways of disabling authorization:
   end
   ```
 
-  TODO: Explain why this can be useful even if there are no authorize! calls
-  in this operation.
+  If the operation is invoked using controller integration, this also disables
+  the controller-side check that makes sure an authorization method is called.
+
+  This does not disable authorization for any sub operations. See the next
+  section for information on how to disable sub operation authorization.
 
 - By invoking one or more operations in a `RailsOps.without_authorization`
   block:
