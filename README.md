@@ -1003,7 +1003,65 @@ sensible default. See the respective class' source code for details.
 
 ### Model nesting
 
-TODO
+Using active record, multiple nested models can be saved at once by using
+`accepts_nested_attributes_for`. While this is generally supported by RailsOps,
+you may want to consider saving nested models using their own operation.
+
+For this case, RailsOps' create and update model operations provide the method
+`nest_model_op`.
+
+```ruby
+class Operations::User::Create < RailsOps::Operation::Model::Create
+  schema do
+    opt :user do
+      opt :name
+      opt :group_attributes
+    end
+  end
+
+  model ::User
+  nest_model_op :group, Operations::Group::Create
+end
+
+class Operations::Group::Create < RailsOps::Operation::Model::Create
+  schema :group do
+    opt :name
+  end
+
+  model ::Group
+  nest_model_op :group, Operations::Group::Create
+end
+```
+
+In this example, the parent operation `Operations::User::Create` automatically
+instantiates a `Group::Create` operation and passes all the parameters to it
+that the parent operation received under `group_attributes`. The group is saved
+first. If this is successful, the user is saved.
+
+Note that this feature only works with `belongs_to` associations with `autosave`
+set to `false` and is not compatible with `accepts_nested_attributes_for`:
+
+```ruby
+class User
+  belongs_to :group, autosave: false
+end
+```
+
+#### Custom parameters
+
+In the above examples, all `group_attributes` are automatically passed to the
+sub operation. To customize this further, provide a block to the `nest_model_op`
+method:
+
+```ruby
+nest_model_op :group, Operations::Group::Create do |params|
+  params.merge(custom_override: :some_value)
+end
+```
+
+This block receives the params hash as it would be passed to the sub operation
+and allows to modify it. The block's return value is then passed to the
+sub-operation. Do not change the params inplace but instead return a new hash.
 
 Record extension and virtual records
 ------------------------------------
@@ -1011,7 +1069,6 @@ Record extension and virtual records
 
 Transactions
 ------------
-
 
 
 Controller Integration
