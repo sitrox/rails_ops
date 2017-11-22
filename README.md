@@ -3,8 +3,6 @@
 rails_ops
 =========
 
-**This Gem is still under development and is not to be used in production yet.**
-
 This Gem introduces an additional service layer for Rails: *Operations*. An
 operation is in most cases a *business action* or *use case* and may or may not
 involve one or multiple models. Rails Ops allows creating more modular
