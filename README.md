@@ -1259,17 +1259,6 @@ exclude your operation classes (i.e. `app/operations`) in your
 `config.eager_load_paths` of `development.rb`. Make sure not to touch this
 setting in production mode though.
 
-Open points
------------
-
-### Load model authorization
-
-It is possible that we can eliminate the load model authorization functionality
-entirely. Operations using the `Load` base class can authorize using `:read`,
-while more specific operations can use `:update` or whatever. If we really need
-to check for `:read` when updating an object, it can be implemented in the
-ability class.
-
 Change log
 ----------
 
