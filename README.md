@@ -1021,7 +1021,7 @@ While RailsOps certainly does not have to be used from a controller, it
 provides a mixin which extends controller classes with functionality that lets
 you easily instantiate and run operations.
 
-## Installing
+### Installing
 
 Controller integration is designed to be non-intrusive and therefore has to be
 installed manually. Add the following inclusion to the controllers in question
@@ -1033,7 +1033,7 @@ class ApplicationController
 end
 ```
 
-## Basic usage
+### Basic usage
 
 The basic concept behind controller integration is to instantiate and
 potentially run a single operation per request. Most of this guide refers to
@@ -1051,7 +1051,7 @@ class SomeController < ApplicationController
 end
 ```
 
-## Separating instantiation and execution
+### Separating instantiation and execution
 
 In the previous example, we instantiated and ran an operation in a single
 statement. While this might be feasible for some "fire-and-forget" controller
@@ -1099,18 +1099,18 @@ def update_username
 end
 ```
 
-## Checking for operations
+### Checking for operations
 
 Using the method `op?`, you can check whether an operation has already been
 instantiated (using `op`).
 
-## Model shortcut
+### Model shortcut
 
 RailsOps conveniently provides you with a `model` instance method, which is a
 shortcut for `op.model`. This is particularly useful since this is available as
 a view helper method as well, see next section.
 
-## View helper methods
+### View helper methods
 
 The following controller methods are automatically provided as helper methods
 which can be used in views:
@@ -1126,7 +1126,7 @@ It is very common to use `model` for your forms:
   - # Form code goes here
 ```
 
-## Parameters
+### Parameters
 
 As you've probably noticed in previous examples, we did not provide any
 parameters to the operation.
@@ -1154,7 +1154,7 @@ You can also combine these two approaches:
 op SomeOperation, some_param: op_params.slice(:some_param, :some_other_param)
 ```
 
-## Authorization ensuring
+### Authorization ensuring
 
 For security reasons, RailsOps automatically checks after each action whether
 authorization has been performed. This is to avoid serving an action's response
@@ -1168,7 +1168,7 @@ Note that this check also doesn't apply if the corresponding operation uses
 `without_authorization` (see section *Disabling authorization* for more
 information on this).
 
-## Context
+### Context
 
 When using the `op` method to instantiate an operation, a context is
 automatically created. The following fields are set automatically:
@@ -1179,7 +1179,7 @@ automatically created. The following fields are set automatically:
 - `session` (uses the `session` controller method)
 - `url_options` (uses the `url_options` controller method)
 
-## Multiple operations per request
+### Multiple operations per request
 
 RailsOps does not currently support calling multiple operations in a single
 controller action out-of-the-box. You need to instantiate and run it manually.
