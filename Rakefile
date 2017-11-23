@@ -24,6 +24,7 @@ task :gemspec do
     spec.add_dependency 'minitest'
     spec.add_dependency 'activesupport'
     spec.add_dependency 'activerecord'
+    spec.add_dependency 'activejob'
     spec.add_dependency 'schemacop', '~> 2.0'
   end
 
