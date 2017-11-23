@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/sitrox/rails_ops.svg?branch=master)](https://travis-ci.org/sitrox/rails_ops)
 [![Gem Version](https://badge.fury.io/rb/rails_ops.svg)](https://badge.fury.io/rb/rails_ops)
 
 rails_ops
