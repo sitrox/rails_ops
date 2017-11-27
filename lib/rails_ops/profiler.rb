@@ -7,6 +7,7 @@ module RailsOps
         res = yield
       rescue
         node.erroneous!
+        fail
       ensure
         self.tstore_current_parent = node.parent
         node.finish_measure
