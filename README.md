@@ -1290,6 +1290,10 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta6
+
+* Fix #6 Exceptions in profiler are not re-thrown
+
 ### 1.0.0.beta5
 
 * Fix #5 Measure for object_id ... not finished
