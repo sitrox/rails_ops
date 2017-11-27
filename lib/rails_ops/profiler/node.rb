@@ -6,6 +6,7 @@ module RailsOps
       @parent = parent
       parent&.add_child(self)
       @children = []
+      @erroneous = false
       @t_start = Time.now
     end
 
@@ -14,6 +15,14 @@ module RailsOps
 
     def finish_measure
       @t_stop = Time.now
+    end
+
+    def erroneous!
+      @erroneous = true
+    end
+
+    def erroneous?
+      @erroneous
     end
 
     def t_self
@@ -25,7 +34,7 @@ module RailsOps
     end
 
     def t_total
-      fail "Measure for object_id #{@object_id} (#{@description}) is not finished." unless @t_stop
+      return nil unless @t_stop
       (@t_stop - @t_start).to_f
     end
 

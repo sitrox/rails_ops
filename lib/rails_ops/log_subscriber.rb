@@ -15,8 +15,14 @@ module RailsOps
       message += " (#{profile.t_self_ms.round(1)}ms / #{profile.t_kids_ms.round(1)}ms)"
       profile.free
 
-      message = color(message, YELLOW, true)
-      message += color(" #{op.class.name}", YELLOW, false)
+      if profile.erroneous?
+        message += ' (failed)'
+      end
+
+      color = profile.erroneous? ? RED : YELLOW
+
+      message = color(message, color, true)
+      message += color(" #{op.class.name}", color, false)
 
       debug "  #{message}"
     end

@@ -3,10 +3,15 @@ module RailsOps
     def self.profile(object_id, description = nil, &_block)
       node = tstore_nodes[object_id] = ::RailsOps::Profiler::Node.new(object_id, description, tstore_current_parent)
       self.tstore_current_parent = node
-      res = yield
-      self.tstore_current_parent = node.parent
-      node.finish_measure
-      res
+      begin
+        res = yield
+      rescue
+        node.erroneous!
+      ensure
+        self.tstore_current_parent = node.parent
+        node.finish_measure
+      end
+      return res
     end
 
     def self.time(descr = nil, &_block)
