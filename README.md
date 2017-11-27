@@ -1297,6 +1297,13 @@ Change log
 
 * Start of change log.
 
+## Contributors
+
+This Gem is heavily inspired by the [trailblazer](http://trailblazer.to/) Gem
+which provides a wonderful, high-level architecture for Rails – beyond just
+operations. Be sure to check this out when trying to decide on an alternative
+Rails architecture.
+
 ## Copyright
 
 Copyright (c) 2017 Sitrox. See `LICENSE` for further details.
