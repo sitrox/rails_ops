@@ -1290,6 +1290,10 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta5
+
+* Fix #5 Measure for object_id ... not finished
+
 ### 1.0.0.beta4
 
 * Fix a bug where nested models are saved at build time in update operations in
