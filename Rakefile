@@ -17,14 +17,11 @@ task :gemspec do
     spec.add_development_dependency 'bundler', '~> 1.3'
     spec.add_development_dependency 'rake'
     spec.add_development_dependency 'sqlite3'
-    spec.add_development_dependency 'yard'
     spec.add_development_dependency 'rubocop', '0.47.1'
-    spec.add_development_dependency 'redcarpet'
     spec.add_dependency 'active_type', '~> 0.7.1'
     spec.add_dependency 'minitest'
-    spec.add_dependency 'activesupport'
-    spec.add_dependency 'activerecord'
-    spec.add_dependency 'activejob'
+    spec.add_dependency 'rails'
+    spec.add_dependency 'request_store'
     spec.add_dependency 'schemacop', '~> 2.0'
   end
 
