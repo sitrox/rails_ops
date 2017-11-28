@@ -84,7 +84,7 @@ class RailsOps::Operation
   def run
     run!
     return true
-  rescue validation_errors
+  rescue *validation_errors
     return false
   end
 
