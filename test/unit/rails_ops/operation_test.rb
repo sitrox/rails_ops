@@ -130,4 +130,16 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
     assert_equal :bar, op.params[:a][:foo]
     assert_equal :bar, op.osparams.a[:foo]
   end
+
+  def test_performed
+    op = BASIC_OP.new
+    refute op.performed?
+    op.run!
+    assert op.performed?
+  end
+
+  def test_inspect
+    assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo"=>:bar})',
+                 BASIC_OP.new(foo: :bar).inspect
+  end
 end
