@@ -1,0 +1,3 @@
+class Group < ApplicationRecord
+
+end

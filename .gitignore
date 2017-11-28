@@ -9,3 +9,5 @@
 /tmp/
 /bin/ruby
 /vendor/bundle
+/test/dummy/tmp/
+/test/dummy/log/

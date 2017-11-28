@@ -1,4 +1,5 @@
 require 'bundler/gem_tasks'
+
 require 'rake/testtask'
 
 task default: :test
@@ -31,7 +32,8 @@ end
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
-  t.pattern = 'test/rails_ops/**/*_test.rb'
+  t.pattern = 'test/unit/**/*_test.rb'
   t.verbose = false
   t.libs << 'test'
+  t.warning = false
 end
