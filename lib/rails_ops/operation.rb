@@ -108,7 +108,7 @@ class RailsOps::Operation
 
   # Returns the contents of the operation as a nicely formatted string.
   def inspect
-    inspection = self.class.name || "(AnonymousOp)"
+    inspection = self.class.name || '(AnonymousOp)'
     if params
       inspection << " (#{inspect_params(filtered_params)})"
     end
