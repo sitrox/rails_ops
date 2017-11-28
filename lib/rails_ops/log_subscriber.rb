@@ -9,15 +9,12 @@ module RailsOps
 
       return if op.class.logging_skipped?
 
-      message = 'OP'
-
       profile = ::RailsOps::Profiler.node(op.object_id)
+
+      message = 'OP'
+      message += ' FAILED' if profile.erroneous?
       message += " (#{profile.t_self_ms.round(1)}ms / #{profile.t_kids_ms.round(1)}ms)"
       profile.free
-
-      if profile.erroneous?
-        message += ' (failed)'
-      end
 
       color = profile.erroneous? ? RED : YELLOW
 
