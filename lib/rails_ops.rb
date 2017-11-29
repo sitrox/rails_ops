@@ -21,8 +21,6 @@ module RailsOps
   end
 
   def self.authorization_enabled?
-    fail 'No authorization backend is configured.' unless authorization_backend
-
     return false unless authorization_backend
 
     if Thread.current[AUTH_THREAD_STORAGE_KEY].nil?
