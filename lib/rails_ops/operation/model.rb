@@ -41,7 +41,7 @@ class RailsOps::Operation::Model < RailsOps::Operation
       # given model class, create a new model class inheriting from the
       # given one and mix in required modules.
       # ---------------------------------------------------------------
-      if block_given? || always_extend_model_class?
+      if block_given? || always_extend_model_class? || name
         self._model_class = Class.new(model_class)
 
         # Include operation mixins that provide various functionality needed for
