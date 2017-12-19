@@ -1290,6 +1290,10 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta7
+
+* #2 Get rid of protected attributes functionality
+
 ### 1.0.0.beta6
 
 * Fix #6 Exceptions in profiler are not re-thrown
