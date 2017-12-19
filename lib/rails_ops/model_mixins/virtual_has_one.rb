@@ -10,16 +10,12 @@ module RailsOps
         # https://github.com/remofritzsche/active_type/commit/fb8c2cb4cccaaec
         #
         # TODO: Document.
-        def virtual_has_one(name, base_class, required: false, accessible: true, default: nil, type: Integer)
+        def virtual_has_one(name, base_class, required: false, default: nil, type: Integer)
           fk = "#{name}_id"
           attribute fk, type, default: default
 
           if required
             validates fk, presence: true
-          end
-
-          if accessible
-            attr_accessible name, fk
           end
 
           belongs_to name, anonymous_class: base_class, foreign_key: fk, class_name: base_class.name
