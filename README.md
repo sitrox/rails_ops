@@ -1318,4 +1318,4 @@ Rails architecture.
 
 ## Copyright
 
-Copyright (c) 2017 Sitrox. See `LICENSE` for further details.
+Copyright (c) 2018 Sitrox. See `LICENSE` for further details.
