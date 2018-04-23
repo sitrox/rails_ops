@@ -211,7 +211,8 @@ Params Handling
 
 Each single operation can take a `params` hash. Note that it does not have to be
 in any relation with `ActionController`'s params - it's just a plain ruby hash
-called `params`.
+called `params` (in fact, it is a `Object::HashWithIndifferentAcces`, more on
+that later).
 
 Params are assigned to the operation via their constructor:
 
