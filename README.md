@@ -923,7 +923,7 @@ This behavior can also be overwritten per operation using the
 
 ```ruby
 class Operations::User::Load < RailsOps::Operation::Model::Load
-  model User
+  model ::User
   lock_model_at_build false # Takes `true` if no argument is passed
 end
 ```
@@ -942,8 +942,35 @@ that.
 
 The `perform` method saves the record using `save!`.
 
+```ruby
+class Operations::User::Create < RailsOps::Operation::Model::Create
+  schema do
+    req :user do
+      opt :first_name
+      opt :last_name
+    end
+  end
+
+  model User
+end
+```
+
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
+
+#### Overriding the perform method
+
+While in many cases there is no need for overriding the `perform` method, this
+can be useful i.e. when assigning or altering properties manually:
+
+
+```ruby
+def perform
+  model.some_value = 42
+  model.first_name.upcase!
+  super # Saves the record
+end
+```
 
 ### Updating models
 
@@ -960,8 +987,25 @@ that.
 
 The `perform` method saves the record using `save!`.
 
+```ruby
+class Operations::User::Update < RailsOps::Operation::Model::Update
+  schema do
+    req :id
+    req :user do
+      opt :first_name
+      opt :last_name
+    end
+  end
+
+  model ::User
+end
+```
+
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
+
+As with `Create` operations, the `perform` method can be overwritten at your
+liking.
 
 ### Destroying models
 
@@ -971,6 +1015,16 @@ class.
 
 This class mainly provides an implementation of the method `perform`, which
 destroys the model using its `destroy!` method.
+
+```ruby
+class Operations::User::Destroy < RailsOps::Operation::Model::Destroy
+  schema do
+    req :id
+  end
+
+  model ::User
+end
+```
 
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
