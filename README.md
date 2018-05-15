@@ -1345,6 +1345,11 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta8
+
+* Make sure that original state is always restored after calling
+  `RailsOps.without_authorization`, even in case of an exception.
+
 ### 1.0.0.beta7
 
 * #2 Get rid of protected attributes functionality
