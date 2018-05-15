@@ -35,8 +35,11 @@ module RailsOps
   def self.without_authorization(&_block)
     previous_value = Thread.current[AUTH_THREAD_STORAGE_KEY]
     Thread.current[AUTH_THREAD_STORAGE_KEY] = false
-    yield
-    Thread.current[AUTH_THREAD_STORAGE_KEY] = previous_value
+    begin
+      yield
+    ensure
+      Thread.current[AUTH_THREAD_STORAGE_KEY] = previous_value
+    end
   end
 end
 
