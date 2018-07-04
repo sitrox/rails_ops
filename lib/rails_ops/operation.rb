@@ -193,7 +193,7 @@ class RailsOps::Operation
   def with_rollback_on_exception(&_block)
     yield
   rescue => e
-    fail RailsOps::Exceptions::RollbackRequired, e
+    fail RailsOps::Exceptions::RollbackRequired, e, e.backtrace
   end
 
   # Returns the contents of the params as a nicely formatted string.
