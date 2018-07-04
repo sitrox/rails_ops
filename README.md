@@ -1345,6 +1345,10 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta9
+
+* Keep stack trace on exceptions rethrown by `with_rollback_on_exception`.
+
 ### 1.0.0.beta8
 
 * Make sure that original state is always restored after calling
