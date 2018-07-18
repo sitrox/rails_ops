@@ -1345,6 +1345,16 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta10
+
+* Allow model name override for all models using `RailsOps::ModelMixins`. This
+  means you can also specify a model name for models not inheriting from
+  `RailsOps::VirtualModel`, i.e.:
+
+  ```ruby
+  model User, 'ModelNameOverride'
+  ```
+
 ### 1.0.0.beta9
 
 * Keep stack trace on exceptions rethrown by `with_rollback_on_exception`.
