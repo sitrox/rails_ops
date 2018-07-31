@@ -12,7 +12,8 @@ module RailsOps
       :authenticity_token,
       :_referer_depth,
       :_referer,
-      :_method
+      :_method,
+      :_ # jQuery.ajax cache: false
     ].freeze
 
     included do
