@@ -1,4 +1,3 @@
 version_file: VERSION
 always_from_master: true
-yard_path: doc
 gem_style: github
