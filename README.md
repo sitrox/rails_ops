@@ -1345,6 +1345,10 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta12
+
+* Exclude param named `escape` from `op_params`.
+
 ### 1.0.0.beta11
 
 * Exclude param named `_` from `op_params`. This allows to use `cache: false`

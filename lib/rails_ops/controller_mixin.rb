@@ -10,6 +10,7 @@ module RailsOps
       :action,
       :utf8,
       :authenticity_token,
+      :escape,
       :_referer_depth,
       :_referer,
       :_method,
