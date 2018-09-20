@@ -46,6 +46,18 @@ Requirements & Installation
    end
    ```
 
+3. Optional: If you want your operations to reside inside of `app/operations`
+   and be scoped correctly, create the directory `app/operations` and add the
+   following inside of the `Application` class within your
+   `config/application.rb`:
+
+   ```ruby
+    config.paths = Rails::Paths::Root.new(Rails.root)
+    config.paths.add 'app/models', eager_load: true
+    config.paths.add 'lib', eager_load: true
+    config.paths.add 'app', eager_load: true
+    ```
+
 Operation Basics
 ----------------
 
@@ -1344,6 +1356,10 @@ setting in production mode though.
 
 Change log
 ----------
+
+### 1.0.0.beta13
+
+* Explain how to setup load paths in readme
 
 ### 1.0.0.beta12
 
