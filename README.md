@@ -986,7 +986,7 @@ end
 
 ### Updating models
 
-For creating models, you can use the base class
+For updating models, you can use the base class
 {RailsOps::Operation::Model::Update} which is an extension of the `Load` base
 class.
 
