@@ -87,7 +87,7 @@ module RailsOps
     # strong params and converts them to a hash. This method can be overridden
     # for passing custom params to an operation for an entire controller.
     def op_params
-      filter_op_params(params.permit!).to_h
+      @op_params ||= filter_op_params(params.permit!).to_h
     end
 
     # Constructs and returns the operation context used for instantiating
