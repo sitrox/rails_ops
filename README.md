@@ -934,7 +934,7 @@ This behavior can also be overwritten per operation using the
 `lock_model_at_build` class method:
 
 ```ruby
-class Operations::User::Load < RailsOps::Operation::Model::Load
+class Operations::User::Update < RailsOps::Operation::Model::Update
   model ::User
   lock_model_at_build false # Takes `true` if no argument is passed
 end
