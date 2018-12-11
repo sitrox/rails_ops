@@ -1357,6 +1357,11 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0.beta15
+
+* Add method `authorize_called!` to manually mark authorization as called for a
+  specific operation.
+
 ### 1.0.0.beta14
 
 * Fix bug with jRuby 9.2 where operation class name got mutated when inspecting
