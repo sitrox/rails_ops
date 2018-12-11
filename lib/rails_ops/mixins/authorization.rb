@@ -46,8 +46,14 @@ module RailsOps::Mixins::Authorization
     !@_authorization_disabled_for_sub_ops
   end
 
+  # Determines whether authorize has been called for this operation.
   def authorize_called?
     @_authorize_called ||= false
+  end
+
+  # Manually marks the authorization as called for this operation.
+  def authorize_called!
+    @_authorize_called = true
   end
 
   # Operations within the given block will have disabled authorization.
@@ -61,7 +67,7 @@ module RailsOps::Mixins::Authorization
   # perform anything if authorization is disabled.
   def authorize!(action, *args)
     authorize_only!(action, *args)
-    @_authorize_called = true
+    authorize_called!
   end
 
   # Checks authorization against the configured authentication backend. Fails if
