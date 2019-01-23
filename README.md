@@ -1357,6 +1357,11 @@ setting in production mode though.
 Change log
 ----------
 
+### 1.0.0
+
+* First stable release after being battle-tested over an extended period of
+  time.
+
 ### 1.0.0.beta15
 
 * Add method `authorize_called!` to manually mark authorization as called for a
