@@ -9,6 +9,9 @@ AllCops:
 
   DisplayCopNames: true
 
+Style/SafeNavigation:
+  Enabled: false
+
 Style/FrozenStringLiteralComment:
   Enabled: false
 
