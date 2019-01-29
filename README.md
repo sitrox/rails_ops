@@ -1357,6 +1357,10 @@ setting in production mode though.
 Change log
 ----------
 
+### Unreleased
+
+* Fixed compatibility with ruby < `2.3.0`
+
 ### 1.0.0
 
 * First stable release after being battle-tested over an extended period of
