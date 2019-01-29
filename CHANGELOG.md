@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 1.0.1 (2019-01-29)
 
 * Fixed reliance on `ActionController::Parameters`. Now the strong parameter
   check is only enforced if `ActionController::Parameters` actually exists.
