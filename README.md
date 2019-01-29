@@ -1359,6 +1359,7 @@ Change log
 
 ### Unreleased
 
+* Fixed missing `require`
 * Fixed compatibility with ruby < `2.3.0`
 
 ### 1.0.0

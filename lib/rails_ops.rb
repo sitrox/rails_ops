@@ -51,6 +51,11 @@ require 'active_type/type_caster'
 require 'rails_ops/patches/active_type_patch'
 
 # ---------------------------------------------------------------
+# Require Schemacop
+# ---------------------------------------------------------------
+require 'schemacop'
+
+# ---------------------------------------------------------------
 # Require RailsOps
 # ---------------------------------------------------------------
 require 'rails_ops/authorization_backend/abstract.rb'
