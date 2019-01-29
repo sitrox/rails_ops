@@ -1359,6 +1359,8 @@ Change log
 
 ### Unreleased
 
+* Fixed reliance on `ActionController::Parameters`. Now the strong parameter
+  check is only enforced if `ActionController::Parameters` actually exists.
 * Fixed missing `require`
 * Fixed compatibility with ruby < `2.3.0`
 

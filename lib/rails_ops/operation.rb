@@ -50,7 +50,7 @@ class RailsOps::Operation
 
     # Convert ActionController::Parameters to a regular hash as we want to
     # bypass Rails' strong parameters for operation use.
-    if params.is_a?(ActionController::Parameters)
+    if defined?(ActionController::Parameters) && params.is_a?(ActionController::Parameters)
       params = params.permit!.to_h
     end
 
