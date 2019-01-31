@@ -7,6 +7,16 @@ module RailsOps
     attribute :called_via_hook
     attribute :url_options
 
+    # For compatibility with rails < 4
+    if defined?(attr_accessible)
+      attr_accessible :user
+      attr_accessible :ability
+      attr_accessible :op_chain
+      attr_accessible :session
+      attr_accessible :called_via_hook
+      attr_accessible :url_options
+    end
+
     # Returns a copy of the context with the given operation added to the
     # contexts operation chain.
     def spawn(op)
