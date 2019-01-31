@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+* Fixed mass assignment protection errors under Rails 3
+
 ## 1.0.1 (2019-01-29)
 
 * Fixed reliance on `ActionController::Parameters`. Now the strong parameter
