@@ -1,5 +1,9 @@
 # Change log
 
+## Unreleased
+
+* Add missing imports of required third-party gems
+
 ## 1.0.2 (2019-01-29)
 
 * Fix mass assignment protection errors under Rails 3
