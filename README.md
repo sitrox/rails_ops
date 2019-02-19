@@ -351,6 +351,12 @@ lifecycle. This is possible using *policy chains*:
   Obviously this is never called if the operation is just instantiated and never
   run. This is the default chain.
 
+- `:before_model_save`
+
+  This only applies to operations deriving from `RailsOps::Operation::Model` and
+  its descendants. Policies in this chain run after nested model operations are
+  performed and immediately before the "main" model is saved.
+
 - `:after_perform`
 
   Policies in this chain run immediately after the `perform` method is called.

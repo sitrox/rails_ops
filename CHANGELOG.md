@@ -4,6 +4,8 @@
 
 * Add missing imports of required third-party gems
 
+* Add policy chain `before_model_save` for model operations
+
 ## 1.0.2 (2019-01-29)
 
 * Fix mass assignment protection errors under Rails 3

@@ -149,6 +149,7 @@ class RailsOps::Operation::Model < RailsOps::Operation
   # `model.save!` directly.
   def save!
     perform_nested_model_ops!
+    run_policies :before_model_save
     model.save!
   end
 

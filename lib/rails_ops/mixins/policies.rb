@@ -5,7 +5,7 @@
 module RailsOps::Mixins::Policies
   extend ActiveSupport::Concern
 
-  POLICY_CHAIN_KEYS = [:on_init, :before_perform, :after_perform].freeze
+  POLICY_CHAIN_KEYS = [:on_init, :before_perform, :after_perform, :before_model_save].freeze
 
   included do
     class_attribute :_policy_chains
