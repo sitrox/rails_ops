@@ -75,7 +75,15 @@ class RailsOps::Operation
 
   # Return a hash of parameters with all sensitive data replaced.
   def filtered_params
-    f = ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+    if defined?(ActiveSupport::ParameterFilter)
+      # Rails >= 6
+      cls = ActiveSupport::ParameterFilter
+    else
+      # Rails < 6
+      cls = ActionDispatch::Http::ParameterFilter
+    end
+
+    f = cls.new(Rails.application.config.filter_parameters)
     return f.filter(params)
   end
 

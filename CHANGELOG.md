@@ -6,6 +6,9 @@
 
 * Add policy chain `before_model_save` for model operations
 
+* If existing, use `ActiveSupport::ParameterFilter` over
+  `ActionDispatch::Http::ParameterFilter` which is deprecated in Rails 6.
+
 ## 1.0.2 (2019-01-29)
 
 * Fix mass assignment protection errors under Rails 3
