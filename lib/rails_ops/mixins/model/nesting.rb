@@ -171,7 +171,7 @@ module RailsOps::Mixins::Model::Nesting
       # an exception happens here.
       begin
         op.run!
-      rescue op.validation_errors => e
+      rescue *op.validation_errors => e
         fail RailsOps::Exceptions::SubOpValidationFailed, e
       end
 

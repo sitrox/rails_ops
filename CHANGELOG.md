@@ -9,6 +9,8 @@
 * If existing, use `ActiveSupport::ParameterFilter` over
   `ActionDispatch::Http::ParameterFilter` which is deprecated in Rails 6.
 
+* Fix error catching of nested model operations.
+
 ## 1.0.2 (2019-01-29)
 
 * Fix mass assignment protection errors under Rails 3
