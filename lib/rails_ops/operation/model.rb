@@ -148,6 +148,7 @@ class RailsOps::Operation::Model < RailsOps::Operation
   # nested model operations, you should call this method instead of calling
   # `model.save!` directly.
   def save!
+    run_policies :before_nested_model_ops
     perform_nested_model_ops!
     run_policies :before_model_save
     model.save!

@@ -6,10 +6,12 @@
 
 * Add policy chain `before_model_save` for model operations
 
-* If existing, use `ActiveSupport::ParameterFilter` over
-  `ActionDispatch::Http::ParameterFilter` which is deprecated in Rails 6.
+* Add policy chain `before_nested_model_ops` for model operations
 
-* Fix error catching of nested model operations.
+* If existing, use `ActiveSupport::ParameterFilter` over
+  `ActionDispatch::Http::ParameterFilter` which is deprecated in Rails 6
+
+* Fix error catching of nested model operations
 
 ## 1.0.2 (2019-01-29)
 
