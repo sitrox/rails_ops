@@ -470,6 +470,12 @@ operations. Contexts can include the following data:
   the operation context when calling an operation from a controller. This hash
   is used by {RailsOps::Mixins::Routes}.
 
+- View context
+
+  If the operation has been created from within a controller, the property
+  `view` includes the current view context. Only use this for frontend
+  operations that will always be called from a controller.
+
 - Called via hook
 
   `called_via_hook` is a boolean indicating whether or not this operation was

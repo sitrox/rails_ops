@@ -6,6 +6,7 @@ module RailsOps
     attribute :session
     attribute :called_via_hook
     attribute :url_options
+    attribute :view
 
     # For compatibility with rails < 4
     if defined?(attr_accessible)
@@ -15,6 +16,7 @@ module RailsOps
       attr_accessible :session
       attr_accessible :called_via_hook
       attr_accessible :url_options
+      attr_accessible :view
     end
 
     # Returns a copy of the context with the given operation added to the
@@ -26,7 +28,8 @@ module RailsOps
         session:         session,
         op_chain:        op_chain + [op],
         called_via_hook: false,
-        url_options:     url_options
+        url_options:     url_options,
+        view:            view
       )
     end
 

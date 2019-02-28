@@ -13,6 +13,9 @@
 
 * Fix error catching of nested model operations
 
+* Add `view` to operation contexts that contains the `view_context`. Only use
+  this for frontend operations that are always called from within a controller.
+
 ## 1.0.2 (2019-01-29)
 
 * Fix mass assignment protection errors under Rails 3
