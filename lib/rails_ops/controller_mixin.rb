@@ -99,7 +99,7 @@ module RailsOps
         context.ability = current_ability if defined?(:current_ability)
         context.session = session
         context.url_options = url_options
-        context.view = view
+        context.view = view_context
         context
       end
     end
