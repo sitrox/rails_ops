@@ -22,6 +22,7 @@ module RailsOps
         helper_method :model
         helper_method :op
         helper_method :op?
+        helper_method :op_context
 
         after_action :ensure_operation_authorize_called!
       end

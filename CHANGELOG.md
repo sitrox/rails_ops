@@ -16,6 +16,9 @@
 * Add `view` to operation contexts that contains the `view_context`. Only use
   this for frontend operations that are always called from within a controller.
 
+* Expose `op_context` as a view helper method. This is useful for instantiating
+  new (view) operations from within views and helpers.
+
 ## 1.0.2 (2019-01-29)
 
 * Fix mass assignment protection errors under Rails 3
