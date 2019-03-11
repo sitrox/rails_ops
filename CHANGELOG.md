@@ -13,6 +13,8 @@
 
 * Fix error catching of nested model operations
 
+* Fix error handling of sub operations
+
 * Add `view` to operation contexts that contains the `view_context`. Only use
   this for frontend operations that are always called from within a controller.
 

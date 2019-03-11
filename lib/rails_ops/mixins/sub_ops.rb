@@ -21,7 +21,7 @@ module RailsOps::Mixins::SubOps
 
     begin
       return op.run!
-    rescue op.validation_errors => e
+    rescue *op.validation_errors => e
       fail RailsOps::Exceptions::SubOpValidationFailed, e
     end
   end
