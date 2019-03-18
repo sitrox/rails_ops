@@ -338,8 +338,8 @@ an appropriate exception.
 
 ### Policy chains
 
-As mentioned above, policies can be executed at 3 points in your operation's
-lifecycle. This is possible using *policy chains*:
+As mentioned above, policies can be executed at various points in your
+operation's lifecycle. This is possible using *policy chains*:
 
 - `:on_init`
 
@@ -355,7 +355,13 @@ lifecycle. This is possible using *policy chains*:
 
   This only applies to operations deriving from `RailsOps::Operation::Model` and
   its descendants. Policies in this chain run after nested model operations are
-  performed and immediately before the "main" model is saved.
+  performed immediately before the "main" model is saved.
+
+- `:before_nested_model_ops`
+
+  This only applies to operations deriving from `RailsOps::Operation::Model` and
+  its descendants. Policies in this chain run after nested model operations are
+  performed before performing any nested model operations.
 
 - `:after_perform`
 
