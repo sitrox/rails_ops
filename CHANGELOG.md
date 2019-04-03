@@ -1,5 +1,10 @@
 # Change log
 
+## 1.0.4 (2019-04-03)
+
+* Add global option `config.trigger_hookups_without_authorization` (defaults to
+  `true` to be compatible with previous versions)
+
 ## 1.0.3 (2019-03-18)
 
 * Add missing imports of required third-party gems

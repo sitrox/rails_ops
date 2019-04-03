@@ -634,6 +634,12 @@ Note that this property never propagates, so when calling a sub-operation from
 an operation that has been called using a hook, `called_via_hook` of the
 sub-operation is set to `false` again.
 
+### Authorization
+
+Operations called via hooks perform normal authorization per default. You can
+turn this off by switching off the gobal option
+`config.trigger_hookups_without_authorization`.
+
 Authorization
 -------------
 
