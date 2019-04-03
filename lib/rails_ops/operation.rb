@@ -158,7 +158,13 @@ class RailsOps::Operation
   # @param [string] event The event name to trigger
   # @param [hash] params The params to provide to any ops called by this trigger
   def trigger(event, params = nil)
-    RailsOps.hookup.trigger(self, event, params)
+    if RailsOps.config.trigger_hookups_without_authorization
+      without_authorization do
+        RailsOps.hookup.trigger(self, event, params)
+      end
+    else
+      RailsOps.hookup.trigger(self, event, params)
+    end
   end
 
   # Yields the given block and rethrows any possible exception as a
