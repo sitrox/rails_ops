@@ -14,6 +14,11 @@ module RailsOps
       # Attach log subscriber to rails.
       # ---------------------------------------------------------------
       RailsOps::LogSubscriber.attach_to :rails_ops
+
+      # ---------------------------------------------------------------
+      # Include controller mixin
+      # ---------------------------------------------------------------
+      ApplicationController.send :include, RailsOps::ControllerMixin
     end
   end
 end

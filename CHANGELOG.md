@@ -1,5 +1,10 @@
 # Change log
 
+## 1.0.5 (2019-04-09)
+
+* Add missing controller mixin automatically so that no (undocumented) manual
+  include is necessary.
+
 ## 1.0.4 (2019-04-03)
 
 * Add global option `config.trigger_hookups_without_authorization` (defaults to
