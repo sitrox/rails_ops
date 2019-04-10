@@ -1,5 +1,11 @@
 # Change log
 
+## 1.0.6 (2019-04-10)
+
+* Fix automatic controller mixin introduced in 1.0.4. Including the mixin into
+  `ApplicationController` lead to random user-defined helpers not being loaded
+  anymore. The mixin is now included into `ActionController::Base` instead.
+
 ## 1.0.5 (2019-04-09)
 
 * Add missing controller mixin automatically so that no (undocumented) manual
