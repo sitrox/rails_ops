@@ -384,6 +384,21 @@ class MyOp
 end
 ```
 
+The order inside the same policy chain depends on the time when a block was added.
+You can prepend an action to a policy chain by setting `:prepend_action` to `true`:
+
+```ruby
+class MyOp
+  policy :on_init, prepend_action: true do
+    puts 'This is run first the operation has been instantiated.'
+  end
+```
+
+In this case the model is not yet set. That will happen later in the `:on_init` chain.
+It is also important to note, that this block is
+not guaranteed to be run first in the chain, if multiple blocks have set `:prepend_action` to true.
+
+
 Calling sub-operations
 ----------------------
 

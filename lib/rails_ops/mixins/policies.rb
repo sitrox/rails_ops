@@ -21,13 +21,17 @@ module RailsOps::Mixins::Policies
   module ClassMethods
     # Register a new policy block that will be executed in the given `chain`.
     # The policy block will be executed in the operation's instance context.
-    def policy(chain = :before_perform, &block)
+    def policy(chain = :before_perform, prepend_action: false, &block)
       unless POLICY_CHAIN_KEYS.include?(chain)
         fail "Unknown policy chain #{chain.inspect}, available are #{POLICY_CHAIN_KEYS.inspect}."
       end
 
       self._policy_chains = _policy_chains.dup
-      _policy_chains[chain] += [block]
+      if prepend_action
+        _policy_chains[chain] = [block] + _policy_chains[chain]
+      else
+        _policy_chains[chain] += [block]
+      end
     end
 
     # Returns all registered validation blocks for this operation class.
