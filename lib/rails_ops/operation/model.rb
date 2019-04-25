@@ -110,10 +110,7 @@ class RailsOps::Operation::Model < RailsOps::Operation
   def assign_attributes(attributes = nil, model: nil, without_protection: false, without_nested_models: true)
     model ||= self.model
 
-    unless attributes
-      # Extract attributes from params hash
-      attributes = extract_attributes_from_params(model)
-    end
+    attributes ||= extract_attributes_from_params(model)
 
     if without_nested_models
       # Remove parameters that will be passed to nested model operations
