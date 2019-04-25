@@ -1,5 +1,14 @@
 # Change log
 
+## 1.0.7 (2019-04-25)
+
+* It is now possible to add a policy in front of the policy chain
+  instead of the end. It is however not guaranteed to be the first policy to be
+  run since multiple policies can be prepended to the chain.  A prepended policy
+  can't access the operation model, since it is not set yet.
+
+  See PR#12.
+
 ## 1.0.6 (2019-04-10)
 
 * Fix automatic controller mixin introduced in 1.0.4. Including the mixin into
