@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.12
+* It is now possible to have nested model ops on belongs_to relations
+  with explicit class_name.
+
 ## 1.0.7 (2019-04-25)
 
 * It is now possible to add a policy in front of the policy chain
