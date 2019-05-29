@@ -367,7 +367,8 @@ operation's lifecycle. This is possible using *policy chains*:
 
   Policies in this chain run immediately after the `perform` method is called.
   Obviously this is never called if the operation is just instantiated and never
-  run.
+  run. Also, this does not run if an exception occurs while performing the
+  operation.
 
 The policy chain (default is `:before_perform`) can be specified as the first
 argument of the `policy` class method:
