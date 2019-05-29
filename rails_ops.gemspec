@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<bundler>.freeze, ["~> 1.3"])
+      s.add_development_dependency(%q<bundler>.freeze, [">= 1.3"])
       s.add_development_dependency(%q<rake>.freeze, [">= 0"])
       s.add_development_dependency(%q<sqlite3>.freeze, [">= 0"])
       s.add_development_dependency(%q<rubocop>.freeze, ["= 0.47.1"])
