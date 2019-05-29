@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.8 (2019-05-29)
+
+* Fix #14 Policy chain `after_perform` is never called.
+
 ## 1.0.7 (2019-04-25)
 
 * It is now possible to add a policy in front of the policy chain
