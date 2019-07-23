@@ -96,8 +96,8 @@ module RailsOps
     def op_context
       @op_context ||= begin
         context = RailsOps::Context.new
-        context.user = current_user if defined?(:current_user)
-        context.ability = current_ability if defined?(:current_ability)
+        context.user = current_user if defined?(current_user)
+        context.ability = current_ability if defined?(current_ability)
         context.session = session
         context.url_options = url_options
         context.view = view_context

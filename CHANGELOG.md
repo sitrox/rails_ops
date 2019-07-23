@@ -1,5 +1,14 @@
 # Change log
 
+## Unreleased
+
+* Fix `defined?` calls in controller mixin so that the mixin can be used without
+  defining `current_user` or `current_ability`.
+
+## 1.0.9 (2019-05-29)
+
+* Changes to development setup
+
 ## 1.0.8 (2019-05-29)
 
 * Fix #14 Policy chain `after_perform` is never called.
