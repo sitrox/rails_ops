@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 1.0.10 (2019-07-23)
 
 * Fix `defined?` calls in controller mixin so that the mixin can be used without
   defining `current_user` or `current_ability`.
