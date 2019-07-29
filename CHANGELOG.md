@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 1.0.11 (2019-07-29)
 
 * It is now possible to have nested model ops on belongs_to relations
   with explicit class_name.
