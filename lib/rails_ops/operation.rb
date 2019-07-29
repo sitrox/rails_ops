@@ -106,6 +106,7 @@ class RailsOps::Operation
         @performed = true
         run_policies :before_perform
         perform
+        run_policies :after_perform
       end
     end
 

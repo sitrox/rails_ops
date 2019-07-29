@@ -32,6 +32,14 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
     assert BASIC_OP.run!.done
   end
 
+  def test_run
+    assert BASIC_OP.new.run
+  end
+
+  def test_run!
+    assert BASIC_OP.new.run!.done
+  end
+
   def test_non_validation_error
     assert_raises_with_message RuntimeError, 'Standard exception' do
       BASIC_OP.run(exception: 'Standard exception')

@@ -1,8 +1,22 @@
 # Change log
 
-## 1.0.12
+## Unreleased
+
 * It is now possible to have nested model ops on belongs_to relations
   with explicit class_name.
+
+## 1.0.10 (2019-07-23)
+
+* Fix `defined?` calls in controller mixin so that the mixin can be used without
+  defining `current_user` or `current_ability`.
+
+## 1.0.9 (2019-05-29)
+
+* Changes to development setup
+
+## 1.0.8 (2019-05-29)
+
+* Fix #14 Policy chain `after_perform` is never called.
 
 ## 1.0.7 (2019-04-25)
 
