@@ -1,5 +1,10 @@
 # Change log
 
+## Unreleased
+
+* It is now possible to have nested model ops on belongs_to relations
+  with explicit class_name.
+
 ## 1.0.10 (2019-07-23)
 
 * Fix `defined?` calls in controller mixin so that the mixin can be used without

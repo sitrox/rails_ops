@@ -69,6 +69,7 @@ module RailsOps::Mixins::Model::Nesting
       self._nested_model_ops = _nested_model_ops.merge(
         attribute => {
           klass: klass,
+          attribute_name: reflection.class_name.underscore,
           params_proc: params_block,
           lookup_via_id_on_update: lookup_via_id_on_update
         }
@@ -116,7 +117,7 @@ module RailsOps::Mixins::Model::Nesting
       # Wrap parameters for nested model operation
       if action == :create
         wrapped_params = {
-          attribute => op_params
+          config[:attribute_name] => op_params
         }
       elsif action == :update
         if config[:lookup_via_id_on_update]
@@ -128,7 +129,7 @@ module RailsOps::Mixins::Model::Nesting
 
         wrapped_params = {
           :id => id,
-          attribute => op_params
+          config[:attribute_name] => op_params
         }
       else
         fail "Unsupported action #{action}."
