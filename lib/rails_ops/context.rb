@@ -22,7 +22,7 @@ module RailsOps
     # Returns a copy of the context with the given operation added to the
     # contexts operation chain.
     def spawn(op)
-      return Context.new(
+      return self.class.new(
         user:            user,
         ability:         ability,
         session:         session,

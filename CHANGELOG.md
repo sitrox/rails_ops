@@ -1,5 +1,11 @@
 # Change log
 
+## 1.0.12 (2019-08-20)
+
+* {RailsOps::Context#spawn} now dynamically inferrs current class name in order
+  to spawn a new context. This allows you to subclass the context class and have
+  it spawned with the correct class.
+
 ## 1.0.11 (2019-07-29)
 
 * It is now possible to have nested model ops on belongs_to relations
