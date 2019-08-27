@@ -1,5 +1,10 @@
 # Change log
 
+## 1.0.13 (2019-08-27)
+
+* Set the name of nested params to the modelname, not to the fieldname.
+  This is a follow up from 1.0.11.
+
 ## 1.0.12 (2019-08-20)
 
 * {RailsOps::Context#spawn} now dynamically inferrs current class name in order
