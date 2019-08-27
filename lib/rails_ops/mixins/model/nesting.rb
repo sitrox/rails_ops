@@ -91,15 +91,17 @@ module RailsOps::Mixins::Model::Nesting
 
   def nested_model_op(attribute)
     fail 'Nested model operations have not been built yet.' unless @nested_model_ops
+
     return @nested_model_ops[attribute]
   end
 
   def build_nested_model_ops(action)
     # Validate action
-    fail 'Unsupported action.' unless [:create, :update].include?(action)
+    fail 'Unsupported action.' unless %i[create update].include?(action)
 
     # Make sure that this method can only be run once per operation
     fail 'Nested model operations can only be built once.' if @nested_model_ops
+
     @nested_model_ops = {}
 
     self.class._nested_model_ops.each do |attribute, config|
@@ -115,9 +117,11 @@ module RailsOps::Mixins::Model::Nesting
       end
 
       # Wrap parameters for nested model operation
+      model_class = config[:klass].name.deconstantize.demodulize.underscore.to_sym
+
       if action == :create
         wrapped_params = {
-          config[:attribute_name] => op_params
+          model_class => op_params
         }
       elsif action == :update
         if config[:lookup_via_id_on_update]
@@ -129,7 +133,7 @@ module RailsOps::Mixins::Model::Nesting
 
         wrapped_params = {
           :id => id,
-          config[:attribute_name] => op_params
+          model_class => op_params
         }
       else
         fail "Unsupported action #{action}."
