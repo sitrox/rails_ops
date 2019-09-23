@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.14 (2019-10-23)
+
+* Ensure compatibility with Rails 3.2.
+
 ## 1.0.13 (2019-08-27)
 
 * Set the name of nested params to the modelname, not to the fieldname.
