@@ -1,5 +1,10 @@
 # Change log
 
+## 1.0.15 (2019-10-23)
+
+* Fix bug introduced in 1.0.14 where the controller mixin failed with an
+  exception
+
 ## 1.0.14 (2019-10-23)
 
 * Ensure compatibility with Rails 3.2.

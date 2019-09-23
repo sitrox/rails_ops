@@ -23,14 +23,14 @@ module RailsOps
         helper_method :op
         helper_method :op?
         helper_method :op_context
+      end
 
-        if method_defined? :after_action
-          after_action :ensure_operation_authorize_called!
-        elsif method_defined? :after_filter
-          after_filter :ensure_operation_authorize_called!
-        else
-          fail 'This rails version does not support :after_action or :after_filter callbacks.'
-        end
+      if defined?(after_action)
+        after_action :ensure_operation_authorize_called!
+      elsif defined?(after_filter)
+        after_filter :ensure_operation_authorize_called!
+      else
+        fail 'This rails version does not support :after_action or :after_filter callbacks.'
       end
     end
 
