@@ -23,7 +23,7 @@ Requirements & Installation
 ### Requirements
 
 - RailsOps only works with Rails applications and has been tested with Rails >=
-  5.0.
+  3.2.0.
 - Prior Rails versions may be supported but this has not been verified.
 - Rails Ops' model operations require ActiveRecord but are database / adapter
   agnostic
