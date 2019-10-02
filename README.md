@@ -51,11 +51,14 @@ Requirements & Installation
    following inside of the `Application` class within your
    `config/application.rb`:
 
-   ```ruby
+    ```ruby
     config.paths = Rails::Paths::Root.new(Rails.root)
     config.paths.add 'app/models', eager_load: true
-    config.paths.add 'lib', eager_load: true
     config.paths.add 'app', eager_load: true
+
+    # WARNING: Skip this if you have any script files in your lib/ directory
+    # that will run when loaded.
+    config.paths.add 'lib', eager_load: true
     ```
 
 Operation Basics
