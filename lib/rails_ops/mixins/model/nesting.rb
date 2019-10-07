@@ -9,7 +9,7 @@ module RailsOps::Mixins::Model::Nesting
   end
 
   module ClassMethods
-    def nest_model_op(attribute, klass, lookup_via_id_on_update: true, &params_block)
+    def nest_model_op(attribute, klass, lookup_via_id_on_update: true, allow_id: false, &params_block)
       # ---------------------------------------------------------------
       # Make sure we're working with an extension /  copy
       # of the given model class
@@ -71,7 +71,8 @@ module RailsOps::Mixins::Model::Nesting
           klass: klass,
           attribute_name: reflection.class_name.underscore,
           params_proc: params_block,
-          lookup_via_id_on_update: lookup_via_id_on_update
+          lookup_via_id_on_update: lookup_via_id_on_update,
+          allow_id: allow_id
         }
       )
     end
@@ -109,7 +110,7 @@ module RailsOps::Mixins::Model::Nesting
 
       # Remove id field as this is commonly supplied by Rails' `fields_for` if
       # the nested model is persisted. We don't usually need this.
-      op_params = op_params.except(:id)
+      op_params = op_params.except(:id) unless config[:allow_id]
 
       # Apply custom params processing callback if given
       if config[:params_proc]

@@ -1,11 +1,16 @@
 # Change log
 
-## 1.0.15 (2019-10-23)
+## 1.0.16 (2019-10-07)
+
+* Add option `allow_id` to `nest_model_op` in order to allow passing IDs to
+  sub-operations. Set to `false` by default to mimic current behavior.
+
+## 1.0.15 (2019-09-23)
 
 * Fix bug introduced in 1.0.14 where the controller mixin failed with an
   exception
 
-## 1.0.14 (2019-10-23)
+## 1.0.14 (2019-09-23)
 
 * Ensure compatibility with Rails 3.2.
 
