@@ -83,6 +83,7 @@ module RailsOps::Mixins::Authorization
   # enabled.
   def ensure_authorize_called!
     return unless authorization_enabled?
+    return unless RailsOps.config.ensure_authorize_called
     return if authorize_called?
     fail RailsOps::Exceptions::NoAuthorizationPerformed, "Operation #{self.class.name} has been performed without authorization."
   end

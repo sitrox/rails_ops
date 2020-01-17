@@ -1363,6 +1363,9 @@ Note that this check also doesn't apply if the corresponding operation uses
 `without_authorization` (see section *Disabling authorization* for more
 information on this).
 
+You can disable authorization ensuring by setting the global config option
+`config.ensure_authorize_called = false`.
+
 ### Context
 
 When using the `op` method to instantiate an operation, a context is

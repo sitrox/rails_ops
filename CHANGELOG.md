@@ -1,5 +1,10 @@
 # Change log
 
+## 1.0.17 (2020-01-17)
+
+* Add global option `config.ensure_authorize_called` (defaults to
+  `true` to be compatible with previous versions)
+
 ## 1.0.16 (2019-10-07)
 
 * Add option `allow_id` to `nest_model_op` in order to allow passing IDs to
