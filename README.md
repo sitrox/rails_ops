@@ -1409,4 +1409,4 @@ Rails architecture.
 
 ## Copyright
 
-Copyright (c) 2019 Sitrox. See `LICENSE` for further details.
+Copyright (c) 2020 Sitrox. See `LICENSE` for further details.
