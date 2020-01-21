@@ -13,12 +13,7 @@ module RailsOps
         def virtual_has_one(name, base_class, required: false, default: nil, type: Integer)
           fk = "#{name}_id"
           attribute fk, type, default: default
-
-          if required
-            validates fk, presence: true
-          end
-
-          belongs_to name, anonymous_class: base_class, foreign_key: fk, class_name: base_class.name
+          belongs_to name, anonymous_class: base_class, foreign_key: fk, class_name: base_class.name, required: required
 
           return reflect_on_association(name)
         end

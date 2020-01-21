@@ -1,5 +1,11 @@
 # Change log
 
+## 1.0.17 (2020-01-21)
+
+* Pass option `required` to the underlying `belongs_to` in `virtual_has_one`.
+  This fixes an issue where, in Rails > 5, all associations created with
+  `virtual_has_one` were considered required.
+
 ## 1.0.17 (2020-01-17)
 
 * Add global option `config.ensure_authorize_called` (defaults to
