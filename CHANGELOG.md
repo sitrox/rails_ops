@@ -1,6 +1,6 @@
 # Change log
 
-## 1.0.17 (2020-01-21)
+## 1.0.18 (2020-01-21)
 
 * Pass option `required` to the underlying `belongs_to` in `virtual_has_one`.
   This fixes an issue where, in Rails > 5, all associations created with
