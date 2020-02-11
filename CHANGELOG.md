@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.19 (2020-02-11)
+
+* Fix examples in readme
+
 ## 1.0.18 (2020-01-21)
 
 * Pass option `required` to the underlying `belongs_to` in `virtual_has_one`.

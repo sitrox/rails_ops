@@ -1,3 +1,4 @@
 version_file: VERSION
 always_from_master: true
 gem_style: github
+ruby_command: rms

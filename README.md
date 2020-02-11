@@ -377,7 +377,7 @@ The policy chain (default is `:before_perform`) can be specified as the first
 argument of the `policy` class method:
 
 ```ruby
-class MyOp
+class MyOp < RailsOps::Operation
   policy :on_init do
     puts 'This is run once the operation has been instantiated.'
   end
@@ -1006,7 +1006,7 @@ class Operations::User::Create < RailsOps::Operation::Model::Create
     end
   end
 
-  model User
+  model ::User
 end
 ```
 
