@@ -1,8 +1,13 @@
+require 'cancan'
+
 module RailsOps::AuthorizationBackend
   class CanCanCan < Abstract
+    EXCEPTION_CLASS = 'CanCan::AccessDenied'
+
     def initialize
       unless defined?(CanCanCan)
-        fail "RailsOps is configured to use CanCanCan authorization backend, but the Gem 'cancancan' does not appear to be installed."
+        fail 'RailsOps is configured to use CanCanCan authorization'\
+             "backend, but the Gem 'cancancan' does not appear to be installed."
       end
     end
 

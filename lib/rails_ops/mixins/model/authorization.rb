@@ -19,6 +19,28 @@ module RailsOps::Mixins::Model::Authorization
 
       return _model_authorization_action
     end
+
+    # This wraps the original method
+    # {RailsOps::Mixins::ParamAuthorization::ClassClassMethods.authorize_param}
+    # to automatically use `authorize_model_with_authorize_only` and pass the
+    # operations `model` to it (besides the given `action` and optional,
+    # additional `*args`.
+    #
+    # If a block or no action is given, the original method will be called. See
+    # the original method documentation for more information.
+    def authorize_param(path, action = nil, *args, &block)
+      if block_given? || action.blank?
+        super
+      else
+        super(path) do
+          authorize_model_with_authorize_only!(
+            action,
+            model,
+            *args
+          )
+        end
+      end
+    end
   end
 
   def model_authorization_action

@@ -769,6 +769,59 @@ end
 This method otherwise does exactly the same as `authorize!` (in fact, it's the
 underlying method used by it).
 
+### Param authorization
+
+Using the static operation method `authorize_param`, you can perform additional
+authorization checks when specific params are passed to the operation. This
+allows you to disallow certain params, i.e. when updating a model and wanting to
+restrict the user to certain fields.
+
+When using non-model operations (operations not inheriting from
+`RailsOps::Operation::Model` or one of its subclasses), `authorize_param`
+requires you to specify an `action` and optional, additional args or a block
+that performs custom authorization:
+
+```ruby
+class Operations::User::DoSomething < RailsOps::Operation
+  schema do
+    opt :user do
+      opt :name
+      opt :group_id
+    end
+  end
+
+  # Example with passing an action and additional args
+  authorize_param %i(user group_id), :update_group_id, :some_subject
+
+  # Example with passing a block
+  authorize_param %i(user group_id) do
+    # This is executed in the context of the op instance
+    fail 'Some message' unless user_has_permission?
+  end
+```
+
+The first param always provides the path to the param to be checked for
+existence. Note that this only works with nested hash structures, but not with
+arrays and other objects. The first level of the `params` hash is always using
+indifferent access, so it does not matter whether you pass a symbol or a string
+as the first path segment. For additional path segments, it needs to match the
+actual type that is used as hash key. For example: `[:user, 'group_id']`.
+
+For model operations, you only need to pass a `path` and an `action` if you want
+to perform authorization on your model:
+
+```ruby
+class Operations::User::Create < RailsOps::Operation::Model::Create
+  schema do
+    opt :user do
+      opt :name
+      opt :group_id
+    end
+  end
+
+  authorize_param %i(user group_id), :assign_group_id
+```
+
 ### Disabling authorization
 
 Sometimes you don't want a specific operation to perform authorization, or you

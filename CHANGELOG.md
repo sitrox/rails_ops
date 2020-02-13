@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.20 (2020-02-13)
+
+* Add param authorization functionality using `authorize_param`
+
 ## 1.0.19 (2020-02-11)
 
 * Fix examples in readme

@@ -3,6 +3,7 @@ class RailsOps::Operation
   include RailsOps::Mixins::SubOps
   include RailsOps::Mixins::SchemaValidation
   include RailsOps::Mixins::Authorization
+  include RailsOps::Mixins::ParamAuthorization
   include RailsOps::Mixins::RequireContext
   include RailsOps::Mixins::LogSettings
 
