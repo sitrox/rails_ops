@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.21 (2020-02-13)
+
+* Exclude param named `format` from `op_params`.
+
 ## 1.0.20 (2020-02-13)
 
 * Add param authorization functionality using `authorize_param`

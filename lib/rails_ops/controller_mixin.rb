@@ -11,6 +11,7 @@ module RailsOps
       :utf8,
       :authenticity_token,
       :escape,
+      :format,
       :_referer_depth,
       :_referer,
       :_method,
