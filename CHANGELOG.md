@@ -1,5 +1,21 @@
 # Change log
 
+## 1.1.0 (2020-02-25)
+
+* **Breaking changes**:
+
+  * Schema validations defined with `schema` are now always run **on operation
+    instantiation** and not, as before, at time of `before_perform`.
+
+  * The argument `policy_chain` for the static operation method `schema` is now
+    removed.
+
+  * Schema validation now overrides the `params` hash with the return value from
+    Schemacop. This means that Schemacop defaults and casts now can be used for
+    operation params (with both `params` and `osparams` methods).
+
+  * RailsOps now requires `schemacop ~> 2.4.2`.
+
 ## 1.0.21 (2020-02-13)
 
 * Exclude param named `format` from `op_params`.

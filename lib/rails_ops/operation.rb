@@ -60,6 +60,12 @@ class RailsOps::Operation
       *ActionController::ParamsWrapper::EXCLUDE_PARAMETERS
     )
 
+    # Validate params
+    if _op_schema
+      puts 'validating schema'
+      @params = _op_schema.validate!(params)
+    end
+
     run_policies :on_init
   end
 

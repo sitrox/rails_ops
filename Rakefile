@@ -23,7 +23,7 @@ task :gemspec do
     spec.add_dependency 'minitest'
     spec.add_dependency 'rails'
     spec.add_dependency 'request_store'
-    spec.add_dependency 'schemacop', '~> 2.0'
+    spec.add_dependency 'schemacop', '~> 2.4.2'
   end
 
   File.open('rails_ops.gemspec', 'w') { |f| f.write(gemspec.to_ruby.strip) }

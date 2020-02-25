@@ -4,22 +4,25 @@
 module RailsOps::Mixins::SchemaValidation
   extend ActiveSupport::Concern
 
+  included do
+    class_attribute :_op_schema
+    self._op_schema = nil
+  end
+
   module ClassMethods
     # Creates a policy to validate the params hash against the given schema. See
     # {Schemacop::Validator} for more information on how schemas are built.
     #
-    # Using `policy_chain`, you can control when the validation is performed.
-    # Per default, validation is done before performing the operation.
+    # Schemas are always validated on instantiation and, using defaults and
+    # casts, can also alter the params hash assigned to the operation.
+    #
+    # Only one schema can be active at a time. Defining multiple schemata or
+    # defining schemas in a subclass always override previously defined schemas.
     #
     # @param *args [Array] Parameters to pass at schema initialization
-    # @param policy_chain [Symbol] The policy chain to perform the schema validation in
     # @yield Block to pass at schema initialization
-    def schema(*args, policy_chain: :before_perform, &block)
-      full_schema = Schemacop::Schema.new(*args, &block)
-
-      policy policy_chain do
-        full_schema.validate!(params)
-      end
+    def schema(*args, &block)
+      self._op_schema = Schemacop::Schema.new(*args, &block)
     end
   end
 end
