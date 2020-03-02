@@ -1,5 +1,11 @@
 # Change log
 
+## UNRELEASED
+* Include the ControllerMixin after `ActionController::Base` has been loaded, as
+  directly calling `ActionController::Base.send :include, RailsOps::ControllerMixin`
+  in the railtie causes the `ActionController::Base` to be loaded during Initialization,
+  which is undesirable and will be an error in future Rails versions.
+
 ## 1.1.1 (2020-03-02)
 
 * Do not require default (CanCanCan) authorization backend anymore so that the
