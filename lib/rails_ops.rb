@@ -62,7 +62,6 @@ require 'schemacop'
 # Require RailsOps
 # ---------------------------------------------------------------
 require 'rails_ops/authorization_backend/abstract.rb'
-require 'rails_ops/authorization_backend/can_can_can.rb'
 require 'rails_ops/configuration.rb'
 require 'rails_ops/context.rb'
 require 'rails_ops/controller_mixin.rb'

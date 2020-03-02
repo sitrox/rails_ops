@@ -1,5 +1,16 @@
 # Change log
 
+## 1.1.1 (2020-03-02)
+
+* Do not require default (CanCanCan) authorization backend anymore so that the
+  Gem `cancancan` is not required by default anymore. If you are using the
+  default authentication backend, add the following line to the top of your
+  `config/initializers/rails_ops.rb` file:
+
+  ```ruby
+  require 'rails_ops/authorization_backend/can_can_can.rb'
+  ``
+
 ## 1.1.0 (2020-02-25)
 
 * **Breaking changes**:
