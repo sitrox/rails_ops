@@ -1,6 +1,7 @@
-# Change log
+# Changelog
 
-## UNRELEASED
+## 1.1.2 (2020-03-02)
+
 * Include the ControllerMixin after `ActionController::Base` has been loaded, as
   directly calling `ActionController::Base.send :include, RailsOps::ControllerMixin`
   in the railtie causes the `ActionController::Base` to be loaded during Initialization,
