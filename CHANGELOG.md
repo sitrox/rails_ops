@@ -1,5 +1,10 @@
 # Change log
 
+## 1.1.1 (2020-01-05)
+
+* Fix bug introduced in `1.1.0` where params of operations with a schemacop
+  schema were not using "indifferent access" anymore.
+
 ## 1.1.0 (2020-02-25)
 
 * **Breaking changes**:
