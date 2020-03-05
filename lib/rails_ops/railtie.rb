@@ -18,7 +18,9 @@ module RailsOps
       # ---------------------------------------------------------------
       # Include controller mixin
       # ---------------------------------------------------------------
-      ActionController::Base.send :include, RailsOps::ControllerMixin
+      ActiveSupport.on_load :action_controller_base do
+        include RailsOps::ControllerMixin
+      end
     end
   end
 end
