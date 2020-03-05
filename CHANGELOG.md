@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3 (2020-01-05)
+
+* Fix bug introduced in `1.1.0` where params of operations with a schemacop
+  schema were not using "indifferent access" anymore.
+
 ## 1.1.2 (2020-03-02)
 
 * Include the ControllerMixin after `ActionController::Base` has been loaded, as
@@ -17,11 +22,6 @@
   ```ruby
   require 'rails_ops/authorization_backend/can_can_can.rb'
   ``
-
-## 1.1.1 (2020-01-05)
-
-* Fix bug introduced in `1.1.0` where params of operations with a schemacop
-  schema were not using "indifferent access" anymore.
 
 ## 1.1.0 (2020-02-25)
 
