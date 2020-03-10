@@ -62,7 +62,6 @@ class RailsOps::Operation
 
     # Validate params
     if _op_schema
-      puts 'validating schema'
       @params = _op_schema.validate!(params).with_indifferent_access
     end
 

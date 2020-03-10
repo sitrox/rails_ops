@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.1.3 (2020-01-05)
+## 1.1.4 (2020-03-10)
+
+* Remove debug output.
+
+## 1.1.3 (2020-03-05)
 
 * Fix bug introduced in `1.1.0` where params of operations with a schemacop
   schema were not using "indifferent access" anymore.
