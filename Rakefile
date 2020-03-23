@@ -19,7 +19,7 @@ task :gemspec do
     spec.add_development_dependency 'rake'
     spec.add_development_dependency 'sqlite3'
     spec.add_development_dependency 'rubocop', '0.47.1'
-    spec.add_dependency 'active_type', '~> 0.7.1'
+    spec.add_dependency 'active_type', '~> 1.3.0'
     spec.add_dependency 'minitest'
     spec.add_dependency 'rails'
     spec.add_dependency 'request_store'

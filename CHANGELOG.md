@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.5 (2020-03-23)
+
+* Upgrade `active_type` to `~> 1.3.0` for Rails 6 compatibility
+
 ## 1.1.4 (2020-03-10)
 
 * Remove debug output.
