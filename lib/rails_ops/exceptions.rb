@@ -16,4 +16,6 @@ module RailsOps::Exceptions
       super original_exception.message
     end
   end
+
+  class HookupOpValidationFailed < SubOpValidationFailed; end
 end

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.6 (2020-04-08) *unreleased*
+
+* Fix suppressed validation errors by operations called via hookup. Now the
+  exception {RailsOps::Exceptions::HookupOpValidationFailed} is thrown if a hook
+  target operation throws a validation error throws a validation error
+
 ## 1.1.5 (2020-03-23)
 
 * Upgrade `active_type` to `~> 1.3.0` for Rails 6 compatibility
