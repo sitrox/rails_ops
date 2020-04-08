@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.6 (2020-04-08) *unreleased*
+## 1.1.6 (2020-04-08)
 
 * Fix suppressed validation errors by operations called via hookup. Now the
   exception {RailsOps::Exceptions::HookupOpValidationFailed} is thrown if a hook
