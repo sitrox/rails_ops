@@ -21,6 +21,7 @@ module RailsOps
     included do
       if defined?(helper_method)
         helper_method :model
+        helper_method :model?
         helper_method :op
         helper_method :op?
         helper_method :op_context
@@ -83,6 +84,10 @@ module RailsOps
       return @model if @model
       fail 'Current operation does not support `model` method.' unless op.respond_to?(:model)
       return op.model
+    end
+
+    def model?
+      !!(@model || op? && op.respond_to?(:model) && op.model)
     end
 
     # Filters the `params` hash for use with RailsOps. This removes certain

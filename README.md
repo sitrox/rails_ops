@@ -1361,6 +1361,9 @@ RailsOps conveniently provides you with a `model` instance method, which is a
 shortcut for `op.model`. This is particularly useful since this is available as
 a view helper method as well, see next section.
 
+You can check whether a model is available by using the `model?` method, which
+is available in both controllers and views.
+
 ### View helper methods
 
 The following controller methods are automatically provided as helper methods

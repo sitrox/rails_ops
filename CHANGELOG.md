@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.6 (2020-06-18)
+
+* Add controller / helper method `model?`
+
 ## 1.1.6 (2020-04-08)
 
 * Fix suppressed validation errors by operations called via hookup. Now the
