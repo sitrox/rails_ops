@@ -1,10 +1,10 @@
 # Changelog
 
-## 1.1.7 (2020-07-08)
+## 1.1.8 (2020-07-08)
 
 * Fix bug where only the first hooked operation was called
 
-## 1.1.6 (2020-06-18)
+## 1.1.7 (2020-06-18)
 
 * Add controller / helper method `model?`
 
