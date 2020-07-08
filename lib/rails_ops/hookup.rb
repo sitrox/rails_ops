@@ -84,7 +84,7 @@ class RailsOps::Hookup
       op = op_class.new(context, params)
 
       begin
-        return op.run!
+        op.run!
       rescue *op.validation_errors => e
         fail RailsOps::Exceptions::HookupOpValidationFailed, e
       end
