@@ -107,7 +107,7 @@ class RailsOps::Operation
   # any validation exception.
   def run!
     ActiveSupport::Notifications.instrument('run.rails_ops', operation: self) do
-      ::RailsOps::Profiler.profile(object_id, inspect) do
+      ::RailsOps::Profiler.profile(object_id) do
         fail 'An operation can only be performed once.' if performed?
         @performed = true
         run_policies :before_perform

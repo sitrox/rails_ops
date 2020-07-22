@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.9 (2020-07-22)
+
+* Do not call `inspect` every time an op is run
+
 ## 1.1.8 (2020-07-08)
 
 * Fix bug where only the first hooked operation was called
