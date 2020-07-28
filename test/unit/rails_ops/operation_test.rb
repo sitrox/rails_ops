@@ -150,4 +150,9 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
     assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo"=>:bar})',
                  BASIC_OP.new(foo: :bar).inspect
   end
+
+  def test_inspect_with_numeric_param_keys
+    assert_equal 'RailsOps::OperationTest::BASIC_OP ({1=>2})',
+                 BASIC_OP.new(1 => 2).inspect
+  end
 end

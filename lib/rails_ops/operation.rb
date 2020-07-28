@@ -125,7 +125,12 @@ class RailsOps::Operation
   def inspect
     inspection = self.class.name || '(AnonymousOp)'
     if params
-      inspection += " (#{inspect_params(filtered_params)})"
+      begin
+        inspected_params = inspected_params(filtered_params)
+      rescue
+        inspected_params = '<could not inspect params>'
+      end
+      inspection += " (#{inspected_params})"
     end
     return inspection
   end

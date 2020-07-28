@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.10 (2020-08-28)
+
+* Gracefully filter params when inspecting an operation. If the params included
+  numeric keys in `rails < 6`, this lead to an error. This error is now handeled
+  gracefully and params are not inspected.
+
 ## 1.1.9 (2020-07-22)
 
 * Do not call `inspect` every time an op is run
