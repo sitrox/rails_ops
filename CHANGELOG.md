@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.11 (2020-08-27)
+
+* Fix parameter inspection bug introduced in 1.1.10.
+
 ## 1.1.10 (2020-08-28)
 
 * Gracefully filter params when inspecting an operation. If the params included
