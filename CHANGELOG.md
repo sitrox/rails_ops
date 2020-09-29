@@ -2,7 +2,7 @@
 
 ## 1.1.10 (2020-08-29)
 
-* Fix parameter inspection bug introduced in 1.1.10.
+* Fix parameter inspection bug introduced in 1.1.9.
 
 ## 1.1.9 (2020-08-28)
 
