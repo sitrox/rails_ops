@@ -3,6 +3,18 @@ class RailsOps::Operation::Model < RailsOps::Operation
   include RailsOps::Mixins::Model::Nesting
 
   class_attribute :_model_class
+  class_attribute :_lazy_model
+
+  # Works like `model` method (see its documentation), but takes a string as
+  # model class and constructs the effective model class lazily on first
+  # invocation of the `model` method (without params).
+  def self.lazy_model(model_class_name = nil, name = nil, &block)
+    self._lazy_model = {
+      model_class_name: model_class_name,
+      name:             name,
+      block:            block
+    }
+  end
 
   # Allows to set or get a model class associated with this operation.
   #
@@ -63,6 +75,8 @@ class RailsOps::Operation::Model < RailsOps::Operation
       else
         self._model_class = model_class
       end
+    elsif _lazy_model && _model_class.nil?
+      return model(_lazy_model[:model_class_name].safe_constantize, _lazy_model[:name], &_lazy_model[:block])
     elsif _model_class.nil?
       fail 'No model class has been set.'
     end

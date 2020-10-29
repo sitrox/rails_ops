@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.11 (2020-10-29)
+
+* Add method `lazy_model` to `RailsOps::Operation::Model`
+
 ## 1.1.10 (2020-08-29)
 
 * Fix parameter inspection bug introduced in 1.1.9.
