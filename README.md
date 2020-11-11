@@ -580,16 +580,16 @@ source operations.
 
 ```ruby
 RailsOps.hookup.draw do
-  run Operations::Notifications::User::SendWelcomeEmail do
-    on Operations::User::Create
+  run 'Operations::Notifications::User::SendWelcomeEmail' do
+    on 'Operations::User::Create'
   end
 
-  run Operations::Todos::GenerateUserApprovalTodo do
-    on Operations::User::Create
+  run 'Operations::Todos::GenerateUserApprovalTodo' do
+    on 'Operations::User::Create'
   end
 
-  run Operations::Notification::SendTodoNotification do
-    on Operations::Todos::GenerateUserApprovalTodo
+  run 'Operations::Notification::SendTodoNotification' do
+    on 'Operations::Todos::GenerateUserApprovalTodo'
   end
 end
 ```
