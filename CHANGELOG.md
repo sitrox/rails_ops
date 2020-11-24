@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.12 (2020-11-24)
+
+* Add support for upcoming Schemacop 3. It is still backwards compatible and
+  the schemacop schema version still defaults to 2.
+
+  Note that support for the new Schemacop 3 features is not yet documented.
+
 ## 1.1.11 (2020-10-29)
 
 * Add method `lazy_model` to `RailsOps::Operation::Model`
