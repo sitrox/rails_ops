@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.13 (2020-11-23)
+
+* Update support for upcoming Schemacop 3
+
 ## 1.1.12 (2020-11-24)
 
 * Add support for upcoming Schemacop 3. It is still backwards compatible and

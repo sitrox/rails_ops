@@ -21,27 +21,26 @@ module RailsOps::Mixins::SchemaValidation
     #
     # @param *args [Array] Parameters to pass at schema initialization
     # @yield Block to pass at schema initialization
-    def schema(reference = nil, version: nil, **options, &block)
+    def schema2(*args, &block)
+      self._op_schema = Schemacop::Schema.new(*args, &block)
+    end
+
+    def schema3(reference = nil, **options, &block)
       if reference
-        if version && version != 3
-          fail 'References are only supported with schemacop schema version 3.'
-        end
-
-        self._op_schema = Schemacop::Node.create(:reference, path: reference)
+        self._op_schema = Schemacop::Schema3.new(:reference, options.merge(path: reference))
       else
-        version ||= RailsOps.config.default_schemacop_version
+        self._op_schema = Schemacop::Schema3.new(:hash, **options, &block)
+      end
+    end
 
-        if version == 3
-          self._op_schema = Schemacop::Node.create(:object, options, &block)
-        elsif version == 2
-          if defined?(Schemacop::V2)
-            self._op_schema = Schemacop::V2::Schema.new(:hash, options, &block)
-          else
-            self._op_schema = Schemacop::Schema.new(:hash, options, &block)
-          end
-        elsif
-          fail "Unsupported schemacop schema version #{version}. Schemacop supports 2 and 3."
-        end
+    def schema(*args, &block)
+      case RailsOps.config.default_schemacop_version
+      when 2
+        schema2(*args, &block)
+      when 3
+        schema3(*args, &block)
+      else
+        fail 'Schemacop schema versions supported are 2 and 3.'
       end
     end
   end
