@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.14 (2020-12-22)
+
+* Fix validation of unchanged nested models.
+
 ## 1.1.13 (2020-11-23)
 
 * Update support for upcoming Schemacop 3
