@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.14 (2021-01-06)
+
+* Allow `active_type >= 1.3.0`
+
 ## 1.1.14 (2020-12-22)
 
 * Fix validation of unchanged nested models.
