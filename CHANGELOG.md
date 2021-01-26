@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.16 (2021-01-26)
+
+* Update dependency to support `schemacop` version 3
+
 ## 1.1.15 (2021-01-06)
 
 * Allow `active_type >= 1.3.0`
