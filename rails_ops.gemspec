@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: rails_ops 1.1.15 ruby lib
+# stub: rails_ops 1.1.16 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "rails_ops".freeze
-  s.version = "1.1.15"
+  s.version = "1.1.16"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
