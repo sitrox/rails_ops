@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.17 (2021-02-10)
+
+* Add operation class method `skip_schema_validation`
+
+* Add operation instance method `validate_op_schema!`
+
 ## 1.1.16 (2021-01-26)
 
 * Update dependency to support `schemacop` version 3

@@ -61,11 +61,15 @@ class RailsOps::Operation
     )
 
     # Validate params
-    if _op_schema
-      @params = _op_schema.validate!(params).with_indifferent_access
+    if _op_schema && !_skip_op_schema_validation
+      validate_op_schema!
     end
 
     run_policies :on_init
+  end
+
+  def validate_op_schema!
+    @params = _op_schema.validate!(params).with_indifferent_access
   end
 
   # Returns an array of exception classes that are considered as validation

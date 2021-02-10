@@ -7,6 +7,9 @@ module RailsOps::Mixins::SchemaValidation
   included do
     class_attribute :_op_schema
     self._op_schema = nil
+
+    class_attribute :_skip_op_schema_validation
+    self._skip_op_schema_validation = false
   end
 
   module ClassMethods
@@ -42,6 +45,13 @@ module RailsOps::Mixins::SchemaValidation
       else
         fail 'Schemacop schema versions supported are 2 and 3.'
       end
+    end
+
+    # Skips the schema validation, even if a schema is defined. This allows you
+    # to manually call `validate_op_schema!`, i.e. inside of your `perform`
+    # method.
+    def skip_schema_validation(skip = true)
+      self._skip_op_schema_validation = skip
     end
   end
 end
