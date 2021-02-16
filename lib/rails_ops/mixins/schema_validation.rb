@@ -28,12 +28,8 @@ module RailsOps::Mixins::SchemaValidation
       self._op_schema = Schemacop::Schema.new(*args, &block)
     end
 
-    def schema3(reference = nil, **options, &block)
-      if reference
-        self._op_schema = Schemacop::Schema3.new(:reference, options.merge(path: reference))
-      else
-        self._op_schema = Schemacop::Schema3.new(:hash, **options, &block)
-      end
+    def schema3(type = :hash, *args, **kwargs, &block)
+      self._op_schema = Schemacop::Schema3.new(type, *args, **kwargs, &block)
     end
 
     def schema(*args, &block)

@@ -120,6 +120,7 @@ module RailsOps
     protected
 
     def set_op_class(op_class, custom_params = nil)
+      @op_class ||= nil
       fail 'Operation class is already set.' if @op_class
       @op_class = op_class
       @op = instantiate_op(custom_params)
