@@ -100,10 +100,7 @@ class RailsOps::Operation::Model < RailsOps::Operation
   # Returns an instance of the operation model class. The instance is obtained
   # using {build_model} and cached for the lifespan of the operation instance.
   def model
-    unless @model
-      build_model
-    end
-
+    build_model unless defined?(@model) && @model
     return @model
   end
 

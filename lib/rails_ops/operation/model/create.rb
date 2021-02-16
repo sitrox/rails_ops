@@ -20,7 +20,7 @@ class RailsOps::Operation::Model::Create < RailsOps::Operation::Model
   end
 
   def build_model
-    fail 'Model can only be built once.' if @model
+    fail 'Model can only be built once.' if defined?(@model) && @model
     @model = self.class.model.new
     if @model.respond_to?(:parent_op=)
       @model.parent_op = self

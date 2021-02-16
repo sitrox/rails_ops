@@ -6,7 +6,13 @@ module RailsOps::Mixins::Model::Nesting
     self._nested_model_ops = {}.freeze
 
     attr_reader :nested_model_ops
+
+    policy :on_init do
+      @nested_model_ops_performed = false
+      @nested_model_ops = nil
+    end
   end
+
 
   module ClassMethods
     def nest_model_op(attribute, klass, lookup_via_id_on_update: true, allow_id: false, &params_block)
@@ -85,7 +91,7 @@ module RailsOps::Mixins::Model::Nesting
   end
 
   def nested_model_ops_performed?
-    @nested_model_ops_performed || false
+    @nested_model_ops_performed
   end
 
   protected

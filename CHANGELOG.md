@@ -2,6 +2,10 @@
 
 ## 1.1.18 (2021-02-16)
 
+* Fix warnings with Ruby 2.7
+
+## 1.1.18 (2021-02-16)
+
 * Adapt signature of `schema3` method to support other types than hashes
 
 ## 1.1.17 (2021-02-10)
