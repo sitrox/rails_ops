@@ -1,10 +1,10 @@
 # Changelog
 
-## 1.1.19 (2021-02-18)
+## 1.1.20 (2021-02-18)
 
 * Fix warnings with Ruby 2.7
 
-## 1.1.18 (2021-02-16)
+## 1.1.19 (2021-02-16)
 
 * Fix warnings with Ruby 2.7
 
