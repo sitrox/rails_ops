@@ -47,7 +47,7 @@ module RailsOps
 
     # Determines whether an operation has been set.
     def op?
-      !!@op
+      defined?(@op) && !!@op
     end
 
     # If there is a current operation set, it is made sure that authorization
