@@ -16,6 +16,10 @@ module RailsOps
         def sti_name
           virtual_sti_name || super
         end
+
+        def find_sti_class(_type_name)
+          self
+        end
       end
     end
   end
