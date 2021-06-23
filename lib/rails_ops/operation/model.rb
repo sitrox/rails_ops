@@ -69,6 +69,11 @@ class RailsOps::Operation::Model < RailsOps::Operation
           _model_class.virtual_model_name = ActiveModel::Name.new(_model_class, nil, name.to_s)
         end
 
+        # Set virtual STI name if given.
+        if model_class && model_class.name
+          _model_class.virtual_sti_name = model_class.name
+        end
+
       # ---------------------------------------------------------------
       # We just use the given model class without any adaptions
       # ---------------------------------------------------------------
