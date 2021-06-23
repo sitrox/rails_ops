@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.21 (2021-06-23)
+
+* Fix using model operations in conjunction with Single Table Inheritance (STI)
+
 ## 1.1.20 (2021-02-18)
 
 * Fix warnings with Ruby 2.7
