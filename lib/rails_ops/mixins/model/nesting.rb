@@ -13,7 +13,6 @@ module RailsOps::Mixins::Model::Nesting
     end
   end
 
-
   module ClassMethods
     def nest_model_op(attribute, klass, lookup_via_id_on_update: true, allow_id: false, &params_block)
       # ---------------------------------------------------------------

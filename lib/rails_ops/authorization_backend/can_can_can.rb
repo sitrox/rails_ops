@@ -2,7 +2,7 @@ require 'cancan'
 
 module RailsOps::AuthorizationBackend
   class CanCanCan < Abstract
-    EXCEPTION_CLASS = 'CanCan::AccessDenied'
+    EXCEPTION_CLASS = 'CanCan::AccessDenied'.freeze
 
     def initialize
       unless defined?(CanCanCan)
