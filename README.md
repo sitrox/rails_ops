@@ -1,4 +1,4 @@
-[![Build](https://github.com/Adrian-Hirt/rails_ops/actions/workflows/ruby.yml/badge.svg)](https://github.com/Adrian-Hirt/rails_ops/actions/workflows/ruby.yml)
+[![Build](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml/badge.svg)](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml)
 [![Gem Version](https://badge.fury.io/rb/rails_ops.svg)](https://badge.fury.io/rb/rails_ops)
 
 rails_ops
