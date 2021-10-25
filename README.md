@@ -988,23 +988,17 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
   model User
 end
 
-op = Operations::User::Load.run!(id: 5)
-op.model.id # => 5
-```
-
-Note that this base class is a bit of a special case: It does not provide a
-`perform` method and does not need to be run at all in order to load a model.
-This is very useful when, for example, displaying a form based on a model
-instance without actually performing any particular action such as updating a
-model.
-
-Therefore, the above example would also work as follows:
-
-```ruby
 # The operation does not have to be performed to access the model instance.
 op = Operations::User::Load.new(id: 5)
 op.model.id # => 5
 ```
+
+Note that this base class is a bit of a special case: It does not provide an
+implementation of the `perform` method and does not need to be run at all in
+order to load a model (in fact, it cannot be run unless you override the
+`perform` method). This is very useful when, for example, displaying a form
+based on a model instance without actually performing any particular action such
+as updating a model.
 
 #### Specifying ID field
 
