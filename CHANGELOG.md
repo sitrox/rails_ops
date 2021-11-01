@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.21 (2021-11-01)
+
+* Add support for lazy model authorization
+
 ## 1.1.21 (2021-06-23)
 
 * Fix using model operations in conjunction with Single Table Inheritance (STI)

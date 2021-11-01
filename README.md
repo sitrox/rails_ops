@@ -1189,6 +1189,25 @@ end
 Note that using the different model base classes, this is already set to a
 sensible default. See the respective class' source code for details.
 
+#### Lazy model update authorization
+
+In case of operations inheriting from `RailsOps::Operation::Model::Update`, you
+can specify the `model_authorization_action` to be `lazy`, meaning that it will
+only be checked when *performing* the operation, but not on initialization. This
+can be useful for displaying readonly forms to users which do not have
+read-permissions only:
+
+```ruby
+class Operations::User::Update < RailsOps::Operation::Model::Update
+  model User
+
+  # This automatically calls `authorize_model! :read`. Because it is set to be
+  # `lazy`, the authorization will only run when the operation is actually
+  # *performed*, and not already at instantiation.
+  model_authorization_action :read, lazy: true
+end
+```
+
 ### Model nesting
 
 Using active record, multiple nested models can be saved at once by using
