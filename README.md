@@ -1204,7 +1204,7 @@ class Operations::User::Update < RailsOps::Operation::Model::Update
   # This automatically calls `authorize_model! :read`. Because it is set to be
   # `lazy`, the authorization will only run when the operation is actually
   # *performed*, and not already at instantiation.
-  model_authorization_action :read, lazy: true
+  model_authorization_action :update, lazy: true
 end
 ```
 
