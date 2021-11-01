@@ -1,3 +1,3 @@
 class User < ApplicationRecord
-  belongs_to :group#, validate: true
+  belongs_to :group
 end
