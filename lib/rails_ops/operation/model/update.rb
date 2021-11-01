@@ -7,14 +7,29 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     true
   end
 
+  policy :before_perform do
+    if model_authorization_action && self.class._model_authorization_lazy
+      authorize_model! model_authorization_action, model
+    end
+  end
+
   def model_authorization
     return unless authorization_enabled?
 
-    unless load_model_authorization_action.nil?
+    if self.class._model_authorization_lazy
+      if load_model_authorization_action.nil?
+        fail RailsOps::Exceptions::NoAuthorizationPerformed,
+             "Operation #{self.class.name} must specify a "\
+             "load_model_authorization_action because model "\
+             "authorization is configured to be lazy."
+      else
+        authorize_model! load_model_authorization_action, model
+      end
+    elsif !load_model_authorization_action.nil?
       authorize_model_with_authorize_only! load_model_authorization_action, model
     end
 
-    unless model_authorization_action.nil?
+    unless model_authorization_action.nil? || self.class._model_authorization_lazy
       authorize_model! model_authorization_action, model
     end
   end

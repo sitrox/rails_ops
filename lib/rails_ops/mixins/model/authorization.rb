@@ -6,13 +6,15 @@ module RailsOps::Mixins::Model::Authorization
 
   included do
     class_attribute :_model_authorization_action
+    class_attribute :_model_authorization_lazy
   end
 
   module ClassMethods
     # Gets or sets the action verb used for authorizing models.
-    def model_authorization_action(*action)
+    def model_authorization_action(*action, lazy: false)
       if action.size == 1
         self._model_authorization_action = action.first
+        self._model_authorization_lazy = lazy
       elsif action.size > 1
         fail ArgumentError, 'Too many arguments'
       end
