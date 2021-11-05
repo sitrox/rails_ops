@@ -1194,8 +1194,8 @@ sensible default. See the respective class' source code for details.
 In case of operations inheriting from `RailsOps::Operation::Model::Update`, you
 can specify the `model_authorization_action` to be `lazy`, meaning that it will
 only be checked when *performing* the operation, but not on initialization. This
-can be useful for displaying readonly forms to users which do not have
-read-permissions only:
+can be useful for displaying readonly forms to users which have read-permissions
+only:
 
 ```ruby
 class Operations::User::Update < RailsOps::Operation::Model::Update
