@@ -1,0 +1,1 @@
+class Phoenix < Bird; end

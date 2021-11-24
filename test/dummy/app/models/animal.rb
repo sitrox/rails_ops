@@ -1,0 +1,1 @@
+class Animal < ApplicationRecord; end
