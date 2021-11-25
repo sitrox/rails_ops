@@ -1194,8 +1194,8 @@ sensible default. See the respective class' source code for details.
 In case of operations inheriting from `RailsOps::Operation::Model::Update`, you
 can specify the `model_authorization_action` to be `lazy`, meaning that it will
 only be checked when *performing* the operation, but not on initialization. This
-can be useful for displaying readonly forms to users which do not have
-read-permissions only:
+can be useful for displaying readonly forms to users which have read-permissions
+only:
 
 ```ruby
 class Operations::User::Update < RailsOps::Operation::Model::Update
@@ -1204,7 +1204,7 @@ class Operations::User::Update < RailsOps::Operation::Model::Update
   # This automatically calls `authorize_model! :read`. Because it is set to be
   # `lazy`, the authorization will only run when the operation is actually
   # *performed*, and not already at instantiation.
-  model_authorization_action :read, lazy: true
+  model_authorization_action :update, lazy: true
 end
 ```
 
@@ -1269,6 +1269,34 @@ end
 This block receives the params hash as it would be passed to the sub operation
 and allows to modify it. The block's return value is then passed to the
 sub-operation. Do not change the params inplace but instead return a new hash.
+
+### Single-table inheritance
+
+Model operations also support STI models (Single Table Inheritance). However,
+there is the caviat that if you do extend your model in the operation (e.g.
+`model Animal do { ... }`), RailsOps automatically creates an anonymous subclass
+of the given class (e.g. `Animal`). Operations will always load / create models
+that are instances of this anonymous class.
+
+Consider the following operation:
+
+```ruby
+class Animal < ApplicationRecord; end
+class Bird < Animal; end
+class Mouse < Animal; end
+
+class LoadAnimal < RailsOps::Operation::Model::Load
+  model Animal do
+    # Something
+  end
+end
+
+bird = Bird.create
+op_bird = LoadAnimal.new(id: bird.id)
+
+bird.class    # => Class "Bird", extending "Animal"
+op_bird.class # => Anonymous class, extending "Animal", not "Bird"
+```
 
 Record extension and virtual records
 ------------------------------------
