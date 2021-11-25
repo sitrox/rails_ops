@@ -1270,6 +1270,34 @@ This block receives the params hash as it would be passed to the sub operation
 and allows to modify it. The block's return value is then passed to the
 sub-operation. Do not change the params inplace but instead return a new hash.
 
+### Single-table inheritance
+
+Model operations also support STI models (Single Table Inheritance). However,
+there is the caviat that if you do extend your model in the operation (e.g.
+`model Animal do { ... }`), RailsOps automatically creates an anonymous subclass
+of the given class (e.g. `Animal`). Operations will always load / create models
+that are instances of this anonymous class.
+
+Consider the following operation:
+
+```ruby
+class Animal < ApplicationRecord; end
+class Bird < Animal; end
+class Mouse < Animal; end
+
+class LoadAnimal < RailsOps::Operation::Model::Load
+  model Animal do
+    # Something
+  end
+end
+
+bird = Bird.create
+op_bird = LoadAnimal.new(id: bird.id)
+
+bird.class    # => Class "Bird", extending "Animal"
+op_bird.class # => Anonymous class, extending "Animal", not "Bird"
+```
+
 Record extension and virtual records
 ------------------------------------
 

@@ -1,0 +1,1 @@
+class Bird < Animal; end

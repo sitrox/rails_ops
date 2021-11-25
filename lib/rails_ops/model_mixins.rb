@@ -8,5 +8,6 @@ module RailsOps::ModelMixins
     include VirtualAttributes      # Provides virtual attributes functionality.
     include VirtualHasOne          # Provides virtual_has_one.
     include VirtualModelName       # Provides virtual_model_name.
+    include StiFixes               # Fixes using RailsOps models with STI.
   end
 end
