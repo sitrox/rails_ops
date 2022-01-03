@@ -1,10 +1,14 @@
 # Changelog
 
-## 1.1.22 (2021-11-25)
+## 1.1.24 (2021-11-24)
 
 * Add support for STI in model operations
 
-## 1.1.21 (2021-11-01)
+## 1.1.23 (2021-11-01)
+
+* No changes to previous release
+
+## 1.1.22 (2021-11-01)
 
 * Add support for lazy model authorization
 
