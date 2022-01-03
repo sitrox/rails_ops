@@ -10,4 +10,8 @@ ActiveRecord::Schema.define do
   create_table :animals, force: true do |t|
     t.string :type
   end
+
+  create_table :flowers, force: true do |t|
+    t.boolean :planted, null: false, default: true
+  end
 end
