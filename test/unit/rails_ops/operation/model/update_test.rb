@@ -27,10 +27,10 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
   end
 
   def test_issue_59992
-    f_1 = Flower.create!(planted: true)
-    f_2 = Flower.create!(planted: false)
+    flower1 = Flower.create!(planted: true)
+    flower2 = Flower.create!(planted: false)
 
-    op = FLOWER_OP.new(id: f_1.id)
+    op = FLOWER_OP.new(id: flower1.id)
 
     assert op.model.respond_to?(:color)
     assert op.model.is_a?(FLOWER_OP.model)
@@ -39,7 +39,7 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
 
     assert_equal :red, op.model.color
 
-    op = FLOWER_OP.new(id: f_2.id)
+    op = FLOWER_OP.new(id: flower2.id)
 
     assert_raises ActiveRecord::RecordNotFound do
       op.model
