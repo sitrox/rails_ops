@@ -22,6 +22,7 @@ task :gemspec do
     spec.add_development_dependency 'pry'
     spec.add_development_dependency 'colorize'
     spec.add_development_dependency 'rubocop', '0.47.1'
+    spec.add_development_dependency 'sprockets-rails'
     spec.add_dependency 'active_type', '>= 1.3.0'
     spec.add_dependency 'minitest'
     spec.add_dependency 'rails'
