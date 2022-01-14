@@ -1,0 +1,12 @@
+module Operations::<%= @class_name %>
+  class Update < RailsOps::Operation::Model::Update
+    schema3 do
+      str! :id
+      hsh? :<%= @underscored_name %> do
+
+      end
+    end
+
+    model ::<%= @class_name %>
+  end
+end

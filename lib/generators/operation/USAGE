@@ -1,0 +1,21 @@
+Description:
+    Generates CRUD operations, along with a controller, views and an entry in the route file
+
+Example:
+    bin/rails generate operation User
+
+    This will create:
+        app/operations/user/load.rb
+        app/operations/user/create.rb
+        app/operations/user/update.rb
+        app/operations/user/destroy.rb
+
+        app/controllers/users_controller.rb
+
+        app/views/users/index.html.haml
+        app/views/users/show.html.haml
+        app/views/users/new.html.haml
+        app/views/users/edit.html.haml
+
+    And add a routing entry:
+        resources :users

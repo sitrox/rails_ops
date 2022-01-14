@@ -1,0 +1,11 @@
+module Operations::<%= @class_name %>
+  class Create < RailsOps::Operation::Model::Create
+    schema3 do
+      hsh? :<%= @underscored_name %> do
+
+      end
+    end
+
+    model ::<%= @class_name %>
+  end
+end

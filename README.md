@@ -1488,6 +1488,55 @@ sub-operations, see section *Calling sub-operations* for more information.
 Operation Inheritance
 ---------------------
 
+Generators
+----------
+
+RailsOps features a generator to easily create a structure for common CRUD-style
+constructs. The generator creates the CRUD operations, some empty view files, a
+controller and adds an entry in the routing file.
+
+This is e.g. useful when adding a new model to an application, as the basic structure
+is usually rather similar.
+
+### Usage
+
+Run the generator using the `operation` generator, specifying the name of the
+operation class:
+
+```ruby
+rails g operation User
+```
+
+This will generate the following operations:
+
+* `app/operations/user/load.rb`
+* `app/operations/user/create.rb`
+* `app/operations/user/update.rb`
+* `app/operations/user/destroy.rb`
+
+as well as the controller `app/controllers/users_controller.rb` and the following
+empty view files:
+
+* `app/views/users/index.html.haml`
+* `app/views/users/show.html.haml`
+* `app/views/users/new.html.haml`
+* `app/views/users/edit.html.haml`
+
+It will also add the entry `resources :users` to the `config/routes.rb` file.
+
+If you want to skip the controller, the views or the routes, you can do so using the
+flags:
+
+* `--skip-controller`
+* `--skip-routes`
+* `--skip-views`
+
+Or if you want to skip them all: `--only-operations`.
+
+Of course, at this point, the operations will need some adaptions, especially the
+[parameter schemas](#validating-params), and the controllers need the logic for the
+success and failure cases, as this depends on your application.
+
 Caveats
 -------
 
