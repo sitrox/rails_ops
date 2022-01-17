@@ -13,3 +13,4 @@
 /test/dummy/tmp/
 /test/dummy/log/
 /test/tmp/
+/gemfiles/*.lock
