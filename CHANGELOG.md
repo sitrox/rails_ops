@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.25 (2022-01-17)
+
+* #24: Add generator `operation` that generates a controller, operations and empty
+  view files
+
 ## 1.1.24 (2021-11-24)
 
 * Add support for STI in model operations
