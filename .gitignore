@@ -12,3 +12,4 @@
 /vendor/bundle
 /test/dummy/tmp/
 /test/dummy/log/
+/test/tmp/

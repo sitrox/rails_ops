@@ -1,0 +1,9 @@
+module Operations::<%= @class_name %>
+  class Destroy < RailsOps::Operation::Model::Destroy
+    schema3 do
+      str! :id
+    end
+
+    model ::<%= @class_name %>
+  end
+end
