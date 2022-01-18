@@ -80,7 +80,7 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
     assert op1.model.respond_to?(:planted_is_true)
     refute op1.model.respond_to?(:optimal_bpm)
 
-    # This fails in Rails 7, as the validation seems to be triggered
+    # This fails in Rails 7 and ruby 3.1.0, as the validation seems to be triggered
     # in this as well, even though the validation is not defined here
     # More interesting, it seems that only the validation and the before_update
     # are handled incorrectly, the other methods work fine
