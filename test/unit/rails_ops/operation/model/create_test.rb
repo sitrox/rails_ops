@@ -7,6 +7,22 @@ class RailsOps::Operation::Model::CreateTest < ActiveSupport::TestCase
     model Group
   end
 
+  ATTR_OP = Class.new(RailsOps::Operation::Model::Create) do
+    model ::Group do
+      attribute :long_group_name
+    end
+  end
+
+  def test_attribute
+    op = ATTR_OP.run!(group: { name: 'Test', color: 'red', long_group_name: 'Testgroup for extended testing' })
+
+    assert_equal 'Test', op.model.name
+    assert_equal 'red', op.model.color
+    assert_equal 'Testgroup for extended testing', op.model.long_group_name
+    assert op.model.persisted?
+    refute op.model.changed?
+  end
+
   def test_basic
     op = BASIC_OP.run!(group: { name: 'test', color: 'red' })
 

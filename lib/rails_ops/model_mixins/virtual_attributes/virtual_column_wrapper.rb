@@ -6,4 +6,8 @@ class RailsOps::ModelMixins::VirtualAttributes::VirtualColumnWrapper
   def type
     @virtual_column.instance_variable_get(:@type_caster).instance_variable_get(:@type)
   end
+
+  def default_function
+    nil
+  end
 end

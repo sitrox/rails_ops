@@ -1,0 +1,17 @@
+name: Rubocop check
+on: push
+
+jobs:
+  verify:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.1
+          bundler-cache: true
+      - name: Run rubocop
+        run: bundle exec rubocop
