@@ -5,15 +5,11 @@ module RailsOps
 
       class_methods do
         def finder_needs_type_condition?
-          superclass.finder_needs_type_condition?
-        end
-
-        def descendants
-          superclass.descendants
+          base_class.finder_needs_type_condition?
         end
 
         def name
-          superclass.name
+          base_class.name
         end
       end
     end
