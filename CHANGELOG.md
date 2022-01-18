@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.26 (2022-01-18)
+
+* #25: Add test matrix for unit tests
+
+* Add compatibility for Rails 7 and Ruby 3.1.0
+
 ## 1.1.25 (2022-01-17)
 
 * #24: Add generator `operation` that generates a controller, operations and empty
