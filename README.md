@@ -1,4 +1,5 @@
-[![Build](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml/badge.svg)](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml)
+[![Unit tests](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml/badge.svg)](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml)
+[![Rubocop check](https://github.com/sitrox/rails_ops/actions/workflows/rubocop.yml/badge.svg)](https://github.com/sitrox/rails_ops/actions/workflows/rubocop.yml)
 [![Gem Version](https://badge.fury.io/rb/rails_ops.svg)](https://badge.fury.io/rb/rails_ops)
 
 rails_ops
@@ -22,9 +23,21 @@ Requirements & Installation
 
 ### Requirements
 
-- RailsOps only works with Rails applications and has been tested with Rails >=
-  3.2.0.
-- Prior Rails versions may be supported but this has not been verified.
+- RailsOps only works with Rails applications, with the following Rails versions being tested in the CI:
+  * Rails 5.1.x
+  * Rails 5.2.x
+  * Rails 6.0.x
+  * Rails 6.1.x
+  * Rails 7.0.x
+- Additionally, the following Ruby versions are covered by our unit tests:
+  * 2.3.0
+  * 2.5.1
+  * 2.6.2
+  * 2.7.1
+  * 3.0.1
+  * 3.1.0
+- Please see the [unit test workflow](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml) for the combinations of the Rails & Ruby versions, as only compatible versions are tested with each other.
+- Prior Rails and Ruby versions may be supported but they are not tested in the CI.
 - Rails Ops' model operations require ActiveRecord but are database / adapter
   agnostic
 
