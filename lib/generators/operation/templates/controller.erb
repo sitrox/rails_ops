@@ -1,16 +1,18 @@
-class <%= @controller_name %> < ApplicationController
+<%
+controller_code = <<-RUBY
+class #{@controller_name} < ApplicationController
   def index; end
 
   def show
-    op Operations::<%= @class_name %>::Load
+    op Operations::#{@class_name}::Load
   end
 
   def new
-    op Operations::<%= @class_name %>::Create
+    op Operations::#{@class_name}::Create
   end
 
   def create
-    if run Operations::<%= @class_name %>::Create
+    if run Operations::#{@class_name}::Create
       # handle successful case
     else
       # handle error case
@@ -18,11 +20,11 @@ class <%= @controller_name %> < ApplicationController
   end
 
   def edit
-    op Operations::<%= @class_name %>::Update
+    op Operations::#{@class_name}::Update
   end
 
   def update
-    if run Operations::<%= @class_name %>::Update
+    if run Operations::#{@class_name}::Update
       # handle successful case
     else
       # handle error case
@@ -30,10 +32,25 @@ class <%= @controller_name %> < ApplicationController
   end
 
   def destroy
-    if run Operations::<%= @class_name %>::Destroy
+    if run Operations::#{@class_name}::Destroy
       # handle successful case
     else
       # handle error case
     end
   end
 end
+RUBY
+-%>
+<% if @module_name.present? -%>
+module <%= @module_name %>
+<% controller_code.split("\n").each do |line| -%>
+<% if line.blank? -%>
+
+<% else -%>
+  <%= line %>
+<% end -%>
+<% end -%>
+end
+<% else -%>
+<%= controller_code -%>
+<% end -%>
