@@ -1,3 +1,4 @@
+require 'active_type'
 require 'schemacop'
 require 'request_store'
 
@@ -45,18 +46,6 @@ module RailsOps
     end
   end
 end
-
-# ---------------------------------------------------------------
-# Require Gem active_type and monkey patch
-# ---------------------------------------------------------------
-require 'active_type'
-require 'active_type/type_caster'
-require 'rails_ops/patches/active_type_patch'
-
-# ---------------------------------------------------------------
-# Require Schemacop
-# ---------------------------------------------------------------
-require 'schemacop'
 
 # ---------------------------------------------------------------
 # Require RailsOps
