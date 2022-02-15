@@ -1,5 +1,13 @@
+<% if @module_name.present? -%>
+module Operations::<%= @module_name %>::<%= @class_name %>
+<% else -%>
 module Operations::<%= @class_name %>
+<% end -%>
   class Load < RailsOps::Operation::Model::Load
+    schema3 do
+      str! :id
+    end
+
     model ::<%= @class_name %>
   end
 end

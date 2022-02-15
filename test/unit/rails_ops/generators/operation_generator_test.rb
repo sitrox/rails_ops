@@ -125,6 +125,90 @@ class OperationGeneratorTest < Rails::Generators::TestCase
     assert_routes
   end
 
+  def test_module_name
+    optiongroups = [['User', '--module=Admin'], ['User', '--module=admin']]
+
+    optiongroups.each do |optiongroup|
+      run_generator optiongroup
+
+      # Check that namespaced operations are generated
+      assert_file 'app/operations/admin/user/create.rb' do |operation|
+        assert_match(/module Operations::Admin::User/, operation)
+        assert_match(/class Create < RailsOps::Operation::Model::Create/, operation)
+        assert_match(/model ::User/, operation)
+      end
+      assert_file 'app/operations/admin/user/destroy.rb' do |operation|
+        assert_match(/module Operations::Admin::User/, operation)
+        assert_match(/class Destroy < RailsOps::Operation::Model::Destroy/, operation)
+        assert_match(/model ::User/, operation)
+      end
+      assert_file 'app/operations/admin/user/load.rb' do |operation|
+        assert_match(/module Operations::Admin::User/, operation)
+        assert_match(/class Load < RailsOps::Operation::Model::Load/, operation)
+        assert_match(/model ::User/, operation)
+      end
+      assert_file 'app/operations/admin/user/update.rb' do |operation|
+        assert_match(/module Operations::Admin::User/, operation)
+        assert_match(/class Update < RailsOps::Operation::Model::Update/, operation)
+        assert_match(/model ::User/, operation)
+      end
+
+      # Check that views are generated
+      %w(index show new edit).each do |view|
+        assert_file "app/views/admin/users/#{view}.html.haml"
+      end
+
+      # Check that the controller is generated
+      assert_file 'app/controllers/admin/users_controller.rb' do |controller|
+        assert_match(/module Admin/, controller)
+        assert_match(/class UsersController < ApplicationController/, controller)
+      end
+
+      # Check that the routes entry is added
+      assert_routes
+    end
+  end
+
+  def test_nested_module_name
+    run_generator ['User', '--module=admin/foo']
+
+    # Check that namespaced operations are generated
+    assert_file 'app/operations/admin/foo/user/create.rb' do |operation|
+      assert_match(/module Operations::Admin::Foo::User/, operation)
+      assert_match(/class Create < RailsOps::Operation::Model::Create/, operation)
+      assert_match(/model ::User/, operation)
+    end
+    assert_file 'app/operations/admin/foo/user/destroy.rb' do |operation|
+      assert_match(/module Operations::Admin::Foo::User/, operation)
+      assert_match(/class Destroy < RailsOps::Operation::Model::Destroy/, operation)
+      assert_match(/model ::User/, operation)
+    end
+    assert_file 'app/operations/admin/foo/user/load.rb' do |operation|
+      assert_match(/module Operations::Admin::Foo::User/, operation)
+      assert_match(/class Load < RailsOps::Operation::Model::Load/, operation)
+      assert_match(/model ::User/, operation)
+    end
+    assert_file 'app/operations/admin/foo/user/update.rb' do |operation|
+      assert_match(/module Operations::Admin::Foo::User/, operation)
+      assert_match(/class Update < RailsOps::Operation::Model::Update/, operation)
+      assert_match(/model ::User/, operation)
+    end
+
+    # Check that views are generated
+    %w(index show new edit).each do |view|
+      assert_file "app/views/admin/foo/users/#{view}.html.haml"
+    end
+
+    # Check that the controller is generated
+    assert_file 'app/controllers/admin/foo/users_controller.rb' do |controller|
+      assert_match(/module Admin::Foo/, controller)
+      assert_match(/class UsersController < ApplicationController/, controller)
+    end
+
+    # Check that the routes entry is added
+    assert_routes
+  end
+
   private
 
   def assert_operations

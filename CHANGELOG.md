@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.27 (2022-02-15)
+
+* Add `module` option to `operation` generator
+
 ## 1.1.26 (2022-01-18)
 
 * #25: Add test matrix for unit tests

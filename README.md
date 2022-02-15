@@ -67,15 +67,16 @@ Requirements & Installation
    following inside of the `Application` class within your
    `config/application.rb`:
 
-    ```ruby
-    config.paths = Rails::Paths::Root.new(Rails.root)
-    config.paths.add 'app/models', eager_load: true
-    config.paths.add 'app', eager_load: true
+   ```ruby
+   app_operations = "#{Rails.root}/app/operations"
+   ActiveSupport::Dependencies.autoload_paths.delete(app_operations)
 
-    # WARNING: Skip this if you have any script files in your lib/ directory
-    # that will run when loaded.
-    config.paths.add 'lib', eager_load: true
-    ```
+   module Operations; end
+   loader = Rails.autoloaders.main
+   loader.push_dir(app_operations, namespace: Operations)
+   ```
+
+   Taken from [this github issues comment](https://github.com/rails/rails/issues/40126#issuecomment-816275285).
 
 Operation Basics
 ----------------
@@ -1545,6 +1546,36 @@ flags:
 * `--skip-views`
 
 Or if you want to skip them all: `--only-operations`.
+
+You can also add a module as a namespace, all generated files will be put in
+the proper subfolders and modules by using the `--module` option.
+
+As an example:
+
+```ruby
+rails g operation User --module Admin
+```
+
+This will generate the following operations:
+
+* `app/operations/admin/user/load.rb`
+* `app/operations/admin/user/create.rb`
+* `app/operations/admin/user/update.rb`
+* `app/operations/admin/user/destroy.rb`
+
+These operations will be namespaced in the `Admin` module, e.g. `app/operations/admin/user/load.rb` will define `Operations::Admin::User::Load`.
+
+It will also generate the controller `app/controllers/admin/users_controller.rb` and the following
+empty view files:
+
+* `app/views/admin/users/index.html.haml`
+* `app/views/admin/users/show.html.haml`
+* `app/views/admin/users/new.html.haml`
+* `app/views/admin/users/edit.html.haml`
+
+Both lower- and uppercase will generate the same files (i.e. `--module Admin` and `--module admin` are equal).
+
+You can even nest the generated files deeper, `--module Admin::Foo` and `--module admin/foo` will both work.
 
 Of course, at this point, the operations will need some adaptions, especially the
 [parameter schemas](#validating-params), and the controllers need the logic for the
