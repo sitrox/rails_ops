@@ -4,15 +4,15 @@ class #{@controller_name} < ApplicationController
   def index; end
 
   def show
-    op Operations::#{@class_name}::Load
+    op Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Load
   end
 
   def new
-    op Operations::#{@class_name}::Create
+    op Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Create
   end
 
   def create
-    if run Operations::#{@class_name}::Create
+    if run Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Create
       # handle successful case
     else
       # handle error case
@@ -20,11 +20,11 @@ class #{@controller_name} < ApplicationController
   end
 
   def edit
-    op Operations::#{@class_name}::Update
+    op Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Update
   end
 
   def update
-    if run Operations::#{@class_name}::Update
+    if run Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Update
       # handle successful case
     else
       # handle error case
@@ -32,7 +32,7 @@ class #{@controller_name} < ApplicationController
   end
 
   def destroy
-    if run Operations::#{@class_name}::Destroy
+    if run Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Destroy
       # handle successful case
     else
       # handle error case
