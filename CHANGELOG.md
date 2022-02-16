@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.28 (2022-02-16)
+
+* [#22](https://github.com/sitrox/rails_ops/issues/22): Fix error with active_type `>= 2`
+
 ## 1.1.27 (2022-02-15)
 
 * Add `module` option to `operation` generator

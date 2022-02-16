@@ -70,8 +70,6 @@ module RailsOps::Mixins::Model::Authorization
   # Cast {ActiveType::Record} classes or instances to regular AR models in order
   # for cancan(can) to work properly. Classes and instances that are no active
   # type records will be returned as-is.
-  #
-  # TODO: Use ModelCasting module instead?
   def cast_model_for_authorization(model_class_or_instance)
     if model_class_or_instance.is_a?(Class)
       if model_class_or_instance.respond_to?(:extended_record_base_class)
@@ -80,7 +78,7 @@ module RailsOps::Mixins::Model::Authorization
         return model_class_or_instance
       end
     elsif model_class_or_instance.class.respond_to?(:extended_record_base_class)
-      return ActiveType.cast(model_class_or_instance, model_class_or_instance.class.extended_record_base_class)
+      model_class_or_instance.becomes(model_class_or_instance.class.extended_record_base_class)
     else
       model_class_or_instance
     end
