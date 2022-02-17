@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.19 (2022-02-17)
+## 1.1.29 (2022-02-17)
 
 *  Fix sti type not correct on creating of record
 
