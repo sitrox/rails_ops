@@ -1,7 +1,11 @@
+<% if @module_name.present? -%>
+module Operations::<%= @module_name %>::<%= @class_name %>
+<% else -%>
 module Operations::<%= @class_name %>
+<% end -%>
   class Destroy < RailsOps::Operation::Model::Destroy
     schema3 do
-      str! :id
+      int! :id, cast_str: true
     end
 
     model ::<%= @class_name %>

@@ -134,6 +134,11 @@ class RailsOps::Operation::Model < RailsOps::Operation
       attributes = attributes.except(*self.class.nested_model_param_keys)
     end
 
+    # Assign the "type" attribute if we need it
+    if _model_class.superclass.finder_needs_type_condition?
+      attributes[_model_class.inheritance_column] ||= _model_class.superclass.name
+    end
+
     # Do nothing if there are no attributes to assign
     return if attributes.nil? || attributes.empty?
 

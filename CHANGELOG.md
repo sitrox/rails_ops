@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.1.29 (2022-02-17)
+
+*  Fix sti type not correct on creating of record
+
+## 1.1.28 (2022-02-16)
+
+* [#22](https://github.com/sitrox/rails_ops/issues/22): Fix error with active_type `>= 2`
+
+## 1.1.27 (2022-02-15)
+
+* Add `module` option to `operation` generator
+
+## 1.1.26 (2022-01-18)
+
+* #25: Add test matrix for unit tests
+
+* Add compatibility for Rails 7 and Ruby 3.1.0
+
 ## 1.1.25 (2022-01-17)
 
 * #24: Add generator `operation` that generates a controller, operations and empty

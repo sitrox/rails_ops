@@ -1,3 +1,4 @@
+require 'active_type'
 require 'schemacop'
 require 'request_store'
 
@@ -47,18 +48,6 @@ module RailsOps
 end
 
 # ---------------------------------------------------------------
-# Require Gem active_type and monkey patch
-# ---------------------------------------------------------------
-require 'active_type'
-require 'active_type/type_caster'
-require 'rails_ops/patches/active_type_patch'
-
-# ---------------------------------------------------------------
-# Require Schemacop
-# ---------------------------------------------------------------
-require 'schemacop'
-
-# ---------------------------------------------------------------
 # Require RailsOps
 # ---------------------------------------------------------------
 require 'rails_ops/authorization_backend/abstract.rb'
@@ -84,7 +73,6 @@ require 'rails_ops/mixins/require_context.rb'
 require 'rails_ops/mixins/routes.rb'
 require 'rails_ops/mixins/schema_validation.rb'
 require 'rails_ops/mixins/sub_ops.rb'
-require 'rails_ops/model_casting.rb'
 require 'rails_ops/model_mixins.rb'
 require 'rails_ops/model_mixins/ar_extension.rb'
 require 'rails_ops/model_mixins/parent_op.rb'
