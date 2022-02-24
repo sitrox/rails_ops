@@ -5,7 +5,7 @@ module Operations::<%= @class_name %>
 <% end -%>
   class Load < RailsOps::Operation::Model::Load
     schema3 do
-      str! :id
+      int! :id, cast_str: true
     end
 
     model ::<%= @class_name %>
