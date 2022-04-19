@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.31 (2022-04-19)
+
+* Deprecate undocumented `virtual_has_one` feature
+
 ## 1.1.30 (2022-02-18)
 
 * [PR#27](https://github.com/sitrox/rails_ops/pull/27): Update id schemata in templates
