@@ -24,14 +24,10 @@ Requirements & Installation
 ### Requirements
 
 - RailsOps only works with Rails applications, with the following Rails versions being tested in the CI:
-  * Rails 5.1.x
-  * Rails 5.2.x
   * Rails 6.0.x
   * Rails 6.1.x
   * Rails 7.0.x
 - Additionally, the following Ruby versions are covered by our unit tests:
-  * 2.3.0
-  * 2.5.1
   * 2.6.2
   * 2.7.1
   * 3.0.1

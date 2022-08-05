@@ -11,6 +11,9 @@
 
 * Update Readme with section about best practices
 
+* Remove Rails `5.1` and `5.2` from the CI, as well as Ruby `2.5.1` as they were EOL for
+  quite a while now.
+
 ## 1.1.31 (2022-04-19)
 
 * Deprecate undocumented `virtual_has_one` feature
