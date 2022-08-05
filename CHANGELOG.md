@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 (2022-08-05)
+
+* Rescue `Schemacop::Exceptions::ValidationError` in controller mixin and respond with
+  response code `400`. Please see the section *Schema best practices* in the readme for
+  more information.
+
+* Add config setting `rescue_validation_error_in_controller` to enable/disable the newly
+  added behaviour
+
+* Update Readme with section about best practices
+
 ## 1.1.31 (2022-04-19)
 
 * Deprecate undocumented `virtual_has_one` feature

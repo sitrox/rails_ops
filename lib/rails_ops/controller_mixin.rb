@@ -34,6 +34,26 @@ module RailsOps
       else
         fail 'This rails version does not support :after_action or :after_filter callbacks.'
       end
+
+      # If enabled, we rescue all validation errors happening in a controller (i.e. a normal
+      # request) by responding with a status of 400 (bad request) for XHR requests, and by
+      # raising an ActionController::BadRequest exception otherwise. This exception then
+      # should be handled by the application server, usually by serving the 400 error page.
+      # This can be turned off, but should generally be left enabled, as sending invalid data
+      # should result in a "client error", not an "server error".
+      # This generally should be combined with enabling the option "ignore_obsolete_properties"
+      # of schemacop.
+      # Please note that this is disabled in the production environment, as the full exception messages
+      # are useful for debugging.
+      if RailsOps.config.rescue_validation_error_in_controller && !Rails.env.development?
+        rescue_from Schemacop::Exceptions::ValidationError do |_e|
+          if request.xhr?
+            head :bad_request
+          else
+            fail ActionController::BadRequest
+          end
+        end
+      end
     end
 
     # Instantiates and returns a new operation with the given class. If no class
