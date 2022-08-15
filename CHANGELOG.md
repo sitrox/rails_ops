@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1 (2022-08-15)
+
+* Also raise `Schemacop::Exceptions::ValidationError` in development mode when the schema
+  validation fails.
+
+* Raise `Schemacop::Exceptions::ValidationError` in XHR requests when schema validation
+  fails instead of responding directly with a `400` status code.
 ## 1.2.0 (2022-08-05)
 
 * Rescue `Schemacop::Exceptions::ValidationError` in controller mixin and respond with
