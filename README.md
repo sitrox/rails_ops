@@ -59,17 +59,26 @@ Requirements & Installation
    ```
 
 3. Optional: If you want your operations to reside inside of `app/operations`
-   and be scoped correctly, create the directory `app/operations` and add the
-   following inside of the `Application` class within your
-   `config/application.rb`:
+   and be scoped in the `Operations` namespace, create the directory `app/operations` and add the
+   following code inside of the previously created initializer (after the `RailsOps.configure`
+   block):
 
    ```ruby
+   # Remove the folder from the autoload paths
    app_operations = "#{Rails.root}/app/operations"
    ActiveSupport::Dependencies.autoload_paths.delete(app_operations)
 
+   # Define the Operations module
    module Operations; end
+   
+   # Add the folder to the autoloader, but namespaced
    loader = Rails.autoloaders.main
    loader.push_dir(app_operations, namespace: Operations)
+   
+   # Add the folder to the watched directories (for re-loading in development)
+   Rails.application.config.watchable_dirs.merge!({
+     app_operations => [:rb]
+   })
    ```
 
    Taken from [this github issues comment](https://github.com/rails/rails/issues/40126#issuecomment-816275285).
