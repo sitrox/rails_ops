@@ -164,7 +164,9 @@ class RailsOps::Operation::Model < RailsOps::Operation
     run_policies :before_nested_model_ops
     perform_nested_model_ops!
     run_policies :before_model_save
-    model.save!
+    # perform_nested_model_ops! already validates the model in any case. 
+    # Validate false here prevents the validation from beeing run twice
+    model.save!(validate: false)
   end
 
   # Override of the base classes method to provide the model under key `model`
