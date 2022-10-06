@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.2.1 (2022-08-15)
+
+* Also raise `Schemacop::Exceptions::ValidationError` in development mode when the schema
+  validation fails.
+
+* Raise `Schemacop::Exceptions::ValidationError` in XHR requests when schema validation
+  fails instead of responding directly with a `400` status code.
+## 1.2.0 (2022-08-05)
+
+* Rescue `Schemacop::Exceptions::ValidationError` in controller mixin and respond with
+  response code `400`. Please see the section *Schema best practices* in the readme for
+  more information.
+
+* Add config setting `rescue_validation_error_in_controller` to enable/disable the newly
+  added behaviour
+
+* Update Readme with section about best practices
+
+* Remove Rails `5.1` and `5.2` from the CI, as well as Ruby `2.5.1` as they were EOL for
+  quite a while now.
+
+## 1.1.31 (2022-04-19)
+
+* Deprecate undocumented `virtual_has_one` feature
+
 ## 1.1.30 (2022-02-18)
 
 * [PR#27](https://github.com/sitrox/rails_ops/pull/27): Update id schemata in templates

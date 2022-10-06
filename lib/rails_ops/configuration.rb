@@ -4,4 +4,5 @@ class RailsOps::Configuration < ActiveType::Object
   attribute :trigger_hookups_without_authorization, :boolean, default: false
   attribute :ensure_authorize_called, :boolean, default: true
   attribute :default_schemacop_version, :integer, default: 2
+  attribute :rescue_validation_error_in_controller, :boolean, default: true
 end

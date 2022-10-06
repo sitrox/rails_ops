@@ -24,14 +24,10 @@ Requirements & Installation
 ### Requirements
 
 - RailsOps only works with Rails applications, with the following Rails versions being tested in the CI:
-  * Rails 5.1.x
-  * Rails 5.2.x
   * Rails 6.0.x
   * Rails 6.1.x
   * Rails 7.0.x
 - Additionally, the following Ruby versions are covered by our unit tests:
-  * 2.3.0
-  * 2.5.1
   * 2.6.2
   * 2.7.1
   * 3.0.1
@@ -63,17 +59,26 @@ Requirements & Installation
    ```
 
 3. Optional: If you want your operations to reside inside of `app/operations`
-   and be scoped correctly, create the directory `app/operations` and add the
-   following inside of the `Application` class within your
-   `config/application.rb`:
+   and be scoped in the `Operations` namespace, create the directory `app/operations` and add the
+   following code inside of the previously created initializer (after the `RailsOps.configure`
+   block):
 
    ```ruby
+   # Remove the folder from the autoload paths
    app_operations = "#{Rails.root}/app/operations"
    ActiveSupport::Dependencies.autoload_paths.delete(app_operations)
 
+   # Define the Operations module
    module Operations; end
+   
+   # Add the folder to the autoloader, but namespaced
    loader = Rails.autoloaders.main
    loader.push_dir(app_operations, namespace: Operations)
+   
+   # Add the folder to the watched directories (for re-loading in development)
+   Rails.application.config.watchable_dirs.merge!({
+     app_operations => [:rb]
+   })
    ```
 
    Taken from [this github issues comment](https://github.com/rails/rails/issues/40126#issuecomment-816275285).
@@ -280,7 +285,27 @@ The hash accessed via `params` is a always `Object::HashWithIndifferentAccess`.
 ## Validating params
 
 You're strongly encouraged to perform a validation of the parameters passed to
-an operation. This can be done in several ways:
+an operation, as unvalidated params pose a security threat. This can be done in several ways:
+
+- Using a [schemacop](https://github.com/sitrox/schemacop) schema:
+
+  ```ruby
+  class Operations::PrintHelloWorld < RailsOps::Operation
+    schema3 do
+      str! :name
+    end
+
+    def perform
+      puts "Hello #{params[:name]}"
+    end
+  end
+  ```
+
+  This is the recommended way of performing basic params validation. Please see the next section *Schema best practices* for more information.
+
+  See documentation of the Gem `schemacop` for more information on how to
+  specify schemata.
+
 
 - Manually using a *policy* (see chapter *Policies*):
 
@@ -298,27 +323,88 @@ an operation. This can be done in several ways:
   end
   ```
 
-- Using a [schemacop](https://github.com/sitrox/schemacop) schema:
+- Using a business model (see chapter *Model Operations*).
 
-  ```ruby
-  class Operations::PrintHelloWorld < RailsOps::Operation
-    schema do
-      req :name, :string
+### Schema best practices
+
+As previously mentioned, using schema from the `schemacop` gem is the recommended way to validate params passed in to an operation. In general, it's recommended to use version 3 of schemacop, i.e. either use `schema3` to specify the schema, or set the default schema version to 3:
+
+```ruby
+# config/initializers/rails_ops.rb
+RailsOps.configure do |config|
+  config.default_schemacop_version = 3
+end
+```
+
+#### Internal code
+
+When writing a schema for an operation which is only used internally (e.g. called from another operation, or called from a part of the code where you control the params, e.g. a rake task), it's recommended to specify the types of all items, as this will catch any mismatched data. For example:
+
+```ruby
+class Operations::PrintHelloWorldWithId < RailsOps::Operation
+    schema3 do
+      int! :id
+      str! :name
     end
 
     def perform
-      puts "Hello #{params[:name]}"
+      puts "Hello #{params[:name]}, your ID is: #{params[:id]}"
     end
   end
-  ```
+```
 
-  This is the preferred way of performing basic params validation when not using
-  model validation (see next item).
+#### Called within controllers
 
-  See documentation of the Gem `schemacop` for more information on how to
-  specify schemata.
+On the other hand, operations which are called within controllers (e.g. to encapsulate an update operation of a model) should not assume any types, and instead use model validations (if applicable) to validate the correctness of the data. In this case, the schema should only be used to filter the params. As such, it's recommended to use `obj` to specify params which are not strings, as this will allow anything (but only the specified values). An example would be:
 
-- Using a business model (see chapter *Model Operations*).
+```ruby
+module Operations::User
+  class Update < RailsOps::Operation::Model::Update
+    schema3 do
+      int! :id
+      hsh? :user do
+        obj! :age
+        str! :first_name
+        obj! :is_active
+      end
+    end
+  end
+end
+```
+
+Validating that `age` is an integer and `is_active` then should be done with a validation in the `User` model, as this will also populate the model errors, which in turn will display the error in the form. If you were to validate the type of the data here, it would raise a `Schemacop::Exceptions::ValidationError` exception, which you would need to handle seperately.
+
+Finally, when additional, obsolete params are supplied, the schema validation would also fail. To have a similar behavious to the strong params from Rails, which drop non-whitelisted params without raising an exception, you can use the `ignore_obsolete_properties` option. This will simply ignore and drop any params which are not explicitly whitelisted:
+
+```ruby
+module Operations::User
+  class Update < RailsOps::Operation::Model::Update
+    schema3 ignore_obsolete_properties: true do
+      int! :id
+      hsh? :user do
+        obj! :age
+        str! :first_name
+        obj! :is_active
+      end
+    end
+  end
+end
+```
+
+### Catching schema validation errors
+
+When an operation is called from a controller (via the `run` or `run!` method) and a schema validation excaption occurs, the controller will respond with an empty body and a status code `400` (bad request). This behaviour is enabled by default, but can be disabled with the `rescue_validation_error_in_controller` config option:
+
+```ruby
+# config/initializers/rails_ops.rb
+RailsOps.configure do |config|
+  config.rescue_validation_error_in_controller = false
+end
+```
+
+Generally, this should be left enabled, as sending invalid data to the controller should not result in an internal server error, but rather in a "client error".
+
+Please note that this behaviour is disabled in development mode, as the full exception messages are useful for debugging purposes.
 
 Policies
 --------
