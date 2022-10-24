@@ -38,7 +38,7 @@ module RailsOps::Mixins::ParamAuthorization
              'You need to supply an action and additional args if no authorization block is provided.'
       end
 
-      policy do
+      policy :on_init do
         # Abort unless param is given
         if path.size > 1
           next unless params.dig(*path[0..-2])&.include?(path.last)

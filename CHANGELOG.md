@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.2 (2022-10-24)
+
+* Adapt param authorization to work in policy chain `on_init`. This has the
+  effect that param authorization runs even when the operation is not performed,
+  e.g. in `Model::Load` operations.
+
+  Internal reference: `#105855`.
+
 ## 1.2.1 (2022-08-15)
 
 * Also raise `Schemacop::Exceptions::ValidationError` in development mode when the schema
@@ -7,6 +15,7 @@
 
 * Raise `Schemacop::Exceptions::ValidationError` in XHR requests when schema validation
   fails instead of responding directly with a `400` status code.
+
 ## 1.2.0 (2022-08-05)
 
 * Rescue `Schemacop::Exceptions::ValidationError` in controller mixin and respond with
