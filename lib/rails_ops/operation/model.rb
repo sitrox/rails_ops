@@ -74,6 +74,11 @@ class RailsOps::Operation::Model < RailsOps::Operation
           _model_class.virtual_sti_name = model_class.name
         end
 
+        # 108386: Make the model class non-anonymous in order for it to be
+        #   marshallable. The model class still retains its original model_name
+        #   using the VirtualModelName mixin.
+        const_set(:ModelClass, _model_class)
+
       # ---------------------------------------------------------------
       # We just use the given model class without any adaptions
       # ---------------------------------------------------------------

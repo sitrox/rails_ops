@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.3 (2023-01-04)
+
+* Fix marshalling of operation models. This is especially useful for use in
+  conjunction with minitest >= 5.16.0, where exceptions must be marshallable
+  and, as `ActiveRecord::RecordInvalid` exceptions include the `record` which
+  in turn points to a operation model, the record must be marshallable.
+
+  Internal reference: `#108386`.
+
 ## 1.2.2 (2022-10-24)
 
 * Adapt param authorization to work in policy chain `on_init`. This has the
