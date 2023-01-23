@@ -1133,6 +1133,32 @@ class Operations::User::Update < RailsOps::Operation::Model::Update
 end
 ```
 
+Please note that for performance reasons, the `Load` operation (and any
+operations inheriting from it) use a shared lock, i.e. it issues
+an `LOCK IN SHARE MODE` / `FOR SHARE` statement. The `Update` and `Destroy`
+operations (as well as operations inheriting from it) however use the default
+`lock` method of ActiveRecord, which will issue an exclusive lock.
+
+If you want to change the mode, you can use the `lock_mode` DSL method, which
+has two possible modes:
+
+* `:shared` for the shared lock mode
+* `:exclusive` for the exclusive lock mode
+
+For example, if you have an operation loading a record which you'd want to
+lock exclusively, you'd need to write the following:
+
+```ruby
+class Operations::User::Update < RailsOps::Operation::Model::Load
+  model ::User
+  lock_mode :exclusive
+end
+```
+
+One caveat is, that shared locking is only supported for MySQl (MariaDB),
+Postgresql and Oracle DB databases, any other database will always use an
+exlusive lock.
+
 ### Creating models
 
 For creating models, you can use the base class

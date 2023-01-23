@@ -1,5 +1,6 @@
 class RailsOps::Operation::Model::Destroy < RailsOps::Operation::Model::Load
   model_authorization_action :destroy
+  lock_mode :exclusive
 
   def model_authorization
     return unless authorization_enabled?

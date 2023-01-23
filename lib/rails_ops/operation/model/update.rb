@@ -1,5 +1,6 @@
 class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
   model_authorization_action :update
+  lock_mode :exclusive
 
   # As this operation might extend the model class, we need to make sure that
   # the operation works using an extended 'copy' of the given model class.

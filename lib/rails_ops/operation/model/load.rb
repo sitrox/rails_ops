@@ -1,6 +1,7 @@
 class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
   class_attribute :_lock_model_at_build
   class_attribute :_load_model_authorization_action
+  class_attribute :_lock_mode
 
   policy :on_init do
     model_authorization
@@ -39,6 +40,24 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     _lock_model_at_build.nil? ? RailsOps.config.lock_models_at_build? : _lock_model_at_build
   end
 
+  # Method to set the lock mode, which can either be :exclusive to use
+  # an exclusive write lock, or :shared to use a shared lock. Please note
+  # that currently, :shared only works for MySql, Postgresql and Oracle DB,
+  # other adapters always use the exclusive lock.
+  def self.lock_mode(lock_mode)
+    fail "Unknown lock mode #{lock_mode}" unless %i(shared exclusive).include?(lock_mode)
+
+    self._lock_mode = lock_mode
+  end
+
+  # Get the lock_mode or the default of :exclusive
+  def self.lock_mode_or_default
+    _lock_mode.presence || :exclusive
+  end
+
+  # Set the lock mode for load operations (and it's children) to :shared
+  lock_mode :shared
+
   def model_id_field
     :id
   end
@@ -52,7 +71,7 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     relation = self.class.model
 
     # Express intention to lock if required
-    relation = relation.lock if self.class.lock_model_at_build?
+    relation = lock_relation(relation)
 
     # Fetch (and possibly lock) model
     return relation.find_by!(model_id_field => params[model_id_field])
@@ -68,5 +87,39 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
 
   def extract_id_from_params
     params[model_id_field]
+  end
+
+  private
+
+  def lock_relation(relation)
+    # Directly return the relation if we don't want to lock the relation
+    return relation unless self.class.lock_model_at_build?
+
+    if self.class.lock_mode_or_default == :shared
+      # Lock the relation in shared mode
+      return relation.lock(shared_lock_statement)
+    else
+      # Lock the relation in exclusive mode
+      return relation.lock
+    end
+  end
+
+  def shared_lock_statement
+    adapter_type = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+
+    case adapter_type
+    when :mysql, :mysql2
+      return 'LOCK IN SHARE MODE'
+    when :postgresql
+      return 'FOR SHARE'
+    when :oracleenhanced
+      return 'LOCK IN SHARE MODE'
+    end
+
+    # Don't return anything, which will make the `lock` statement
+    # use the normal, exclusive lock. This might be suboptimal for other
+    # database adapters, but we'd rather lock too restrictive, such that
+    # no race-conditions may occur.
+    return nil
   end
 end
