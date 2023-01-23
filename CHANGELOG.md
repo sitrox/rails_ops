@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 (2023-01-23)
+
+* Add `lock_mode` DSL method
+* Set `Load` operations to use shared locking, and `Update` and `Destroy`
+  operations to use exclusive locking. Please make sure your operations
+  inherit from the correct parent operation, and change the locking mode
+  if it is not the correct one for your operation. More info can be found
+  in the section "Locking" in the Readme
+
 ## 1.2.3 (2023-01-04)
 
 * Fix marshalling of operation models. This is especially useful for use in
