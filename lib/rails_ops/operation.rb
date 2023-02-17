@@ -75,7 +75,7 @@ class RailsOps::Operation
   # Returns an array of exception classes that are considered as validation
   # errors.
   def validation_errors
-    [RailsOps::Exceptions::ValidationFailed, ActiveRecord::RecordInvalid]
+    [RailsOps::Exceptions::ValidationFailed, ActiveRecord::RecordInvalid, RailsOps::Exceptions::SubOpValidationFailed]
   end
 
   # Returns a copy of the operation's params, wrapped in an OpenStruct object.
