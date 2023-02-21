@@ -1,0 +1,2 @@
+class Cpu < ApplicationRecord
+end
