@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.4.0 (2023-02-21)
+
+### Changes
+
+* #33: Improve resolving `param_key` in nested model operations.
+
+### Upgrading
+
+Please see #33 for more information on this change. If all of your operations
+follow the standard naming conventions (e.g. `Operations::User::Update` for
+updating a model named `User`), no changes will be necessary. If you don't, you
+may need to manually specify a `param_key` when using nested model operations
+(see [README](README.md#model-nesting) for more information).
+
 ## 1.3.0 (2023-01-23)
 
 * Add `lock_mode` DSL method
