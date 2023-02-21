@@ -14,7 +14,7 @@ module RailsOps::Mixins::Model::Nesting
   end
 
   module ClassMethods
-    def nest_model_op(attribute, klass, lookup_via_id_on_update: true, allow_id: false, &params_block)
+    def nest_model_op(attribute, klass, lookup_via_id_on_update: true, allow_id: false, param_key: nil, &params_block)
       # ---------------------------------------------------------------
       # Make sure we're working with an extension /  copy
       # of the given model class
@@ -123,11 +123,11 @@ module RailsOps::Mixins::Model::Nesting
       end
 
       # Wrap parameters for nested model operation
-      model_class = config[:klass].name.deconstantize.demodulize.underscore.to_sym
+      param_key ||= config[:klass].model.model_name.param_key
 
       if action == :create
         wrapped_params = {
-          model_class => op_params
+          param_key => op_params
         }
       elsif action == :update
         if config[:lookup_via_id_on_update]
@@ -139,7 +139,7 @@ module RailsOps::Mixins::Model::Nesting
 
         wrapped_params = {
           :id => id,
-          model_class => op_params
+          param_key => op_params
         }
       else
         fail "Unsupported action #{action}."
