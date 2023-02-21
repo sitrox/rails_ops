@@ -1,5 +1,11 @@
 # Changelog
 
+
+## 1.4.1 (2023-02-21)
+
+* Fix specifying custom [param_key](README.md#param-key) when nesting model
+  operations
+
 ## 1.4.0 (2023-02-21)
 
 ### Changes

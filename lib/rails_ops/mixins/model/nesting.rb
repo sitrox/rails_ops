@@ -74,6 +74,7 @@ module RailsOps::Mixins::Model::Nesting
       self._nested_model_ops = _nested_model_ops.merge(
         attribute => {
           klass: klass,
+          param_key: param_key,
           attribute_name: reflection.class_name.underscore,
           params_proc: params_block,
           lookup_via_id_on_update: lookup_via_id_on_update,
@@ -123,7 +124,7 @@ module RailsOps::Mixins::Model::Nesting
       end
 
       # Wrap parameters for nested model operation
-      param_key ||= config[:klass].model.model_name.param_key
+      param_key = config[:param_key] || config[:klass].model.model_name.param_key
 
       if action == :create
         wrapped_params = {
