@@ -1380,6 +1380,21 @@ class User
 end
 ```
 
+#### Param key
+
+When nesting a model operation, the sub operation is called automatically by
+RailsOps. For this purpose, it needs to know which `param_key` to use for
+calling the sub operation, e.g. `user: { name: 'Jane Doe' }`. Normally, this is
+derived by calling `<sub-op-model-class>.model_name.param_key`. If your
+operation for some reason expects a different param key, you can specify it
+using the option `param_key`, e.g.:
+
+```ruby
+# Operation Operations::Group::Create will receive the following params:
+#   { my_custom_key: { ... } }
+nest_model_op :group, Operations::Group::Create, param_key: :my_custom_key
+```
+
 #### Custom parameters
 
 In the above examples, all `group_attributes` are automatically passed to the
