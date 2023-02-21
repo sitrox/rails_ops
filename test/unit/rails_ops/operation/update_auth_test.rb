@@ -20,6 +20,8 @@ class RailsOps::Operation::UpdateLazyAuthTest < ActiveSupport::TestCase
     include CanCan::Ability
 
     def initialize(read: false, update: false)
+      super()
+
       can :read, Group if read
       can :update, Group if update
     end

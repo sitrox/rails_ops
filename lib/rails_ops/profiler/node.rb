@@ -4,7 +4,7 @@ module RailsOps
       @object_id = object_id
       @description = description
       @parent = parent
-      parent.add_child(self) if parent
+      parent&.add_child(self)
       @children = []
       @erroneous = false
       @t_start = Time.now

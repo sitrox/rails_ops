@@ -31,15 +31,15 @@ module RailsOps::Mixins::Model::Nesting
       if reflection.nil?
         fail "Association #{attribute} could not be found for #{model.model_name}."
       elsif !reflection.belongs_to?
-        fail 'Method nest_model_op only supports :belongs_to associations, '\
-             "but association #{attribute} of model #{model.model_name} is a "\
+        fail 'Method nest_model_op only supports :belongs_to associations, ' \
+             "but association #{attribute} of model #{model.model_name} is a " \
              "#{reflection.macro} association."
       elsif reflection.options[:autosave] != false
-        fail "Association #{attribute} of #{model.model_name} has :autosave turned on. "\
+        fail "Association #{attribute} of #{model.model_name} has :autosave turned on. " \
              'This is not supported by nest_model_op.'
       elsif !reflection.options[:validate]
-        fail "Association #{attribute} of #{model.model_name} has :validate turned off. "\
-        'This is not supported by nest_model_op.'
+        fail "Association #{attribute} of #{model.model_name} has :validate turned off. " \
+             'This is not supported by nest_model_op.'
       end
 
       # ---------------------------------------------------------------
@@ -61,11 +61,9 @@ module RailsOps::Mixins::Model::Nesting
       # ---------------------------------------------------------------
       # Validate inverse association reflection if given
       # ---------------------------------------------------------------
-      if (inverse_reflection = reflection.inverse_of)
-        if inverse_reflection.options[:autosave] != false
-          fail "Association #{inverse_reflection.name} of #{inverse_reflection.active_record} has :autosave turned on. "\
-               'This is not supported by nest_model_op.'
-        end
+      if (inverse_reflection = reflection.inverse_of) && (inverse_reflection.options[:autosave] != false)
+        fail "Association #{inverse_reflection.name} of #{inverse_reflection.active_record} has :autosave turned on. " \
+             'This is not supported by nest_model_op.'
       end
 
       # ---------------------------------------------------------------
@@ -73,12 +71,12 @@ module RailsOps::Mixins::Model::Nesting
       # ---------------------------------------------------------------
       self._nested_model_ops = _nested_model_ops.merge(
         attribute => {
-          klass: klass,
-          param_key: param_key,
-          attribute_name: reflection.class_name.underscore,
-          params_proc: params_block,
+          klass:                   klass,
+          param_key:               param_key,
+          attribute_name:          reflection.class_name.underscore,
+          params_proc:             params_block,
           lookup_via_id_on_update: lookup_via_id_on_update,
-          allow_id: allow_id
+          allow_id:                allow_id
         }
       )
     end
@@ -104,7 +102,7 @@ module RailsOps::Mixins::Model::Nesting
 
   def build_nested_model_ops(action)
     # Validate action
-    fail 'Unsupported action.' unless %i(create update).include?(action)
+    fail 'Unsupported action.' unless %i[create update].include?(action)
 
     # Make sure that this method can only be run once per operation
     fail 'Nested model operations can only be built once.' if @nested_model_ops
@@ -126,11 +124,12 @@ module RailsOps::Mixins::Model::Nesting
       # Wrap parameters for nested model operation
       param_key = config[:param_key] || config[:klass].model.model_name.param_key
 
-      if action == :create
+      case action
+      when :create
         wrapped_params = {
           param_key => op_params
         }
-      elsif action == :update
+      when :update
         if config[:lookup_via_id_on_update]
           foreign_key = model.class.reflect_on_association(attribute).foreign_key
           id = model.send(foreign_key)
@@ -139,7 +138,7 @@ module RailsOps::Mixins::Model::Nesting
         end
 
         wrapped_params = {
-          :id => id,
+          :id       => id,
           param_key => op_params
         }
       else
@@ -175,7 +174,7 @@ module RailsOps::Mixins::Model::Nesting
 
     # Validate all unchanged nested models as the above call to "validate!" only validates
     # associations that are changed.
-    @nested_model_ops.keys.each do |attribute|
+    @nested_model_ops.each_key do |attribute|
       model.send(attribute).validate!
     end
 

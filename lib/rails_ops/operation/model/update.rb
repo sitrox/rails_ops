@@ -20,8 +20,8 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     if self.class._model_authorization_lazy
       if load_model_authorization_action.nil?
         fail RailsOps::Exceptions::NoAuthorizationPerformed,
-             "Operation #{self.class.name} must specify a "\
-             'load_model_authorization_action because model '\
+             "Operation #{self.class.name} must specify a " \
+             'load_model_authorization_action because model ' \
              'authorization is configured to be lazy.'
       else
         authorize_model! load_model_authorization_action, model

@@ -99,7 +99,7 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
   end
 
   def test_params
-    params = { a: 1, 'b': 1 }
+    params = { a: 1, b: 1 }
     op = BASIC_OP.new(params)
 
     # ---------------------------------------------------------------

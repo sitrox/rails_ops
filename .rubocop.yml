@@ -1,79 +1,151 @@
 AllCops:
   TargetRubyVersion: 2.3
-
-  Exclude:
-    - 'vendor/**/*'
-    - 'tmp/**/*'
-    - 'log/**/*'
-    - '*.gemspec'
-    - 'test/tmp/**/*'
-
   DisplayCopNames: true
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'test/dummy/**/*'
+    - 'test/tmp/**/*'
+    - 'vendor/**/*'
+    - 'rails_ops.gemspec'
 
-Style/SafeNavigation:
+# Make sure accessors are on separate lines for diff readability.
+Style/AccessorGrouping:
+  EnforcedStyle: separated
+
+# Cop would break a lot of existing code.
+Style/OptionalBooleanParameter:
   Enabled: false
 
+# Multiline hashes should be aligned cleanly as a table to improve readability.
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+# Template style is easier on the eyes.
+Style/FormatStringToken:
+  EnforcedStyle: template
+
+# file. This will be addressed when approaching the first ruby 3 application.
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+# Double negation is very useful to make sure you have a boolean in hand. Use it
+# wisely though and know what you're doing.
 Style/DoubleNegation:
   Enabled: false
 
+# Depending on the case, [].include? can be a lot harder to read and less
+# expressive than multiple comparisons.
+Style/MultipleComparison:
+  Enabled: false
+
+# Over time, the ruby guide changed from raise to fail back to raise. Both fail
+# and raise are programatically exactly the same and our decision fell to "fail"
+# for all kinds of exceptions.
 Style/SignalException:
   EnforcedStyle: only_fail
 
+# Enforced styles can sometimes be hard to read.
 Style/ConditionalAssignment:
   Enabled: false
 
-Style/IndentArray:
+# Enforce consistent array indentation.
+Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
 
+# Disable layout cop because methods just consisting of a number of returns
+# would look very odd with an extra empty line between each return.
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+# While you should try to keep your code as expressive and short as possible,
+# limitting lengths hardly is over the top.
 Metrics/MethodLength:
   Enabled: false
 
+# While you should try to keep your code as expressive and short as possible,
+# limitting lengths hardly is over the top.
 Metrics/ClassLength:
   Enabled: false
 
+# While you should try to keep your code as expressive and short as possible,
+# limitting lengths hardly is over the top.
 Metrics/ModuleLength:
   Enabled: false
 
+# While you should try to keep your code as expressive and short as possible,
+# limitting lengths hardly is over the top.
+Metrics/BlockLength:
+  Enabled: false
+
+# While not always desirable, it can be useful to have a lot of keyword
+# arguments on certain methods. Try to avoid it though.
 Metrics/ParameterLists:
   Max: 5
   CountKeywordArgs: false
 
+# The results of this cop sometimes seemed arbitrary and can signifficantly
+# restrict certain styles of coding.
 Metrics/AbcSize:
   Enabled: False
 
+# The results of this cop sometimes seemed arbitrary and can signifficantly
+# restrict certain styles of coding.
 Metrics/CyclomaticComplexity:
   Enabled: False
 
+# The results of this cop sometimes seemed arbitrary and can signifficantly
+# restrict certain styles of coding.
 Metrics/PerceivedComplexity:
   Enabled: False
 
-Metrics/LineLength:
-  Max: 160
-
+# In certain cases, "excessive" block nesting might just be useful. Try to keep
+# this down as much as possible though.
 Metrics/BlockNesting:
   Enabled: false
 
-Metrics/BlockLength:
+# A line length of 80 is not considered to be temporary anymore. That's why line
+# length is doubled to 160. If absolutely necessary, create a temporary rubocop
+# exclusion for the lines in question.
+Layout/LineLength:
+  Max: 160
+
+# Disable variable number naming convention.
+Naming/VariableNumber:
   Enabled: false
 
+# Disable method parameter naming convention.
+Naming/MethodParameterName:
+  Enabled: false
+
+# Depending on the surrounding code, even simple if/unless clauses may be more
+# descriptive when on multiple lines.
 Style/IfUnlessModifier:
   Enabled: false
 
+# In most cases, timing does not allow documenting each and every bit of source
+# code. Do not hesitate to enable this cop otherwise.
 Style/Documentation:
   Enabled: false
 
+# Return should be used whenever there is more than one statement or line in a
+# method. This helps avoiding programming mistakes. This is not enforced yet as
+# this would require a custom cop. However, to allow this style of programming,
+# the RedundantReturn cop needs to be disabled.
 Style/RedundantReturn:
   Enabled: false
 
+# Non-ascii comments can be useful sometimes.
 Style/AsciiComments:
   Enabled: false
 
+# Depending on the case, if/unless can be more descriptive than guard clauses.
 Style/GuardClause:
   Enabled: false
 
+# For technical reasons, nested and compact styles must be mixed in certain
+# applications.
 Style/ClassAndModuleChildren:
   Enabled: false
   EnforcedStyle: compact
@@ -81,8 +153,27 @@ Style/ClassAndModuleChildren:
     - nested
     - compact
 
+# Depending on the case, it may be more descriptive to use i.e. == 0 instead of
+# .zero?, especially when testing against multiple numbers.
 Style/NumericPredicate:
   Enabled: false
 
+# Detection is not implemented in a reliable manner for all cases which can lead
+# to false positives and negatives.
 Style/FormatString:
+  Enabled: false
+
+# Do not require MFA, as gems checked with sitrox_standards are only pushed to the
+# internal repo
+Gemspec/RequireMFA:
+  Enabled: false
+
+# Use explicit style
+Naming/BlockForwarding:
+  Enabled: true
+  EnforcedStyle: explicit
+
+# Don't require gemspec dependencies to be versioned. While it's generally a good
+# idea to require specifying versions of dependencies, we don't want to enforce it.
+Gemspec/DependencyVersion:
   Enabled: false

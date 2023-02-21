@@ -5,7 +5,7 @@ module RailsOps
       self.tstore_current_parent = node
       begin
         res = yield
-      rescue
+      rescue StandardError
         node.erroneous!
         fail
       ensure

@@ -100,7 +100,7 @@ module RailsOps
     end
 
     def model?
-      !!(@model || op? && op.respond_to?(:model) && op.model)
+      !!(@model || (op? && op.respond_to?(:model) && op.model))
     end
 
     # Filters the `params` hash for use with RailsOps. This removes certain

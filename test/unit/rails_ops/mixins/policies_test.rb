@@ -29,7 +29,7 @@ class RailsOps::Mixins::PoliciesTest < ActiveSupport::TestCase
       end
     end
 
-    assert_equal %i(on_init default before_perform perform after_perform),
+    assert_equal %i[on_init default before_perform perform after_perform],
                  op.run!.sequence
   end
 
@@ -52,7 +52,7 @@ class RailsOps::Mixins::PoliciesTest < ActiveSupport::TestCase
       def perform; end
     end
 
-    assert_equal %i(before_perform_1 before_perform_2),
+    assert_equal %i[before_perform_1 before_perform_2],
                  op.run!.sequence
   end
 end

@@ -5,8 +5,10 @@ module RailsOps::AuthorizationBackend
     EXCEPTION_CLASS = 'CanCan::AccessDenied'.freeze
 
     def initialize
+      super
+
       unless defined?(CanCanCan)
-        fail 'RailsOps is configured to use CanCanCan authorization'\
+        fail 'RailsOps is configured to use CanCanCan authorization' \
              "backend, but the Gem 'cancancan' does not appear to be installed."
       end
     end

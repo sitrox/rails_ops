@@ -48,12 +48,12 @@ module RailsOps::Mixins::Authorization
 
   # Determines whether authorize has been called for this operation.
   def authorize_called?
-    @_authorize_called ||= false
+    @authorize_called ||= false
   end
 
   # Manually marks the authorization as called for this operation.
   def authorize_called!
-    @_authorize_called = true
+    @authorize_called = true
   end
 
   # Operations within the given block will have disabled authorization.

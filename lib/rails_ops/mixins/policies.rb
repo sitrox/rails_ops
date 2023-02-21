@@ -5,17 +5,17 @@
 module RailsOps::Mixins::Policies
   extend ActiveSupport::Concern
 
-  POLICY_CHAIN_KEYS = [
-    :on_init,
-    :before_perform,
-    :after_perform,
-    :before_nested_model_ops,
-    :before_model_save
+  POLICY_CHAIN_KEYS = %i[
+    on_init
+    before_perform
+    after_perform
+    before_nested_model_ops
+    before_model_save
   ].freeze
 
   included do
     class_attribute :_policy_chains
-    self._policy_chains = Hash[POLICY_CHAIN_KEYS.map { |key| [key, [].freeze] }]
+    self._policy_chains = POLICY_CHAIN_KEYS.map { |key| [key, [].freeze] }.to_h
   end
 
   module ClassMethods

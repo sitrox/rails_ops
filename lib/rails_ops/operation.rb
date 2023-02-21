@@ -39,9 +39,10 @@ class RailsOps::Operation
   # @param params [Hash] Optional parameters hash
   def initialize(context_or_params = {}, params = {})
     # Handle parameter signature
-    if context_or_params.is_a?(RailsOps::Context)
+    case context_or_params
+    when RailsOps::Context
       context = context_or_params
-    elsif context_or_params.is_a?(Hash) || context_or_params.is_a?(ActionController::Parameters)
+    when Hash, ActionController::Parameters
       context = nil
       params = context_or_params
     end
@@ -80,7 +81,9 @@ class RailsOps::Operation
 
   # Returns a copy of the operation's params, wrapped in an OpenStruct object.
   def osparams
+    # rubocop: disable Style/OpenStructUse
     @osparams ||= OpenStruct.new(params)
+    # rubocop: enable Style/OpenStructUse
   end
 
   # Return a hash of parameters with all sensitive data replaced.
@@ -131,7 +134,7 @@ class RailsOps::Operation
     if params
       begin
         inspected_params = inspect_params(filtered_params)
-      rescue
+      rescue StandardError
         inspected_params = '<could not inspect params>'
       end
       inspection += " (#{inspected_params})"
@@ -222,7 +225,7 @@ class RailsOps::Operation
   # elegant and transparent approach as explained in the issue.
   def with_rollback_on_exception(&_block)
     yield
-  rescue => e
+  rescue StandardError => e
     fail RailsOps::Exceptions::RollbackRequired, e, e.backtrace
   end
 

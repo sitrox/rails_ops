@@ -5,7 +5,7 @@ module RailsOps
     #  with default procs which is not supported by `Marshal.dump`. This mixin
     #  therefore excludes this instance variable from being dumped and loaded.
     module Marshalling
-      UNMARSHALED_VARIABLES = %i(@parent_op).freeze
+      UNMARSHALED_VARIABLES = %i[@parent_op].freeze
 
       extend ActiveSupport::Concern
 

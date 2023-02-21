@@ -32,9 +32,9 @@ class RailsOps::Mixins::ParamAuthorizationTest < ActiveSupport::TestCase
 
       model ::Group
 
-      authorize_param %i(foo), :foo, :subject_1
-      authorize_param %i(bar), :bar, :subject_1
-      authorize_param %i(bar baz), :baz, :subject_1
+      authorize_param %i[foo], :foo, :subject_1
+      authorize_param %i[bar], :bar, :subject_1
+      authorize_param %i[bar baz], :baz, :subject_1
 
       def perform
         # Do nothing

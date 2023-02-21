@@ -51,7 +51,7 @@ class OperationGenerator < Rails::Generators::NamedBase
     end
     views_folder += @underscored_pluralized_name.to_s
 
-    %w(index show new edit).each do |view|
+    %w[index show new edit].each do |view|
       template 'view.erb', "#{views_folder}/#{view}.html.haml"
     end
   end

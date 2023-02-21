@@ -1,5 +1,6 @@
 class RailsOps::Hookup::DSLValidator
-  attr_reader :error, :trace
+  attr_reader :error
+  attr_reader :trace
 
   def initialize(hooks)
     @hooks = hooks

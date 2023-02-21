@@ -55,7 +55,7 @@ class RailsOps::Hookup
 
     hooks = []
 
-    @hooks.slice('*', operation.class.name).values.each do |hooks_by_event|
+    @hooks.slice('*', operation.class.name).each_value do |hooks_by_event|
       hooks += hooks_by_event.slice('*', event).values.flatten || []
     end
 

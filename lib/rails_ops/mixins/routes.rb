@@ -6,7 +6,7 @@ module RailsOps::Mixins::Routes
   # this class on the first call. This is not thread-safe, but the worst case is
   # that this is performed more than once.
   def self.container_class
-    @container ||= Class.new do
+    @container_class ||= Class.new do
       include Rails.application.routes.url_helpers
 
       attr_reader :url_options

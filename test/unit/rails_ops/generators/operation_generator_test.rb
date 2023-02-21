@@ -10,12 +10,10 @@ class OperationGeneratorTest < Rails::Generators::TestCase
 
     # Add an empty routes file
     Dir.mkdir(File.join(destination_root, 'config'))
-    File.open(File.join(destination_root, 'config', 'routes.rb'), 'w') do |f|
-      f.write <<~ROUTES
-        Rails.application.routes.draw do
-        end
-      ROUTES
-    end
+    File.write(File.join(destination_root, 'config', 'routes.rb'), <<~ROUTES)
+      Rails.application.routes.draw do
+      end
+    ROUTES
   end
 
   def test_all
@@ -42,7 +40,7 @@ class OperationGeneratorTest < Rails::Generators::TestCase
     assert_routes
 
     # Check that the views were skipped
-    %w(index show new edit).each do |view|
+    %w[index show new edit].each do |view|
       assert_no_file "app/views/users/#{view}.html.haml"
     end
   end
@@ -85,7 +83,7 @@ class OperationGeneratorTest < Rails::Generators::TestCase
     end
 
     # Check that the views were skipped
-    %w(index show new edit).each do |view|
+    %w[index show new edit].each do |view|
       assert_no_file "app/views/users/#{view}.html.haml"
     end
   end
@@ -104,7 +102,7 @@ class OperationGeneratorTest < Rails::Generators::TestCase
     end
 
     # Check that the views were skipped
-    %w(index show new edit).each do |view|
+    %w[index show new edit].each do |view|
       assert_no_file "app/views/users/#{view}.html.haml"
     end
   end
@@ -154,7 +152,7 @@ class OperationGeneratorTest < Rails::Generators::TestCase
       end
 
       # Check that views are generated
-      %w(index show new edit).each do |view|
+      %w[index show new edit].each do |view|
         assert_file "app/views/admin/users/#{view}.html.haml"
       end
 
@@ -195,7 +193,7 @@ class OperationGeneratorTest < Rails::Generators::TestCase
     end
 
     # Check that views are generated
-    %w(index show new edit).each do |view|
+    %w[index show new edit].each do |view|
       assert_file "app/views/admin/foo/users/#{view}.html.haml"
     end
 
@@ -235,7 +233,7 @@ class OperationGeneratorTest < Rails::Generators::TestCase
   end
 
   def assert_views
-    %w(index show new edit).each do |view|
+    %w[index show new edit].each do |view|
       assert_file "app/views/users/#{view}.html.haml"
     end
   end

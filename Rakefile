@@ -7,7 +7,7 @@ task default: :test
 task :gemspec do
   gemspec = Gem::Specification.new do |spec|
     spec.name          = 'rails_ops'
-    spec.version       = IO.read('VERSION').chomp
+    spec.version       = File.read('VERSION').chomp
     spec.authors       = ['Sitrox']
     spec.summary       = 'An operations service layer for rails projects.'
     spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
@@ -22,7 +22,7 @@ task :gemspec do
     spec.add_development_dependency 'cancancan'
     spec.add_development_dependency 'pry'
     spec.add_development_dependency 'colorize'
-    spec.add_development_dependency 'rubocop', '0.47.1'
+    spec.add_development_dependency 'rubocop', '1.45.1'
     spec.add_development_dependency 'sprockets-rails'
     spec.add_dependency 'active_type', '>= 1.3.0'
     spec.add_dependency 'minitest'
@@ -31,10 +31,8 @@ task :gemspec do
     spec.add_dependency 'schemacop', '>= 2.4.2', '<= 3.1'
   end
 
-  File.open('rails_ops.gemspec', 'w') { |f| f.write(gemspec.to_ruby.strip) }
+  File.write('rails_ops.gemspec', gemspec.to_ruby.strip)
 end
-
-require 'rake/testtask'
 
 Rake::TestTask.new do |t|
   t.pattern = 'test/unit/**/*_test.rb'

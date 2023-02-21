@@ -45,7 +45,7 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
   # that currently, :shared only works for MySql, Postgresql and Oracle DB,
   # other adapters always use the exclusive lock.
   def self.lock_mode(lock_mode)
-    fail "Unknown lock mode #{lock_mode}" unless %i(shared exclusive).include?(lock_mode)
+    fail "Unknown lock mode #{lock_mode}" unless %i[shared exclusive].include?(lock_mode)
 
     self._lock_mode = lock_mode
   end
@@ -108,12 +108,10 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     adapter_type = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
 
     case adapter_type
-    when :mysql, :mysql2
+    when :mysql, :mysql2, :oracleenhanced
       return 'LOCK IN SHARE MODE'
     when :postgresql
       return 'FOR SHARE'
-    when :oracleenhanced
-      return 'LOCK IN SHARE MODE'
     end
 
     # Don't return anything, which will make the `lock` statement

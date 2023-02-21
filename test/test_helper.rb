@@ -1,4 +1,4 @@
-require File.expand_path('../../test/dummy/config/environment.rb', __FILE__)
+require File.expand_path('../test/dummy/config/environment.rb', __dir__)
 # ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
 require 'rails/test_help'
 require 'pry'
@@ -14,13 +14,13 @@ Rails::TestUnitReporter.executable = 'bin/test'
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
-  ActiveSupport::TestCase.fixture_path = File.expand_path('../fixtures', __FILE__)
+  ActiveSupport::TestCase.fixture_path = File.expand_path('fixtures', __dir__)
   ActionDispatch::IntegrationTest.fixture_path = ActiveSupport::TestCase.fixture_path
-  ActiveSupport::TestCase.file_fixture_path = ActiveSupport::TestCase.fixture_path + '/files'
+  ActiveSupport::TestCase.file_fixture_path = File.join(ActiveSupport::TestCase.fixture_path, '/files')
   ActiveSupport::TestCase.fixtures :all
 end
 
-load File.dirname(__FILE__) + '/dummy/db/schema.rb'
+load File.join(File.dirname(__FILE__), '/dummy/db/schema.rb')
 
 require 'request_store'
 
@@ -39,7 +39,7 @@ module TestHelper
       fail TypeError, "Expected #{expected.inspect} to be a kind of String or Regexp, not #{expected.class}"
     end
 
-    ex = assert_raises(exception, *msg) { yield }
+    ex = assert_raises(exception, *msg, &block)
     msg = message(msg, '') { "Expected Exception(#{exception}) was raised, but the message doesn't match" }
 
     if assert == :assert_equal

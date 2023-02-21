@@ -35,7 +35,7 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
     assert_nothing_raised do
       MAINBOARD_CREATION_OP.run!(
         mainboard: {
-          name: 'Mainboard',
+          name:           'Mainboard',
           cpu_attributes: {
             name: 'CPU'
           }
@@ -48,10 +48,10 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
     model = assert_nothing_raised do
       COMPUTER_CREATION_OP.run!(
         computer: {
-          name: 'Computer',
+          name:                 'Computer',
 
           mainboard_attributes: {
-            name: 'Mainboard',
+            name:           'Mainboard',
 
             cpu_attributes: {
               name: 'CPU'
@@ -74,7 +74,7 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
     op = COMPUTER_CREATION_OP.new(
       computer: {
         mainboard_attributes: {
-          name: 'Mainboard',
+          name:           'Mainboard',
 
           cpu_attributes: {
             name: 'CPU'
@@ -94,7 +94,7 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
   def test_create_computer_level_2_validation_error
     op = COMPUTER_CREATION_OP.new(
       computer: {
-        name: 'Computer',
+        name:                 'Computer',
 
         mainboard_attributes: {
           cpu_attributes: {
@@ -108,7 +108,7 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
       op.run!
     end
 
-    assert_equal ["Mainboard is invalid"], op.model.errors.full_messages
+    assert_equal ['Mainboard is invalid'], op.model.errors.full_messages
     refute op.model.persisted?
 
     assert_equal ["Name can't be blank"], op.model.mainboard.errors.full_messages
@@ -118,10 +118,10 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
   def test_create_computer_level_3_validation_error
     op = COMPUTER_CREATION_OP.new(
       computer: {
-        name: 'Computer',
+        name:                 'Computer',
 
         mainboard_attributes: {
-          name: 'Mainboard',
+          name:           'Mainboard',
 
           cpu_attributes: {}
         }
@@ -132,10 +132,10 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
       op.run!
     end
 
-    assert_equal ["Mainboard is invalid"], op.model.errors.full_messages
+    assert_equal ['Mainboard is invalid'], op.model.errors.full_messages
     refute op.model.persisted?
 
-    assert_equal ["Cpu is invalid"], op.model.mainboard.errors.full_messages
+    assert_equal ['Cpu is invalid'], op.model.mainboard.errors.full_messages
     refute op.model.mainboard.persisted?
 
     assert_equal ["Name can't be blank"], op.model.mainboard.cpu.errors.full_messages

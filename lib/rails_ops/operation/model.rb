@@ -70,7 +70,7 @@ class RailsOps::Operation::Model < RailsOps::Operation
         end
 
         # Set virtual STI name if given.
-        if model_class && model_class.name
+        if model_class&.name
           _model_class.virtual_sti_name = model_class.name
         end
 
