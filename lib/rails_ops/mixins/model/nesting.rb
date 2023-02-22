@@ -172,14 +172,14 @@ module RailsOps::Mixins::Model::Nesting
     # line also makes sure a model is built.
     model.validate!
 
+    # Make sure nested model operations are built
+    fail 'Nested model operations are not built yet. Make sure the model is built.' unless @nested_model_ops
+
     # Validate all unchanged nested models as the above call to "validate!" only validates
     # associations that are changed.
     @nested_model_ops.each_key do |attribute|
       model.send(attribute).validate!
     end
-
-    # Make sure nested model operations are build
-    fail 'Nested model operations are not built yet. Make sure the model is built.' unless @nested_model_ops
 
     @nested_model_ops.each do |attribute, op|
       # Run the nested model operation and fail hard if a validation error
