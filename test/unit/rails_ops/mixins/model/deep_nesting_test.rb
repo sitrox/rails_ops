@@ -25,6 +25,28 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
     nest_model_op :mainboard, MAINBOARD_CREATION_OP
   end
 
+  CPU_UPDATE_OP = Class.new(RailsOps::Operation::Model::Update) do
+    model Cpu do
+      validates :name, presence: true
+    end
+  end
+
+  MAINBOARD_UPDATE_OP = Class.new(RailsOps::Operation::Model::Update) do
+    model Mainboard do
+      validates :name, presence: true
+    end
+
+    nest_model_op :cpu, CPU_UPDATE_OP
+  end
+
+  COMPUTER_UPDATE_OP = Class.new(RailsOps::Operation::Model::Update) do
+    model Computer do
+      validates :name, presence: true
+    end
+
+    nest_model_op :mainboard, MAINBOARD_UPDATE_OP
+  end
+
   def test_create_cpu
     assert_nothing_raised do
       CPU_CREATION_OP.run!(cpu: { name: 'CPU' })
@@ -140,5 +162,42 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
 
     assert_equal ["Name can't be blank"], op.model.mainboard.cpu.errors.full_messages
     refute op.model.mainboard.cpu.persisted?
+  end
+
+  def test_update_validation_error
+    create_op = COMPUTER_CREATION_OP.new(
+      computer: {
+        name:                 'Computer',
+
+        mainboard_attributes: {
+          name:           'Mainboard',
+
+          cpu_attributes: {
+            name: 'CPU'
+          }
+        }
+      }
+    )
+
+    create_op.run!
+
+    update_op = COMPUTER_UPDATE_OP.new(
+      id:       Computer.first,
+      computer: {
+        name:                 'Computer',
+
+        mainboard_attributes: {
+          name:           '',
+
+          cpu_attributes: {
+            name: 'CPU'
+          }
+        }
+      }
+    )
+
+    refute update_op.run
+    assert_equal :name, update_op.model.mainboard.errors.first.attribute
+    assert_equal :blank, update_op.model.mainboard.errors.first.type
   end
 end
