@@ -1,5 +1,12 @@
 # Change log
 
+## 1.0.17.1 (2022-02-27)
+
+* Backport change from `1.0.14`:
+
+  Add global option `config.ensure_authorize_called` (defaults to `true` to be
+  compatible with previous versions)
+
 ## 1.0.17 (2020-01-17)
 
 * Add global option `config.ensure_authorize_called` (defaults to
