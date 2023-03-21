@@ -149,7 +149,7 @@ class RailsOps::Operation
 
   # Fails with an exception if the operation has not been performed yet.
   def check_performed!
-    fail 'Operation has not yet been perfomed.' unless performed?
+    fail 'Operation has not yet been performed.' unless performed?
   end
 
   protected
