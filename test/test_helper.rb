@@ -1,3 +1,8 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter '/test/'
+end
+
 require File.expand_path('../test/dummy/config/environment.rb', __dir__)
 # ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
 require 'rails/test_help'
