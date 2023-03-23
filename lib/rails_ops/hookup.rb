@@ -23,7 +23,7 @@ class RailsOps::Hookup
     unless @config_loaded
       @config_loaded = true
 
-      if File.exist?(CONFIG_PATH)
+      if File.exist?(Rails.root.join(CONFIG_PATH))
         load Rails.root.join(CONFIG_PATH)
       else
         Rails.logger.debug "RailsOps could not find hookup #{CONFIG_PATH}, using empty hookup configuration."
