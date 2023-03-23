@@ -40,6 +40,16 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
     assert BASIC_OP.new.run!.done
   end
 
+  def test_run_without_perform
+    cls = Class.new(RailsOps::Operation)
+    assert_nothing_raised do
+      cls.new
+    end
+    assert_raises NotImplementedError do
+      cls.run!
+    end
+  end
+
   def test_non_validation_error
     assert_raises_with_message RuntimeError, 'Standard exception' do
       BASIC_OP.run(exception: 'Standard exception')
@@ -146,6 +156,17 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
     assert op.performed?
   end
 
+  def test_check_performed
+    op = BASIC_OP.new
+    assert_raises_with_message RuntimeError, 'Operation has not yet been performed.' do
+      op.check_performed!
+    end
+    op.run!
+    assert_nothing_raised do
+      op.check_performed!
+    end
+  end
+
   def test_inspect
     assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo"=>:bar})',
                  BASIC_OP.new(foo: :bar).inspect
@@ -154,5 +175,105 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
   def test_inspect_with_numeric_param_keys
     assert_equal 'RailsOps::OperationTest::BASIC_OP ({1=>2})',
                  BASIC_OP.new(1 => 2).inspect
+  end
+
+  def test_with_rollback_on_exception
+    op = Class.new(RailsOps::Operation) do
+      def perform
+        with_rollback_on_exception do
+          fail 'Rollback please'
+        end
+      end
+    end.new
+    assert_raises RailsOps::Exceptions::RollbackRequired do
+      op.run
+    end
+  end
+
+  def test_op_with_schema3(use_default: false)
+    op = Class.new(RailsOps::Operation) do
+      schema_block = proc do
+        int! :id
+        hsh! :hash do
+          int? :number
+          int! :required_number
+        end
+      end
+      if use_default
+        schema(&schema_block)
+      else
+        schema3(&schema_block)
+      end
+    end
+
+    assert_nothing_raised do
+      op.new(id: 1, hash: { required_number: 1 })
+    end
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.new(id: 1, hash: {})
+    end
+  end
+
+  def test_op_with_schema2(use_default: false)
+    op = Class.new(RailsOps::Operation) do
+      schema_block = proc do
+        req :id, :integer
+        req :hash, :hash do
+          opt :number, :integer
+          req :required_number, :integer
+        end
+      end
+
+      if use_default
+        schema(&schema_block)
+      else
+        schema2(&schema_block)
+      end
+    end
+
+    assert_nothing_raised do
+      op.new(id: 1, hash: { required_number: 1 })
+    end
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.new(id: 1, hash: {})
+    end
+  end
+
+  def test_op_with_schema_default
+    RailsOps.config.default_schemacop_version = 3
+    test_op_with_schema3(use_default: true)
+
+    RailsOps.config.default_schemacop_version = 2
+    test_op_with_schema2(use_default: true)
+
+    RailsOps.config.default_schemacop_version = -50
+    assert_raises_with_message RuntimeError, 'Schemacop schema versions supported are 2 and 3.' do
+      test_op_with_schema3(use_default: true)
+    end
+    RailsOps.config.default_schemacop_version = 3
+  end
+
+  def test_require_context
+    op = Class.new(RailsOps::Operation) do
+      require_context :user, :session
+    end
+
+    ctx = RailsOps::Context.new(user: Class.new, session: Class.new)
+    assert_raises_with_message RailsOps::Exceptions::MissingContextAttribute, 'This operation requires the context attribute :user to be present.' do
+      op.new
+    end
+    assert_nothing_raised do
+      op.new(ctx, foo: :bar)
+    end
+  end
+
+  def test_run_through_context
+    op = Class.new(RailsOps::Operation) do
+      def perform; end
+    end
+    ctx = RailsOps::Context.new(user: Class.new, session: Class.new)
+    assert_nothing_raised do
+      ctx.run! op, foo: :bar
+    end
   end
 end
