@@ -9,8 +9,8 @@ class OperationGenerator < Rails::Generators::NamedBase
 
   def add_operations
     @class_name = name.classify
-    @underscored_name = name.underscore
-    @underscored_pluralized_name = name.underscore.pluralize
+    @underscored_name = @class_name.underscore
+    @underscored_pluralized_name = @class_name.underscore.pluralize
 
     operations_path = 'app/operations/'
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.2 (2023-03-20)
+
+* Update the `operation` generator such that it complies with the naming
+  conventions laid out in [Placing and naming
+  operations](https://github.com/sitrox/rails_ops#placing-and-naming-operations).
+  The path were the operations reside and the validation schema key are now
+  generated in singular.
+
+  Internal reference: `#111055`.
 
 ## 1.4.1 (2023-02-21)
 
