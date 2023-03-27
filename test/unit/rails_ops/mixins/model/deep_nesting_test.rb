@@ -258,7 +258,6 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
     )
 
     refute update_op.run
-    assert_equal :name, update_op.model.mainboard.errors.first.attribute
-    assert_equal :blank, update_op.model.mainboard.errors.first.type
+    assert update_op.model.mainboard.errors.added?(:name, :blank)
   end
 end
