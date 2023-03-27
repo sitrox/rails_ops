@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.2 (2023-03-20)
+## 1.4.2 (2023-03-27)
 
 * Update the `operation` generator such that it complies with the naming
   conventions laid out in [Placing and naming
