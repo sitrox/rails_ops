@@ -52,16 +52,16 @@ class OperationGenerator < Rails::Generators::NamedBase
 
     operations_path += @underscored_name.to_s
 
-    if !@excluded_actions.include?(:show)
+    unless @excluded_actions.include?(:show)
       template 'load.erb', "#{operations_path}/load.rb"
     end
-    if !@excluded_actions.include?(:create)
+    unless @excluded_actions.include?(:create)
       template 'create.erb', "#{operations_path}/create.rb"
     end
-    if !@excluded_actions.include?(:update)
+    unless @excluded_actions.include?(:update)
       template 'update.erb', "#{operations_path}/update.rb"
     end
-    if !@excluded_actions.include?(:destroy)
+    unless @excluded_actions.include?(:destroy)
       template 'destroy.erb', "#{operations_path}/destroy.rb"
     end
   end
