@@ -1,0 +1,14 @@
+<% controller_template = ERB.new(File.read(File.join(File.dirname(__FILE__), '/controller.erb')), trim_mode: '-').result(binding).strip -%>
+<% if @module_name.present? -%>
+module <%= @module_name %>
+<% controller_template.split("\n").each do |line| -%>
+<% if line.blank? -%>
+
+<% else -%>
+  <%= line %>
+<% end -%>
+<% end -%>
+end
+<% else -%>
+<%= controller_template %>
+<% end -%>

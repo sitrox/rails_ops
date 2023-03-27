@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.3 (2023-03-27)
+
+* Extend the `operation` generator to accept additional flags to skip the
+  generation of certain actions. In particular, the `--skip-index`,
+  `--skip-show`, `--skip-create`, `--skip-update` and `--skip-destroy` flags
+  were added.
+
+  Internal reference: `#111041`.
+
 ## 1.4.2 (2023-03-27)
 
 * Update the `operation` generator such that it complies with the naming

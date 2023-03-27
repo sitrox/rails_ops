@@ -70,11 +70,11 @@ Requirements & Installation
 
    # Define the Operations module
    module Operations; end
-   
+
    # Add the folder to the autoloader, but namespaced
    loader = Rails.autoloaders.main
    loader.push_dir(app_operations, namespace: Operations)
-   
+
    # Add the folder to the watched directories (for re-loading in development)
    Rails.application.config.watchable_dirs.merge!({
      app_operations => [:rb]
@@ -1673,6 +1673,16 @@ flags:
 * `--skip-views`
 
 Or if you want to skip them all: `--only-operations`.
+
+If you want to skip a certain action, you can do so using the flags:
+* `--skip-index`
+* `--skip-show`
+* `--skip-create`
+* `--skip-update`
+* `--skip-destroy`
+
+This will skip the creation of the respective route, controller action, view file and the operation itself.
+For `--skip-create`, the `new` action will also be skipped and for `--skip-update`, the `edit` action will be skipped respectively.
 
 You can also add a module as a namespace, all generated files will be put in
 the proper subfolders and modules by using the `--module` option.
