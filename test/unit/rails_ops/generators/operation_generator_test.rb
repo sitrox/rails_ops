@@ -32,6 +32,104 @@ class OperationGeneratorTest < Rails::Generators::TestCase
     assert_routes
   end
 
+  def test_no_index_action
+    run_generator ['User', '--skip-index']
+
+    # Check that the index view is not created
+    assert_no_file 'app/views/users/index.html.haml'
+
+    # Check that the index route is not created
+    assert_file 'config/routes.rb' do |routes|
+      assert_match(/resources :users, except: \[:index\]/, routes)
+    end
+
+    # Check that the controller action is not created
+    assert_file 'app/controllers/users_controller.rb' do |controller|
+      assert_no_match(/def index/, controller)
+    end
+  end
+
+  def test_no_show_action
+    run_generator ['User', '--skip-show']
+
+    # Check that the show view is not created
+    assert_no_file 'app/views/users/show.html.haml'
+
+    # Check that the show route is not created
+    assert_file 'config/routes.rb' do |routes|
+      assert_match(/resources :users, except: \[:show\]/, routes)
+    end
+
+    # Check that the controller action is not created
+    assert_file 'app/controllers/users_controller.rb' do |controller|
+      assert_no_match(/def show/, controller)
+    end
+
+    # Check that the load operation is not created
+    assert_no_file 'app/operations/users/load.rb'
+  end
+
+  def test_no_create_action
+    run_generator ['User', '--skip-create']
+
+    # Check that the new and create view are not created
+    assert_no_file 'app/views/users/new.html.haml'
+    assert_no_file 'app/views/users/create.html.haml'
+
+    # Check that the new, create route is not created
+    assert_file 'config/routes.rb' do |routes|
+      assert_match(/resources :users, except: \[:new, :create\]/, routes)
+    end
+
+    # Check that the controller actions are not created
+    assert_file 'app/controllers/users_controller.rb' do |controller|
+      assert_no_match(/def new/, controller)
+      assert_no_match(/def create/, controller)
+    end
+
+    # Check that the load operation is not created
+    assert_no_file 'app/operations/users/create.rb'
+  end
+
+  def test_no_update_action
+    run_generator ['User', '--skip-update']
+
+    # Check that the edit and update view are not created
+    assert_no_file 'app/views/users/edit.html.haml'
+    assert_no_file 'app/views/users/update.html.haml'
+
+    # Check that the edit, update route is not created
+    assert_file 'config/routes.rb' do |routes|
+      assert_match(/resources :users, except: \[:edit, :update\]/, routes)
+    end
+
+    # Check that the controller actions are not created
+    assert_file 'app/controllers/users_controller.rb' do |controller|
+      assert_no_match(/def edit/, controller)
+      assert_no_match(/def update/, controller)
+    end
+
+    # Check that the load operation is not created
+    assert_no_file 'app/operations/users/update.rb'
+  end
+
+  def test_no_destory_action
+    run_generator ['User', '--skip-destroy']
+
+    # Check that the destroy view is not created
+    assert_no_file 'app/views/users/destroy.html.haml'
+
+    # Check that the destroy route is not created
+    assert_file 'config/routes.rb' do |routes|
+      assert_match(/resources :users, except: \[:destroy\]/, routes)
+    end
+
+    # Check that the controller action is not created
+    assert_file 'app/controllers/users_controller.rb' do |controller|
+      assert_no_match(/def destroy/, controller)
+    end
+  end
+
   def test_no_views
     run_generator ['User', '--skip-views']
 

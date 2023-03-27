@@ -1,56 +1,67 @@
-<%
-controller_code = <<-RUBY
-class #{@controller_name} < ApplicationController
+class <%=@controller_name%> < ApplicationController
+<% first=true -%>
+<% if !@excluded_actions&.include?(:index) -%>
+<% first=false -%>
   def index; end
+<% end -%>
+<% if !@excluded_actions&.include?(:show) -%>
+<% if first -%>
+<% first=false -%>
+<% else -%>
 
+<% end -%>
   def show
-    op Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Load
+    op Operations<%="::#{@module_name}" if @module_name.present?%>::<%=@class_name%>::Load
   end
+<% end -%>
+<% if !@excluded_actions&.include?(:create) -%>
+<% if first -%>
+<% first=false -%>
+<% else -%>
 
+<% end -%>
   def new
-    op Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Create
+    op Operations<%="::#{@module_name}" if @module_name.present?%>::<%=@class_name%>::Create
   end
 
   def create
-    if run Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Create
+    if run Operations<%="::#{@module_name}" if @module_name.present?%>::<%=@class_name%>::Create
       # handle successful case
     else
       # handle error case
     end
   end
+<% end -%>
+<% if !@excluded_actions&.include?(:update) -%>
+<% if first -%>
+<% first=false -%>
+<% else -%>
 
+<% end -%>
   def edit
-    op Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Update
+    op Operations<%="::#{@module_name}" if @module_name.present?%>::<%=@class_name%>::Update
   end
 
   def update
-    if run Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Update
+    if run Operations<%="::#{@module_name}" if @module_name.present?%>::<%=@class_name%>::Update
       # handle successful case
     else
       # handle error case
     end
   end
+<% end -%>
+<% if !@excluded_actions&.include?(:destroy) -%>
+<% if first -%>
+<% first=false -%>
+<% else -%>
 
+<% end -%>
   def destroy
-    if run Operations#{ "::#{@module_name}" if @module_name.present? }::#{@class_name}::Destroy
+    if run Operations<%="::#{@module_name}" if @module_name.present?%>::<%=@class_name%>::Destroy
       # handle successful case
     else
       # handle error case
     end
   end
-end
-RUBY
--%>
-<% if @module_name.present? -%>
-module <%= @module_name %>
-<% controller_code.split("\n").each do |line| -%>
-<% if line.blank? -%>
-
-<% else -%>
-  <%= line %>
-<% end -%>
 <% end -%>
 end
-<% else -%>
-<%= controller_code -%>
-<% end -%>

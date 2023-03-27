@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.4.3 (2023-03-27)
+
+* Extend the `operation` generator to accept additional flags to skip the
+  generation of certain actions. In particular, the `--skip-index`,
+  `--skip-show`, `--skip-create`, `--skip-update` and `--skip-destroy` flags
+  were added.
+
+  Internal reference: `#111041`.
+
+## 1.4.2 (2023-03-27)
+
+* Update the `operation` generator such that it complies with the naming
+  conventions laid out in [Placing and naming
+  operations](https://github.com/sitrox/rails_ops#placing-and-naming-operations).
+  The path were the operations reside and the validation schema key are now
+  generated in singular.
+
+  Internal reference: `#111055`.
 
 ## 1.4.1 (2023-02-21)
 
