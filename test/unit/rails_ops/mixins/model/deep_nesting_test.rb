@@ -92,6 +92,67 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
     assert_equal 'CPU', model.mainboard.cpu.name
   end
 
+  def test_without_asoc
+    assert_raises_with_message RuntimeError, 'Association cat could not be found for Animal.' do
+      Class.new(RailsOps::Operation::Model::Create) do
+        model Animal
+
+        nest_model_op :cat, Class.new(RailsOps::Operation::Model::Create) do
+          model Cat
+        end
+      end
+    end
+  end
+
+  def test_wrong_asoc_type
+    assert_raises_with_message RuntimeError,
+                               'Method nest_model_op only supports :belongs_to associations, but association dogs of model Animal is a has_many association.' do
+      Class.new(RailsOps::Operation::Model::Create) do
+        model Animal
+
+        nest_model_op :dogs, Class.new(RailsOps::Operation::Model::Create) do
+          model Dog
+        end
+      end
+    end
+  end
+
+  def test_autosave_on
+    assert_raises_with_message RuntimeError, 'Association bird of Animal has :autosave turned on. This is not supported by nest_model_op.' do
+      Class.new(RailsOps::Operation::Model::Create) do
+        model Animal
+
+        nest_model_op :bird, Class.new(RailsOps::Operation::Model::Create) do
+          model Bird
+        end
+      end
+    end
+  end
+
+  def test_validation_off
+    assert_raises_with_message RuntimeError, 'Association phoenix of Animal has :validate turned off. This is not supported by nest_model_op.' do
+      Class.new(RailsOps::Operation::Model::Create) do
+        model Animal
+
+        nest_model_op :phoenix, Class.new(RailsOps::Operation::Model::Create) do
+          model Phoenix
+        end
+      end
+    end
+  end
+
+  def test_inverse_autosave_on
+    assert_raises_with_message RuntimeError, 'Association phoenix of Bird has :autosave turned on. This is not supported by nest_model_op.' do
+      Class.new(RailsOps::Operation::Model::Create) do
+        model Phoenix
+
+        nest_model_op :bird, Class.new(RailsOps::Operation::Model::Create) do
+          model Bird
+        end
+      end
+    end
+  end
+
   def test_create_computer_level_1_validation_error
     op = COMPUTER_CREATION_OP.new(
       computer: {
@@ -197,7 +258,6 @@ class RailsOps::Mixins::Model::DeepNestingTest < ActiveSupport::TestCase
     )
 
     refute update_op.run
-    assert_equal :name, update_op.model.mainboard.errors.first.attribute
-    assert_equal :blank, update_op.model.mainboard.errors.first.type
+    assert update_op.model.mainboard.errors.added?(:name, :blank)
   end
 end

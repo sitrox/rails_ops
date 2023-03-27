@@ -47,6 +47,21 @@ class RailsOps::Operation::ModelTest < ActiveSupport::TestCase
     assert_equal 'Example', cls.model.virtual_model_name
   end
 
+  def test_virtual_model_write_attribute
+    cls = Class.new(RailsOps::Operation::Model) do
+      model RailsOps::VirtualModel, 'Example' do
+        attribute :name, default: 'name'
+      end
+    end
+
+    assert_equal 'name', cls.model.new.read_attribute(:name)
+    assert_nothing_raised do
+      obj = cls.model.new
+      obj.write_attribute(:name, 'name2')
+      assert_equal 'name2', obj.read_attribute(:name)
+    end
+  end
+
   def test_default_model_class
     cls = Class.new(RailsOps::Operation::Model) do
       model do
@@ -63,5 +78,14 @@ class RailsOps::Operation::ModelTest < ActiveSupport::TestCase
         model
       end
     end
+  end
+
+  def test_lazy_model
+    cls = Class.new(RailsOps::Operation::Model::Create) do
+      lazy_model 'Group'
+    end
+
+    assert_not cls.model.class < Group
+    assert cls.new.model.class < Group
   end
 end

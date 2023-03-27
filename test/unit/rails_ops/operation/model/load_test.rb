@@ -51,4 +51,13 @@ class RailsOps::Operation::Model::LoadTest < ActiveSupport::TestCase
     g = Group.create(name: 'g1')
     assert_equal g, cls.new(name: 'g1').model
   end
+
+  def test_too_many_authorization_actions
+    assert_raises_with_message ArgumentError, 'Too many arguments' do
+      Class.new(RailsOps::Operation::Model::Load) do
+        model Group
+        model_authorization_action :read, :update
+      end
+    end
+  end
 end

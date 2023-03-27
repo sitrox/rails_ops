@@ -10,7 +10,7 @@ class RailsOps::Hookup::DSLValidator
   def validate!
     # Check infinity loop
     if target_hooks.any? { |name, targets| recursion?(targets, name) }
-      fail StandardError::SystemStackError.new, "Infinite loop detected in hooks configuration: #{inspect_trace}."
+      fail SystemStackError.new, "Infinite loop detected in hooks configuration: #{inspect_trace}."
     end
   end
 
