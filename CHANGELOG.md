@@ -32,7 +32,8 @@
 
 ### Upgrading
 
-Please see #33 for more information on this change. If all of your operations
+Please see [#33](https://github.com/sitrox/rails_ops/issues/33) for more information
+on this change. If all of your operations
 follow the standard naming conventions (e.g. `Operations::User::Update` for
 updating a model named `User`), no changes will be necessary. If you don't, you
 may need to manually specify a `param_key` when using nested model operations
