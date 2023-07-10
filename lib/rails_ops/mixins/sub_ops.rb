@@ -11,6 +11,8 @@ module RailsOps::Mixins::SubOps
   def sub_op(op, params = {})
     new_context = context.spawn(self)
     return op.new(new_context, params)
+  rescue *op.validation_errors => e
+    fail RailsOps::Exceptions::SubOpValidationFailed, e
   end
 
   # Operation-equivalent of controller method 'run!': Instantiates and runs the

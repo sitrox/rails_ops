@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.4 (2023-07-10)
+
+* Adapt method `sub_op` to catch `<op-class>.validation_errors` and re-throw
+  them as `RailsOps::Exceptions::SubOpValidationFailed`.
+
 ## 1.4.3 (2023-03-27)
 
 * Extend the `operation` generator to accept additional flags to skip the
