@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.5 (2023-07-10)
+
+* Fix bug introduced in previous release 1.4.4.
+
 ## 1.4.4 (2023-07-10)
 
 * Adapt method `sub_op` to catch `<op-class>.validation_errors` and re-throw
