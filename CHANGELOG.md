@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.5 (2023-07-25)
+## 1.4.6 (2023-07-25)
 
 * Make sure that `RailsOps::Exceptions::SubOpValidationFailed` always results in
   an Error 500 when handled by a Rails controller.
