@@ -47,6 +47,17 @@ module RailsOps
           fail ActionController::BadRequest
         end
       end
+
+      # #114719: If 'rescue_validation_error_in_controller' is enabled, the
+      # exception 'SubOpValidationFailed' may have
+      # 'Schemacop::Exceptions::ValidationError' as a 'cause', which in turn
+      # causes ActiveSupport's 'Rescuable' to look for a rescue_from with the
+      # exception's 'cause', which would then result in a BadRequest. For this
+      # case, we add a separate rescue_from here so that 'SubOpValidationFailed'
+      # always results in an error 500 as it must be a programming error.
+      rescue_from RailsOps::Exceptions::SubOpValidationFailed do |e|
+        fail e
+      end
     end
 
     # Instantiates and returns a new operation with the given class. If no class

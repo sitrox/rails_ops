@@ -1,13 +1,24 @@
 # Changelog
 
+## 1.4.5 (2023-07-25)
+
+* Make sure that `RailsOps::Exceptions::SubOpValidationFailed` always results in
+  an Error 500 when handled by a Rails controller.
+
+  Internal reference: `#114719`.
+
 ## 1.4.5 (2023-07-10)
 
 * Fix bug introduced in previous release 1.4.4.
+
+  Internal reference: `#114719`.
 
 ## 1.4.4 (2023-07-10)
 
 * Adapt method `sub_op` to catch `<op-class>.validation_errors` and re-throw
   them as `RailsOps::Exceptions::SubOpValidationFailed`.
+
+  Internal reference: `#114719`.
 
 ## 1.4.3 (2023-03-27)
 
