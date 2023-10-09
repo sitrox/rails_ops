@@ -40,11 +40,13 @@ class RailsOps::Operation::Model < RailsOps::Operation
   # @param model_class [Class] The model class to take or extend
   # @param name [String,Symbol] A custom name that will be used for generating
   #   the anonymous class
+  # @param override [boolean] Allows overriding previously set models (e.g. via
+  #   operation inheritance)
   # @yield [] This optional block is executed in context of the newly generated,
   #   anonymous class and allows you to extend it
-  def self.model(model_class = nil, name = nil, &block)
+  def self.model(model_class = nil, name = nil, override: false, &block)
     if model_class || block_given?
-      fail 'Model class can only be set once.' if _model_class
+      fail 'Model class can only be set once.' if _model_class && !override
 
       model_class ||= default_model_class
 

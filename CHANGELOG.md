@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.7 (2023-10-09)
+
+* Add parameter `override` to static `model` method in model operations
+
 ## 1.4.6 (2023-07-25)
 
 * Make sure that `RailsOps::Exceptions::SubOpValidationFailed` always results in
