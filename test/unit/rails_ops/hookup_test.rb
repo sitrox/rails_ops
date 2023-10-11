@@ -37,6 +37,7 @@ class RailsOps::HookupTest < ActiveSupport::TestCase
   end
 
   def test_dont_draw_twice
+    RailsOps.hookup.load_config
     assert_raises_with_message RuntimeError, "Hooks can't be drawn twice." do
       RailsOps.hookup.draw do
         run 'RailsOps::HookupTest::HookupTarget' do
