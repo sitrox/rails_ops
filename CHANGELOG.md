@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.8 (2023-10-12)
+
+* Keep original validation error message when
+  `rescue_validation_error_in_controller` is enabled
+
 ## 1.4.7 (2023-10-09)
 
 * Add parameter `override` to static `model` method in model operations

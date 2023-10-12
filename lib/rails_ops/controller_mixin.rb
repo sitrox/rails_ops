@@ -43,8 +43,8 @@ module RailsOps
       # This generally should be combined with enabling the option "ignore_obsolete_properties"
       # of schemacop.
       if RailsOps.config.rescue_validation_error_in_controller
-        rescue_from Schemacop::Exceptions::ValidationError do |_e|
-          fail ActionController::BadRequest
+        rescue_from Schemacop::Exceptions::ValidationError do |e|
+          fail ActionController::BadRequest, e.message
         end
       end
 
