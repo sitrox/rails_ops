@@ -67,6 +67,7 @@ class RailsOps::HookupTest < ActiveSupport::TestCase
 
   def test_missing_config_file
     orig_path = RailsOps::Hookup::CONFIG_PATH
+    RailsOps::Hookup.send(:remove_const, :CONFIG_PATH)
     RailsOps::Hookup.const_set(:CONFIG_PATH, '/def/doesnt/exist')
     RailsOps.hookup.instance_variable_set(:@drawn, false)
     RailsOps.hookup.instance_variable_set(:@config_loaded, false)
@@ -75,6 +76,7 @@ class RailsOps::HookupTest < ActiveSupport::TestCase
     end
     assert_equal({}, RailsOps.hookup.hooks)
 
+    RailsOps::Hookup.send(:remove_const, :CONFIG_PATH)
     RailsOps::Hookup.const_set(:CONFIG_PATH, orig_path)
     RailsOps.hookup.instance_variable_set(:@drawn, false)
     RailsOps.hookup.instance_variable_set(:@config_loaded, false)
