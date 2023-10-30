@@ -5,13 +5,13 @@ module RailsOps::ModelMixins::VirtualAttributes
     include ActiveType::VirtualAttributes
   end
 
-  # rubocop: disable Style/PredicateName
+  # rubocop: disable Naming/PredicateName
   # TODO: Document this. Why is this necessary and not part of ActiveType?
   def has_attribute?(name)
     return true if self.class._has_virtual_column?(name)
     return super
   end
-  # rubocop: enable Style/PredicateName
+  # rubocop: enable Naming/PredicateName
 
   # TODO: Document this. Why is this necessary and not part of ActiveType?
   def column_for_attribute(name)
