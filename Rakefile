@@ -14,6 +14,7 @@ task :gemspec do
     spec.executables   = []
     spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
     spec.require_paths = ['lib']
+    spec.licenses      = ['MIT']
 
     spec.add_development_dependency 'appraisal'
     spec.add_development_dependency 'bundler'
