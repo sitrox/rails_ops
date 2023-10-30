@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.5.0 (2023-10-30)
+
+* Fix deprecation warnings for rails `>= 7.1`
+
+* Add Rails `7.1` to CI
+
+* Remove Ruby `2.6.2` from CI
+
+* Update `schemacop` dependency to `>= 3.0.0`
+
+### Upgrading
+
+[Schemacop](https://github.com/sitrox/schemacop) `3.0` still features
+the same functionality as version 2 for backwards-compatibility, and as
+such you can keep your schemacop 2 schemas as they are.
+
 ## 1.4.8 (2023-10-12)
 
 * Keep original validation error message when
