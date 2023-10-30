@@ -23,5 +23,18 @@ module RailsOps
 
       debug "  #{message}"
     end
+
+    private
+
+    def color(message, color, bold = false)
+      # Passing the value for bold is deprecated in Rails 7.1 and will
+      # be removed in Rails 7.2. As RailsOps is currently also supporting
+      # Rails 6.x, we need to use the correct method.
+      if Rails.gem_version >= Gem::Version.new('7.1')
+        super(message, color, bold: bold)
+      else
+        super(message, color, bold)
+      end
+    end
   end
 end
