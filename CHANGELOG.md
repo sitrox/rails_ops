@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1 (2024-01-10)
+
+* Update documentation
+
 ## 1.5.0 (2023-10-30)
 
 * Fix deprecation warnings for rails `>= 7.1`
