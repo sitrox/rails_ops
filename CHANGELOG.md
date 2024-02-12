@@ -4,6 +4,8 @@
 
 * Update documentation
 
+* Add ruby 3.3.0 to CI
+
 ## 1.5.3 (2024-01-10)
 
 * Tag with no changes

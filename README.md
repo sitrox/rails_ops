@@ -33,6 +33,7 @@ Requirements & Installation
   * 3.0.1
   * 3.1.0
   * 3.2.0
+  * 3.3.0
 - Please see the [unit test workflow](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml) for the combinations of the Rails & Ruby versions, as only compatible versions are tested with each other.
 - Prior Rails and Ruby versions may be supported but they are not tested in the CI.
 - Rails Ops' model operations require ActiveRecord but are database / adapter
