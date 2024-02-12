@@ -996,6 +996,41 @@ Rails Ops offers multiple ways of disabling authorization:
   end
   ```
 
+  However, please note that the block form of `authorize_param` is still executed,
+  as there might be code in the block that does not rely on the authorization
+  backend:
+
+  ```ruby
+  class MyOp < RailsOps::Operation
+    def perform
+      without_authorization
+
+      authorize_param %i[user group_id] do
+        # This block will be called
+        fail if ENV['GROUP_ID'].blank?
+      end
+    end
+  end
+  ```
+
+  If you want to skip the block, use `authorization_enabled?` to
+  check whether the authorization is enabled:
+
+  ```ruby
+  class MyOp < RailsOps::Operation
+    def perform
+      without_authorization
+
+      authorize_param %i[user group_id] do
+        next unless authorization_enabled?
+
+        # Do authorization calls
+      end
+    end
+  end
+  ```
+
+
 Model Operations
 ----------------
 

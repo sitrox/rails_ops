@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5.4 (2024-01-10)
+
+* Update documentation
+
+## 1.5.3 (2024-01-10)
+
+* Tag with no changes
+
+## 1.5.2 (2024-01-10)
+
+* Tag with no changes
+
 ## 1.5.1 (2024-01-10)
 
 * Update documentation
