@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.5 (2024-03-14)
+
+* Add instance method `lock_model_at_build?` to
+  `RailsOps::Operation::Model::Load` in order to allow dynamic decision whether
+  locking should occur.
+
 ## 1.5.4 (2024-01-10)
 
 * Update documentation

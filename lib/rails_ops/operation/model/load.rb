@@ -40,6 +40,10 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     _lock_model_at_build.nil? ? RailsOps.config.lock_models_at_build? : _lock_model_at_build
   end
 
+  def lock_model_at_build?
+    self.class._lock_model_at_build?
+  end
+
   # Method to set the lock mode, which can either be :exclusive to use
   # an exclusive write lock, or :shared to use a shared lock. Please note
   # that currently, :shared only works for MySql, Postgresql and Oracle DB,
@@ -93,7 +97,7 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
 
   def lock_relation(relation)
     # Directly return the relation if we don't want to lock the relation
-    return relation unless self.class.lock_model_at_build?
+    return relation unless lock_model_at_build?
 
     if self.class.lock_mode_or_default == :shared
       # Lock the relation in shared mode

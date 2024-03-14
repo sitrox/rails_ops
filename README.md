@@ -1196,6 +1196,22 @@ One caveat is, that shared locking is only supported for MySQl (MariaDB),
 Postgresql and Oracle DB databases, any other database will always use an
 exlusive lock.
 
+You can also dynamically enable or disable locking by creating an instance
+method `lock_model_at_build?`:
+
+```ruby
+class Operations::User::Update < RailsOps::Operation::Model::Load
+  model ::User
+
+  protected
+
+  def lock_model_at_build?
+    # Example: Lock based on a parameter
+    osparams.lock
+  end
+end
+```
+
 ### Creating models
 
 For creating models, you can use the base class
