@@ -261,7 +261,7 @@ DEPENDENCIES
   rubocop (= 1.45.1)
   simplecov
   sprockets-rails
-  sqlite3
+  sqlite3 (< 2.0.0)
 
 BUNDLED WITH
    2.4.6
