@@ -5,7 +5,9 @@ module RailsOps
       # ---------------------------------------------------------------
       # Register deprecator
       # ---------------------------------------------------------------
-      app.deprecators[:rails_ops] = RailsOps.deprecator if app
+      if app.respond_to?(:deprecators)
+        app.deprecators[:rails_ops] = RailsOps.deprecator
+      end
 
       # ---------------------------------------------------------------
       # Load hookup config eagerly at application startup unless

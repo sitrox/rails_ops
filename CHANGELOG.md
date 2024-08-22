@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.7 (2024-08-22)
+
+* Fix compatibility issue with older versions of Rails introduced in version
+  1.5.6
+
 ## 1.5.6 (2024-08-22)
 
 * #42 Bump nokogiri from 1.16.2 to 1.16.5 to mitigate CVE
