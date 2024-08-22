@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.5.6 (2024-08-22)
 
 * #42 Bump nokogiri from 1.16.2 to 1.16.5 to mitigate CVE
 
@@ -9,6 +9,8 @@
 
   Internal reference: `#127570`.
 
+
+* Freeze default empty array in `RailsOps::Context#op_chain`.
 ## 1.5.5 (2024-03-14)
 
 * Add instance method `lock_model_at_build?` to

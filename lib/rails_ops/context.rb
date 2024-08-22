@@ -2,7 +2,7 @@ module RailsOps
   class Context < ActiveType::Object
     attribute :user
     attribute :ability
-    attribute :op_chain, default: []
+    attribute :op_chain, default: [].freeze
     attribute :session
     attribute :called_via_hook
     attribute :url_options
