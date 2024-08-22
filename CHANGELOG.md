@@ -9,8 +9,13 @@
 
   Internal reference: `#127570`.
 
+* Modernize deprecation handling to fix the issue where deprecation warnings
+  would lead to deprecation warnings themselves.
+
+  Internal reference: `#128487`.
 
 * Freeze default empty array in `RailsOps::Context#op_chain`.
+
 ## 1.5.5 (2024-03-14)
 
 * Add instance method `lock_model_at_build?` to

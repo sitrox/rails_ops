@@ -45,6 +45,11 @@ module RailsOps
       Thread.current[AUTH_THREAD_STORAGE_KEY] = previous_value
     end
   end
+
+  # @private
+  def self.deprecator
+    @deprecator ||= ActiveSupport::Deprecation.new('2.0', 'RailsOps')
+  end
 end
 
 # ---------------------------------------------------------------

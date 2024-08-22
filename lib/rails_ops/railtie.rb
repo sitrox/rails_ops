@@ -1,7 +1,12 @@
 module RailsOps
   # @private
   class Railtie < Rails::Railtie
-    initializer 'rails_ops' do |_app|
+    initializer 'rails_ops' do |app|
+      # ---------------------------------------------------------------
+      # Register deprecator
+      # ---------------------------------------------------------------
+      app.deprecators[:rails_ops] = RailsOps.deprecator if app
+
       # ---------------------------------------------------------------
       # Load hookup config eagerly at application startup unless
       # in development mode.

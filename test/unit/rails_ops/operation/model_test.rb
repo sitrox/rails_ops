@@ -50,7 +50,7 @@ class RailsOps::Operation::ModelTest < ActiveSupport::TestCase
   def test_virtual_model_write_attribute
     cls = Class.new(RailsOps::Operation::Model) do
       model RailsOps::VirtualModel, 'Example' do
-        attribute :name, default: 'name'
+        attribute :name, default: 'name'.freeze
       end
     end
 

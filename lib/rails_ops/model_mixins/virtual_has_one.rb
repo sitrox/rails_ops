@@ -5,7 +5,7 @@ module RailsOps
 
       module ClassMethods
         def virtual_has_one(name, base_class, required: false, default: nil, type: Integer)
-          ActiveSupport::Deprecation.warn('virtual_has_one is deprecated and will be removed in a future version.')
+          RailsOps.deprecator.warn('virtual_has_one is deprecated and will be removed in a future version.')
 
           fk = "#{name}_id"
           attribute fk, type, default: default
