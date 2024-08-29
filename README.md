@@ -28,8 +28,9 @@ Requirements & Installation
   * Rails 6.1.x
   * Rails 7.0.x
   * Rails 7.1.x
+  * Rails 7.2.x
 - Additionally, the following Ruby versions are covered by our unit tests:
-  * 2.7.1
+  * 2.7.8
   * 3.0.1
   * 3.1.0
   * 3.2.0
