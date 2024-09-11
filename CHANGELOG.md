@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.8 (2024-09-11)
+
+* Also allow single path segments as symbols instead of array for
+  `authorize_param`'s `path` argument. Before, paths that were not arrays would
+  lead to the param authorization being ignored silently.
+
+  Internal reference: `#128987`.
+
 ## 1.5.7 (2024-08-22)
 
 * Fix compatibility issue with older versions of Rails introduced in version

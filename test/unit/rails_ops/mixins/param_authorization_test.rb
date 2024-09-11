@@ -42,6 +42,41 @@ class RailsOps::Mixins::ParamAuthorizationTest < ActiveSupport::TestCase
     end
   end
 
+  def test_without_array
+    @op = Class.new(RailsOps::Operation::Model::Load) do
+      schema3 do
+        int! :id
+        str? :foo
+        hsh? :bar do
+          str? :baz
+        end
+      end
+
+      model ::Group
+
+      authorize_param :foo, :foo, :subject_1
+      authorize_param :bar, :bar, :subject_1
+
+      def perform
+        # Do nothing
+      end
+    end
+
+    ctx = RailsOps::Context.new(ability: Ability.new)
+
+    assert_raises CanCan::AccessDenied do
+      @op.run!(ctx, id: 1, foo: 'bar')
+    end
+
+    assert_raises CanCan::AccessDenied do
+      @op.run!(ctx, id: 1, bar: {})
+    end
+
+    assert_raises CanCan::AccessDenied do
+      @op.run!(ctx, id: 1, bar: { baz: 'baz' })
+    end
+  end
+
   def test_without_ability
     @op.run!(id: 1)
   end

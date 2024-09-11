@@ -29,6 +29,8 @@ module RailsOps::Mixins::ParamAuthorization
     #   authorization backend. The block receives no arguments and is executed
     #   in context of the operation instance.
     def authorize_param(path, action = nil, *args, &block)
+      path = Array(path)
+
       # Validate parameters
       if block_given? && (action || args.any?)
         fail ArgumentError,
