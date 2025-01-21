@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'rails_ops/authorization_backend/can_can_can'
 
 class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
   include TestHelper
@@ -62,10 +63,8 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
 
     assert_equal :red, op.model.color
 
-    op = FLOWER_OP.new(id: flower2.id)
-
     assert_raises ActiveRecord::RecordNotFound do
-      op.model
+      FLOWER_OP.new(id: flower2.id)
     end
   end
 
@@ -89,5 +88,79 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
     assert op2.model.respond_to?(:optimal_bpm)
     refute op2.model.respond_to?(:planted_is_true)
     refute op2.model.respond_to?(:response_to_everything)
+  end
+
+  def test_load_authorization_order
+    RailsOps.config.authorization_backend = 'RailsOps::AuthorizationBackend::CanCanCan'
+
+    op_klass = Class.new(RailsOps::Operation::Model::Update) do
+      model ::Group
+    end
+
+    ability = Class.new do
+      include CanCan::Ability
+
+      def initialize
+        super
+        can :read, Group, color: 'red'
+        can :update, Group, color: 'red'
+      end
+    end.new
+
+    context = RailsOps::Context.new(ability: ability)
+
+    assert_nothing_raised do
+      model = Group.create!(color: 'red')
+      op_klass.run!(context, id: model.id, group: { color: 'red' })
+    end
+
+    assert_raises CanCan::AccessDenied do
+      model = Group.create!(color: 'blue')
+      op_klass.run!(context, id: model.id, group: { color: 'red' })
+    end
+
+    assert_raises CanCan::AccessDenied do
+      model = Group.create!(color: 'red')
+      op_klass.run!(context, id: model.id, group: { color: 'blue' })
+    end
+  ensure
+    RailsOps.config.authorization_backend = nil
+  end
+
+  def test_update_authorization_order
+    RailsOps.config.authorization_backend = 'RailsOps::AuthorizationBackend::CanCanCan'
+
+    op_klass = Class.new(RailsOps::Operation::Model::Update) do
+      model ::Group
+    end
+
+    ability = Class.new do
+      include CanCan::Ability
+
+      def initialize
+        super
+        can :read, Group
+        can :update, Group, color: 'red'
+      end
+    end.new
+
+    context = RailsOps::Context.new(ability: ability)
+
+    assert_nothing_raised do
+      model = Group.create!(color: 'red')
+      op_klass.run!(context, id: model.id, group: { color: 'red' })
+    end
+
+    assert_raises CanCan::AccessDenied do
+      model = Group.create!(color: 'blue')
+      op_klass.run!(context, id: model.id, group: { color: 'red' })
+    end
+
+    assert_raises CanCan::AccessDenied do
+      model = Group.create!(color: 'red')
+      op_klass.run!(context, id: model.id, group: { color: 'blue' })
+    end
+  ensure
+    RailsOps.config.authorization_backend = nil
   end
 end

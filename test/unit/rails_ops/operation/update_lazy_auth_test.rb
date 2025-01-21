@@ -12,6 +12,7 @@ class RailsOps::Operation::UpdateLazyAuthTest < ActiveSupport::TestCase
 
     def perform
       fail osparams.exception if osparams.exception
+      save!
       @done = true
     end
   end

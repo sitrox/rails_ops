@@ -26,16 +26,14 @@ class RailsOps::Operation::Model::LoadTest < ActiveSupport::TestCase
   end
 
   def test_without_id
-    op = BASIC_OP.new
     assert_raises_with_message RuntimeError, 'Param :id must be given.' do
-      op.model
+      BASIC_OP.new
     end
   end
 
   def test_not_found
-    op = BASIC_OP.new(id: 5)
     assert_raise ActiveRecord::RecordNotFound do
-      op.model
+      BASIC_OP.new(id: 5)
     end
   end
 

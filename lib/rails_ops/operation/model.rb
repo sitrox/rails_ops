@@ -169,9 +169,8 @@ class RailsOps::Operation::Model < RailsOps::Operation
 
   protected
 
-  # Performs nested model operations and then saves the model. If you have
-  # nested model operations, you should call this method instead of calling
-  # `model.save!` directly.
+  # Performs nested model operations and then saves the model. You should always
+  # call this method instead of invoking "model.save!" directly.
   def save!
     run_policies :before_nested_model_ops
     perform_nested_model_ops!

@@ -8,36 +8,34 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     true
   end
 
-  policy :before_perform do
-    if model_authorization_action && self.class._model_authorization_lazy
-      authorize_model! model_authorization_action, model
+  policy :on_init do
+    if self.class._model_authorization_lazy && load_model_authorization_action.nil?
+      fail RailsOps::Exceptions::NoAuthorizationPerformed,
+           "Operation #{self.class.name} must specify a " \
+           'load_model_authorization_action because model ' \
+           'authorization is configured to be lazy.'
     end
   end
 
   def model_authorization
-    return unless authorization_enabled?
-
-    if self.class._model_authorization_lazy
-      if load_model_authorization_action.nil?
-        fail RailsOps::Exceptions::NoAuthorizationPerformed,
-             "Operation #{self.class.name} must specify a " \
-             'load_model_authorization_action because model ' \
-             'authorization is configured to be lazy.'
-      else
-        authorize_model! load_model_authorization_action, model
-      end
-    elsif !load_model_authorization_action.nil?
-      authorize_model_with_authorize_only! load_model_authorization_action, model
-    end
-
-    unless model_authorization_action.nil? || self.class._model_authorization_lazy
+    if authorization_enabled? && model_authorization_action.present?
       authorize_model! model_authorization_action, model
     end
   end
 
   def build_model
+    # Load model via parent class
     super
+
+    # Build nested model operations
     build_nested_model_ops :update
+
+    # Perform update authorization BEFORE assigning attributes
+    unless self.class._model_authorization_lazy
+      model_authorization
+    end
+
+    # Assign attributes
     assign_attributes
   end
 

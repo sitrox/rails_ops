@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.6.0.rc0 (2025-01-21)
+
+* Adapt the way model authorization works for an additional layer of security:
+
+  * Update-Operations (operations inheriting from
+    `RailsOps::Operation::Model::Update`) now perform their model authorization
+    check up to 3 times immediately after the model is loaded (in
+    `build_model`).
+
+    Previously, the authorization was only performed after the attributes have
+    already been assigned, never checking authorization against the "pristine"
+    model.
+
+  * Load-Operations (operations inheriting from
+    `RailsOps::Operation::Model::Load`) now always load their associated model
+    **directly on OP instantiation**. Previously, this was only the case if load
+    model authorization was enabled.
+
+    In addition, the method `model_authorization` has been renamed to
+    `load_model_authorization` in order to separate it from the method
+    `model_authorization` in `RailsOps::Operation::Model::Update`.
+
+  Internal reference: `#133622`.
+
+### Migrating from earlier versions
+
+TODO
+
 ## 1.5.8 (2024-09-11)
 
 * Also allow single path segments as symbols instead of array for
