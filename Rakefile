@@ -22,7 +22,6 @@ task :gemspec do
     spec.add_development_dependency 'sqlite3', '<2.0.0'
     spec.add_development_dependency 'cancancan'
     spec.add_development_dependency 'pry'
-    spec.add_development_dependency 'colorize'
     spec.add_development_dependency 'rubocop', '1.45.1'
     spec.add_development_dependency 'sprockets-rails'
     spec.add_development_dependency 'simplecov'
