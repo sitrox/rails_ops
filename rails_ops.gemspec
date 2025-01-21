@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<sqlite3>.freeze, ["< 2.0.0"])
   s.add_development_dependency(%q<cancancan>.freeze, [">= 0"])
   s.add_development_dependency(%q<pry>.freeze, [">= 0"])
-  s.add_development_dependency(%q<rubocop>.freeze, ["= 1.45.1"])
+  s.add_development_dependency(%q<rubocop>.freeze, ["= 1.70.0"])
   s.add_development_dependency(%q<sprockets-rails>.freeze, [">= 0"])
   s.add_development_dependency(%q<simplecov>.freeze, [">= 0"])
   s.add_runtime_dependency(%q<active_type>.freeze, [">= 1.3.0"])

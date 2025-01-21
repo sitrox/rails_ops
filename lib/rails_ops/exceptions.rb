@@ -13,7 +13,7 @@ module RailsOps::Exceptions
 
     def initialize(original_exception)
       @original_exception = original_exception
-      super original_exception.message
+      super(original_exception.message)
     end
   end
 
