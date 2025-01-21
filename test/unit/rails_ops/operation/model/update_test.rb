@@ -119,7 +119,7 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
       op_klass.run!(context, id: model.id, group: { color: 'red' })
     end
 
-    assert_raises CanCan::AccessDenied do
+    assert_nothing_raised do
       model = Group.create!(color: 'red')
       op_klass.run!(context, id: model.id, group: { color: 'blue' })
     end
@@ -156,7 +156,7 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
       op_klass.run!(context, id: model.id, group: { color: 'red' })
     end
 
-    assert_raises CanCan::AccessDenied do
+    assert_nothing_raised do
       model = Group.create!(color: 'red')
       op_klass.run!(context, id: model.id, group: { color: 'blue' })
     end

@@ -17,6 +17,12 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     end
   end
 
+  policy :before_perform do
+    # If the authorization is configured to be lazy, we need to call the authorization
+    # on the copy of the model that we made before assigning the new attributes.
+    authorize_model! model_authorization_action, @model_before_assigning_attributes if self.class._model_authorization_lazy
+  end
+
   def model_authorization
     if authorization_enabled? && model_authorization_action.present?
       authorize_model! model_authorization_action, model
@@ -30,8 +36,12 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     # Build nested model operations
     build_nested_model_ops :update
 
-    # Perform update authorization BEFORE assigning attributes
-    unless self.class._model_authorization_lazy
+    # Perform update authorization BEFORE assigning attributes. If the authorization is lazy,
+    # we copy the model before assigning the attributes, such that we can call the authorization
+    # later on.
+    if self.class._model_authorization_lazy
+      @model_before_assigning_attributes = @model.dup
+    else
       model_authorization
     end
 
