@@ -169,7 +169,7 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
 
   def test_inspect
     # See https://bugs.ruby-lang.org/issues/20433#note-10
-    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0")
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4.0')
       assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo" => :bar})', BASIC_OP.new(foo: :bar).inspect
     else
       assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo"=>:bar})', BASIC_OP.new(foo: :bar).inspect
@@ -178,7 +178,7 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
 
   def test_inspect_with_numeric_param_keys
     # See https://bugs.ruby-lang.org/issues/20433#note-10
-    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0")
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4.0')
       assert_equal 'RailsOps::OperationTest::BASIC_OP ({1 => 2})', BASIC_OP.new(1 => 2).inspect
     else
       assert_equal 'RailsOps::OperationTest::BASIC_OP ({1=>2})', BASIC_OP.new(1 => 2).inspect
