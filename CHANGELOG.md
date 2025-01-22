@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.0.rc1 (2025-01-22)
+
+* Add minimum version requirement for `rails` (rails `> 4` is required)
+
 ## 1.6.0.rc0 (2025-01-22)
 
 * Adapt the way model authorization works for an additional layer of security:

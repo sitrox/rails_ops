@@ -18,7 +18,7 @@ task :gemspec do
 
     spec.add_dependency 'active_type', '>= 1.3.0'
     spec.add_dependency 'minitest'
-    spec.add_dependency 'rails'
+    spec.add_dependency 'rails', '> 4'
     spec.add_dependency 'request_store'
     spec.add_dependency 'schemacop', '>= 3.0.0', '<= 3.1'
   end

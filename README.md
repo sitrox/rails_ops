@@ -23,6 +23,8 @@ Requirements & Installation
 
 ### Requirements
 
+* `rails > 4`
+
 - RailsOps only works with Rails applications, with the following Rails versions being tested in the CI:
   * Rails 6.0.x
   * Rails 6.1.x
