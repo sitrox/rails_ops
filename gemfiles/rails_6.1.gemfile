@@ -2,6 +2,15 @@
 
 source 'https://rubygems.org'
 
+gem 'appraisal'
+gem 'bundler'
+gem 'cancancan'
+gem 'pry'
 gem 'rails', '~> 6.1.4'
+gem 'rake'
+gem 'rubocop', '1.70.0'
+gem 'simplecov'
+gem 'sprockets-rails'
+gem 'sqlite3', '<2.0.0'
 
 gemspec path: '../'
