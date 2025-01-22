@@ -1,6 +1,7 @@
 require 'active_type'
 require 'schemacop'
 require 'request_store'
+require 'ostruct'
 
 module RailsOps
   AUTH_THREAD_STORAGE_KEY = :rails_ops_authorization_enabled
