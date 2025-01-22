@@ -18,6 +18,12 @@ class RailsOps::Operation::AuthTest < ActiveSupport::TestCase
     model ::Group
   end
 
+  UPDATE_OP_WITH_SPECIAL_LOAD_OP = Class.new(RailsOps::Operation::Model::Update) do
+    model ::Group
+
+    load_model_authorization_action :create
+  end
+
   CREATE_OP = Class.new(RailsOps::Operation::Model::Create) do
     model ::Group
   end
@@ -78,9 +84,19 @@ class RailsOps::Operation::AuthTest < ActiveSupport::TestCase
   def test_permitted_update
     ctx = RailsOps::Context.new(ability: ABILITY.new(read: true, update: true))
     assert_nothing_raised do
+      # As `read``and `update` is permitted, `new` and `run` should both work for the operation
       op = UPDATE_OP.new(ctx, id: 1, group: { name: 'Group2' })
       res = op.run!
       assert_equal 'Group2', res.model.name
+    end
+  end
+
+  def test_unpermitted_read_permitted_update
+    # While `update` is permitted, `read` is not, and therefore already trying to
+    # instantiate the operation must fail.
+    ctx = RailsOps::Context.new(ability: ABILITY.new(update: true))
+    assert_raises CanCan::AccessDenied do
+      UPDATE_OP.new(ctx, id: 1, group: { name: 'Group2' })
     end
   end
 
