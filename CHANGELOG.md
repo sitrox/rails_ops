@@ -1,13 +1,11 @@
 # Changelog
 
-## 1.6.0.rc0 (2025-01-21)
+## 1.6.0.rc0 (2025-01-22)
 
 * Adapt the way model authorization works for an additional layer of security:
 
-  * Update-Operations (operations inheriting from
-    `RailsOps::Operation::Model::Update`) now perform their model authorization
-    check up to 3 times immediately after the model is loaded (in
-    `build_model`).
+  * Update-Operations (operations inheriting from `RailsOps::Operation::Model::Update`)
+    now perform their model authorization immediately after the model is loaded (in `build_model`).
 
     Previously, the authorization was only performed after the attributes have
     already been assigned, never checking authorization against the "pristine"
@@ -26,7 +24,21 @@
 
 ### Migrating from earlier versions
 
-TODO
+Check that operations using model authorization still work as expected, especially
+operations inheriting from `RailsOps::Operation::Model::Update` or from
+`RailsOps::Operation::Model::Load`:
+
+* For operations inheriting from `RailsOps::Operation::Model::Update`, you need
+  to make sure that running the model authorization on the "pristine" model (before
+  assigning the new attributes) is the expected behaviour. If you need to authorize
+  the state *after* assigning the params to the model, you'll need add that check
+  manually.
+
+* For operations inheriting from `RailsOps::Operation::Model::Load`: Rename all
+  uses of `model_authorization` to `load_model_authorization`.
+
+After applying these changes, carefully test your application, run unit tests etc.
+to ensure all operations still behave as expected in regards to authorization.
 
 ## 1.5.8 (2024-09-11)
 
