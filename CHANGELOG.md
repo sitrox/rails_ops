@@ -30,9 +30,11 @@ operations inheriting from `RailsOps::Operation::Model::Update` or from
 
 * For operations inheriting from `RailsOps::Operation::Model::Update`, you need
   to make sure that running the model authorization on the "pristine" model (before
-  assigning the new attributes) is the expected behaviour. If you need to authorize
-  the state *after* assigning the params to the model, you'll need add that check
-  manually.
+  assigning the new attributes) is still applying your authorization logic in
+  the correct way (i.e. authorizing on the model *before* assigning the attributes
+  applies authorization correctly).
+  If you need to authorize the state *after* assigning the params to the model,
+  you'll need add that check manually in your operation.
 
 * For operations inheriting from `RailsOps::Operation::Model::Load`: Rename all
   uses of `model_authorization` to `load_model_authorization`.

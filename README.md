@@ -1355,8 +1355,9 @@ authorization check based on this model.
 
 While you can override this method to perform custom authorization, RailsOps
 provides a base implementation. Using the class method
-`model_authorization_action`, you can specify an action verb that is used for
-authorizing your model.
+`model_authorization_action` (or `load_model_authorization` for operations
+inheriting from `RailsOps::Operation::Model::Load`), you can specify an action
+verb that is used for authorizing your model.
 
 ```ruby
 class Operations::User::Load < RailsOps::Operation::Model::Load
@@ -1364,7 +1365,23 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
 
   # This automatically calls `authorize_model! :read` after operation
   # instantiation.
-  model_authorization_action :read
+  load_model_authorization :read
+end
+```
+
+Another example for an update operation:
+
+```ruby
+class Operations::User::Update < RailsOps::Operation::Model::Update
+  model User
+
+  # This automatically calls `authorize_model! :read` after operation
+  # instantiation.
+  load_model_authorization :read
+
+  # This automatically calls `authorize_model! :update` after operation
+  # instantiation.
+  model_authorization :update
 end
 ```
 
