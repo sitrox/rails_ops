@@ -168,13 +168,21 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
   end
 
   def test_inspect
-    assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo"=>:bar})',
-                 BASIC_OP.new(foo: :bar).inspect
+    # See https://bugs.ruby-lang.org/issues/20433#note-10
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4.0')
+      assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo" => :bar})', BASIC_OP.new(foo: :bar).inspect
+    else
+      assert_equal 'RailsOps::OperationTest::BASIC_OP ({"foo"=>:bar})', BASIC_OP.new(foo: :bar).inspect
+    end
   end
 
   def test_inspect_with_numeric_param_keys
-    assert_equal 'RailsOps::OperationTest::BASIC_OP ({1=>2})',
-                 BASIC_OP.new(1 => 2).inspect
+    # See https://bugs.ruby-lang.org/issues/20433#note-10
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4.0')
+      assert_equal 'RailsOps::OperationTest::BASIC_OP ({1 => 2})', BASIC_OP.new(1 => 2).inspect
+    else
+      assert_equal 'RailsOps::OperationTest::BASIC_OP ({1=>2})', BASIC_OP.new(1 => 2).inspect
+    end
   end
 
   def test_with_rollback_on_exception

@@ -29,12 +29,14 @@ Requirements & Installation
   * Rails 7.0.x
   * Rails 7.1.x
   * Rails 7.2.x
+  * Rails 8.0.x
 - Additionally, the following Ruby versions are covered by our unit tests:
   * 2.7.8
   * 3.0.1
   * 3.1.0
   * 3.2.0
   * 3.3.0
+  * 3.4.0
 - Please see the [unit test workflow](https://github.com/sitrox/rails_ops/actions/workflows/ruby.yml) for the combinations of the Rails & Ruby versions, as only compatible versions are tested with each other.
 - Prior Rails and Ruby versions may be supported but they are not tested in the CI.
 - Rails Ops' model operations require ActiveRecord but are database / adapter
@@ -1353,8 +1355,9 @@ authorization check based on this model.
 
 While you can override this method to perform custom authorization, RailsOps
 provides a base implementation. Using the class method
-`model_authorization_action`, you can specify an action verb that is used for
-authorizing your model.
+`model_authorization_action` (or `load_model_authorization` for operations
+inheriting from `RailsOps::Operation::Model::Load`), you can specify an action
+verb that is used for authorizing your model.
 
 ```ruby
 class Operations::User::Load < RailsOps::Operation::Model::Load
@@ -1362,7 +1365,23 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
 
   # This automatically calls `authorize_model! :read` after operation
   # instantiation.
-  model_authorization_action :read
+  load_model_authorization :read
+end
+```
+
+Another example for an update operation:
+
+```ruby
+class Operations::User::Update < RailsOps::Operation::Model::Update
+  model User
+
+  # This automatically calls `authorize_model! :read` after operation
+  # instantiation.
+  load_model_authorization :read
+
+  # This automatically calls `authorize_model! :update` after operation
+  # instantiation.
+  model_authorization :update
 end
 ```
 

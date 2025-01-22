@@ -20,6 +20,11 @@ class RailsOps::Operation::Model::Destroy < RailsOps::Operation::Model::Load
     end
   end
 
+  def build_model
+    super
+    model_authorization
+  end
+
   def perform
     trigger :before_destroy, model: model
     model.destroy!

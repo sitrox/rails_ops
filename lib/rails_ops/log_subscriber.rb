@@ -33,7 +33,7 @@ module RailsOps
       if Rails.gem_version >= Gem::Version.new('7.1')
         super(message, color, bold: bold)
       else
-        super(message, color, bold)
+        super
       end
     end
   end

@@ -4,7 +4,7 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
   class_attribute :_lock_mode
 
   policy :on_init do
-    model_authorization
+    model
   end
 
   # Gets or sets the action verb used for authorizing models on load.
@@ -18,10 +18,8 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     return _load_model_authorization_action
   end
 
-  def model_authorization
-    return unless authorization_enabled?
-
-    unless load_model_authorization_action.nil?
+  def load_model_authorization
+    if authorization_enabled? && load_model_authorization_action.present?
       authorize_model! load_model_authorization_action, model
     end
   end
@@ -78,11 +76,17 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     relation = lock_relation(relation)
 
     # Fetch (and possibly lock) model
-    return relation.find_by!(model_id_field => params[model_id_field])
+    model = relation.find_by!(model_id_field => params[model_id_field])
+
+    # Return model
+    return model
   end
 
   def build_model
     @model = find_model
+
+    # Perform load model authorization
+    load_model_authorization
 
     if @model.respond_to?(:parent_op=)
       @model.parent_op = self

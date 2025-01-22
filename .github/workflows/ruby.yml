@@ -37,6 +37,12 @@ jobs:
             ruby-version: '3.2.0'
           - rails-version: '7.1'
             ruby-version: '3.3.0'
+          - rails-version: '8.0'
+            ruby-version: '3.2.0'
+          - rails-version: '8.0'
+            ruby-version: '3.3.0'
+          - rails-version: '8.0'
+            ruby-version: '3.4.0'
     name: Test against Ruby ${{ matrix.ruby-version }} / Rails ${{ matrix.rails-version }}
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/rails_${{ matrix.rails-version }}.gemfile

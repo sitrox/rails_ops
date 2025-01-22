@@ -19,7 +19,7 @@ module RailsOps
       descr += ' - ' if descr
       start = Time.now
       res = yield
-      puts "#{descr}#{((Time.now - start).to_f * 1000).round(1)}ms elapsed.".magenta
+      puts "#{descr}#{((Time.now - start).to_f * 1000).round(1)}ms elapsed."
       res
     end
 

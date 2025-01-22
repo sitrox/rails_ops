@@ -1,5 +1,47 @@
 # Changelog
 
+## 1.6.0.rc0 (2025-01-22)
+
+* Adapt the way model authorization works for an additional layer of security:
+
+  * Update-Operations (operations inheriting from `RailsOps::Operation::Model::Update`)
+    now perform their model authorization immediately after the model is loaded (in `build_model`).
+
+    Previously, the authorization was only performed after the attributes have
+    already been assigned, never checking authorization against the "pristine"
+    model.
+
+  * Load-Operations (operations inheriting from
+    `RailsOps::Operation::Model::Load`) now always load their associated model
+    **directly on OP instantiation**. Previously, this was only the case if load
+    model authorization was enabled.
+
+    In addition, the method `model_authorization` has been renamed to
+    `load_model_authorization` in order to separate it from the method
+    `model_authorization` in `RailsOps::Operation::Model::Update`.
+
+  Internal reference: `#133622`.
+
+### Migrating from earlier versions
+
+Check that operations using model authorization still work as expected, especially
+operations inheriting from `RailsOps::Operation::Model::Update` or from
+`RailsOps::Operation::Model::Load`:
+
+* For operations inheriting from `RailsOps::Operation::Model::Update`, you need
+  to make sure that running the model authorization on the "pristine" model (before
+  assigning the new attributes) is still applying your authorization logic in
+  the correct way (i.e. authorizing on the model *before* assigning the attributes
+  applies authorization correctly).
+  If you need to authorize the state *after* assigning the params to the model,
+  you'll need add that check manually in your operation.
+
+* For operations inheriting from `RailsOps::Operation::Model::Load`: Rename all
+  uses of `model_authorization` to `load_model_authorization`.
+
+After applying these changes, carefully test your application, run unit tests etc.
+to ensure all operations still behave as expected in regards to authorization.
+
 ## 1.5.8 (2024-09-11)
 
 * Also allow single path segments as symbols instead of array for
