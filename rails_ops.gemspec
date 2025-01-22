@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: rails_ops 1.6.0.rc0 ruby lib
+# stub: rails_ops 1.6.0.rc1 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "rails_ops".freeze
-  s.version = "1.6.0.rc0"
+  s.version = "1.6.0.rc1"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency(%q<active_type>.freeze, [">= 1.3.0"])
   s.add_runtime_dependency(%q<minitest>.freeze, [">= 0"])
-  s.add_runtime_dependency(%q<rails>.freeze, [">= 0"])
+  s.add_runtime_dependency(%q<rails>.freeze, ["> 4"])
   s.add_runtime_dependency(%q<request_store>.freeze, [">= 0"])
   s.add_runtime_dependency(%q<schemacop>.freeze, [">= 3.0.0", "<= 3.1"])
 end
