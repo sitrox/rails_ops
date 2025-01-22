@@ -28,6 +28,9 @@ Check that operations using model authorization still work as expected, especial
 operations inheriting from `RailsOps::Operation::Model::Update` or from
 `RailsOps::Operation::Model::Load`:
 
+* For operations inheriting from `RailsOps::Operation::Model::Load`: Rename all
+  uses of `model_authorization` to `load_model_authorization`.
+
 * For operations inheriting from `RailsOps::Operation::Model::Update`, you need
   to make sure that running the model authorization on the "pristine" model (before
   assigning the new attributes) is still applying your authorization logic in
@@ -36,8 +39,35 @@ operations inheriting from `RailsOps::Operation::Model::Update` or from
   If you need to authorize the state *after* assigning the params to the model,
   you'll need add that check manually in your operation.
 
-* For operations inheriting from `RailsOps::Operation::Model::Load`: Rename all
-  uses of `model_authorization` to `load_model_authorization`.
+
+  One example of how this behaviour was changed: A user may only update
+  a `Group` object with a `color` of `'red'`:
+
+  ```ruby
+  class Ability
+    can :update, Group, color: 'red'
+  end
+  ```
+
+  Before, this was the way RailsOps handled it:
+
+  ```ruby
+  model = find_record(params[:id]) # => model = Group(color: 'blue')
+  model.assign_attributes(params)  # params = { color: 'red' }
+  authorize! :update, model
+  ```
+
+  This works, because RailsOps already assigned `'red'` to the `color` attribute of the model. This means
+  that the `authorize!` call will succeed, even though the original model in the database is not permissible
+  to be updated by the user.
+
+  Afterwards, the behaviour is as follows:
+
+  ```ruby
+  model = find_record(params[:id]) # => model = Group(color: 'blue')
+  authorize! :update, model        # => Fails with CanCan::AccessDenied, as the user may not update the group
+  # [...]
+  ```
 
 After applying these changes, carefully test your application, run unit tests etc.
 to ensure all operations still behave as expected in regards to authorization.
