@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0 (2025-01-23)
+
+* Stable release based on previous RC releases
+
+* Read previous `1.6.0.rcX` entries for all changes included in this stable release
+  as well as upgrading instructions.
+
 ## 1.6.0.rc1 (2025-01-22)
 
 * Add minimum version requirement for `rails` (rails `> 4` is required)
