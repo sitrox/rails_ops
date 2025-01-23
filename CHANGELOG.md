@@ -32,8 +32,14 @@ Check that operations using model authorization still work as expected, especial
 operations inheriting from `RailsOps::Operation::Model::Update` or from
 `RailsOps::Operation::Model::Load`:
 
-* For operations inheriting from `RailsOps::Operation::Model::Load`: Rename all
-  uses of `model_authorization` to `load_model_authorization`.
+* For operations inheriting from `RailsOps::Operation::Model::Load`:
+
+  - Rename all uses of `model_authorization` to `load_model_authorization`.
+
+  - Make sure that you pass in the `:id` param to your operation if you
+    instantiate the operation manually with `new`. This is because the model
+    is not directly loaded on OP instantiation, which is why the `:id` param
+    is needed.
 
 * For operations inheriting from `RailsOps::Operation::Model::Update`, you need
   to make sure that running the model authorization on the "pristine" model (before
