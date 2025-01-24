@@ -40,7 +40,7 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     # we copy the model before assigning the attributes, such that we can call the authorization
     # later on.
     if self.class._model_authorization_lazy
-      @model_before_assigning_attributes = @model.clone
+      @model_before_assigning_attributes = @model.deep_dup
     else
       model_authorization
     end

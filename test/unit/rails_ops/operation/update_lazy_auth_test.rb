@@ -89,8 +89,20 @@ class RailsOps::Operation::UpdateLazyAuthTest < ActiveSupport::TestCase
 
   def test_permitted_update_unpermitted_color
     ctx = RailsOps::Context.new(ability: ABILITY.new(read: true, update: true))
-    op = BASIC_OP.new(ctx, id: 3, group: { color: 'red' })
+    op = BASIC_OP.new(ctx, id: 3)
     assert_raises CanCan::AccessDenied do
+      op.run!
+    end
+  end
+
+  def test_permitted_update_permitted_color_other_color_target_state
+    # Here, we test that we can update a record where the ability
+    # allows us the `:update` action on the current state of the model,
+    # despite bringing the object to a state where we won't have the
+    # ability to update the object anymore afterwards.
+    ctx = RailsOps::Context.new(ability: ABILITY.new(read: true, update: true))
+    op = BASIC_OP.new(ctx, id: 1, group: { color: 'blue' })
+    assert_nothing_raised do
       op.run!
     end
   end
