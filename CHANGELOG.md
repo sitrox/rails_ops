@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.1 (2025-01-24)
+
+* Fix lazy authorization in `RailsOps::Operation::Model::Update` operation
+
+Internal reference: `#133962`.
+
 ## 1.6.0 (2025-01-23)
 
 * Stable release based on previous RC releases
