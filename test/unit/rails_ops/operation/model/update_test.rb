@@ -163,4 +163,52 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
   ensure
     RailsOps.config.authorization_backend = nil
   end
+
+  def test_policies
+    op_klass = Class.new(RailsOps::Operation::Model::Update) do
+      model ::Group
+
+      policy do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # However, the new name should not be persisted to the database yet
+        fail 'Attribute change should not be persisted yet' unless Group.find(model.id).name == 'foobar'
+      end
+
+      policy :before_attr_assign do
+        # The name of the model itself should still be the initial value
+        fail 'Attribute should not be assigned to new value yet' unless model.name == 'foobar'
+      end
+
+      policy :on_init do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # However, the new name should not be persisted to the database yet
+        fail 'Attribute change should not be persisted yet' unless Group.find(model.id).name == 'foobar'
+      end
+
+      policy :before_perform do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # However, the new name should not be persisted to the database yet
+        fail 'Attribute change should not be persisted yet' unless Group.find(model.id).name == 'foobar'
+      end
+
+      policy :after_perform do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # Also, the new name should be persisted to the database
+        fail 'Attribute change should not be persisted yet' unless Group.find(model.id).name == 'new_name'
+      end
+    end
+
+    model = Group.create!(name: 'foobar')
+    assert_nothing_raised do
+      op_klass.run!(id: model.id, group: { name: 'new_name' })
+    end
+  end
 end

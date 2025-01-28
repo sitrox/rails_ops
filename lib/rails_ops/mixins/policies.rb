@@ -6,6 +6,7 @@ module RailsOps::Mixins::Policies
   extend ActiveSupport::Concern
 
   POLICY_CHAIN_KEYS = %i[
+    before_attr_assign
     on_init
     before_perform
     after_perform
@@ -24,6 +25,12 @@ module RailsOps::Mixins::Policies
     def policy(chain = :before_perform, prepend_action: false, &block)
       unless POLICY_CHAIN_KEYS.include?(chain)
         fail "Unknown policy chain #{chain.inspect}, available are #{POLICY_CHAIN_KEYS.inspect}."
+      end
+
+      # The `before_attr_assign` chain is only allowed if the operation is a model
+      # operation, i.e. it needs to implement the `build_model` method.
+      if chain == :before_attr_assign && !method_defined?(:assign_attributes)
+        fail 'Policy :before_attr_assign may not be used unless your operation defines the `assign_attributes` method!'
       end
 
       self._policy_chains = _policy_chains.dup
