@@ -12,6 +12,8 @@ module RailsOps::Mixins::Model::Authorization
   module ClassMethods
     # Gets or sets the action verb used for authorizing models.
     def model_authorization_action(*action, lazy: false)
+      RailsOps.deprecator.warn('Using `lazy` model authorization is deprecated and will be removed in a future version.') if lazy
+
       if action.size == 1
         self._model_authorization_action = action.first
         self._model_authorization_lazy = lazy

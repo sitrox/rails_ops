@@ -1400,6 +1400,10 @@ sensible default. See the respective class' source code for details.
 
 #### Lazy model update authorization
 
+*Please note that using lazy model update authorization is deprecated any may
+be removed in a future release. See the changelog for instructions on how to
+adapt your application.*
+
 In case of operations inheriting from `RailsOps::Operation::Model::Update`, you
 can specify the `model_authorization_action` to be `lazy`, meaning that it will
 only be checked when *performing* the operation, but not on initialization. This
