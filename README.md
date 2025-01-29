@@ -454,7 +454,7 @@ an appropriate exception.
 As mentioned above, policies can be executed at various points in your
 operation's lifecycle. This is possible using *policy chains*:
 
-- `:before_attr_assignment`
+- `:before_attr_assign`
 
   Policies in this chain run before assigning the attributes to the model. This chain is only run
   in `Model` operations, which at some point call the `assign_attributes` method. This chain is

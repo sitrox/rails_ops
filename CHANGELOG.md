@@ -2,7 +2,7 @@
 
 ## 1.7.0 (UNRELEASED)
 
-* Introduce new `:before_attr_assignment` policy chain which allows to
+* Introduce new `:before_attr_assign` policy chain which allows to
   access the `model` instance before the parameters are assigned.
 
 * Fix bug with lazy authorization in `RailsOps::Operation::Model::Update`
@@ -16,7 +16,7 @@
 
 * Make sure you use the correct policy chains, depending on the state you
   need the `model` to be in. If you need the model before the attributes are
-  assigned to the passed-in params, use the `:before_attr_assignment` chain.
+  assigned to the passed-in params, use the `:before_attr_assign` chain.
   In all other chains, the `model` instance has its attributes assigned to the
   params you supplied to the operation.
 
