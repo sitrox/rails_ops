@@ -2,6 +2,7 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
   class_attribute :_lock_model_at_build
   class_attribute :_load_model_authorization_action
   class_attribute :_lock_mode
+  class_attribute :_model_includes
 
   policy :on_init do
     model
@@ -64,6 +65,10 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     :id
   end
 
+  def self.model_includes(includes)
+    self._model_includes = includes
+  end
+
   def find_model
     unless params[model_id_field]
       fail "Param #{model_id_field.inspect} must be given."
@@ -74,6 +79,9 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
 
     # Express intention to lock if required
     relation = lock_relation(relation)
+
+    # Apply includes if given in the operation
+    relation = relation.includes(self.class._model_includes) if self.class._model_includes.present?
 
     # Fetch (and possibly lock) model
     model = relation.find_by!(model_id_field => params[model_id_field])
