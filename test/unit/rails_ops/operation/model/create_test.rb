@@ -65,4 +65,51 @@ class RailsOps::Operation::Model::CreateTest < ActiveSupport::TestCase
       op.build_model
     end
   end
+
+  def test_policies
+    op_klass = Class.new(RailsOps::Operation::Model::Create) do
+      model ::Group
+
+      policy do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # However, the model should not be persisted yet
+        fail 'Model should not be persisted to the database yet' if model.persisted?
+      end
+
+      policy :before_attr_assign do
+        # The name of the model itself should still be nil
+        fail 'Attribute should not be assigned to a value yet' if model.name.present?
+      end
+
+      policy :on_init do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # However, the model should not be persisted yet
+        fail 'Model should not be persisted to the database yet' if model.persisted?
+      end
+
+      policy :before_perform do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # However, the model should not be persisted yet
+        fail 'Model should not be persisted to the database yet' if model.persisted?
+      end
+
+      policy :after_perform do
+        # Here, we need the model to have the new name assigned
+        fail 'Attribute should be assigned to new value' unless model.name == 'new_name'
+
+        # Now, the model should be persisted to the database
+        fail 'Model should not be persisted to the database yet' unless model.persisted?
+      end
+    end
+
+    assert_nothing_raised do
+      op_klass.run!(group: { name: 'new_name' })
+    end
+  end
 end

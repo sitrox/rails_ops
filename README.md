@@ -454,6 +454,14 @@ an appropriate exception.
 As mentioned above, policies can be executed at various points in your
 operation's lifecycle. This is possible using *policy chains*:
 
+- `:before_attr_assign`
+
+  Policies in this chain run before assigning the attributes to the model. This chain is only run
+  in `Model` operations, which at some point call the `assign_attributes` method. This chain is
+  the only chain in which the model is in the state *before* the passed in params are assigned.
+  If you need to run any code which needs the state of the model from the database (e.g. to run
+  custom authentications), this is the correct place.
+
 - `:on_init`
 
   Policies in this chain run after the operation class is instantiated.
@@ -1391,6 +1399,10 @@ Note that using the different model base classes, this is already set to a
 sensible default. See the respective class' source code for details.
 
 #### Lazy model update authorization
+
+*Please note that using lazy model update authorization is deprecated any may
+be removed in a future release. See the changelog for instructions on how to
+adapt your application.*
 
 In case of operations inheriting from `RailsOps::Operation::Model::Update`, you
 can specify the `model_authorization_action` to be `lazy`, meaning that it will

@@ -131,6 +131,8 @@ class RailsOps::Operation::Model < RailsOps::Operation
   #   are meant for nested models (registered via `nested_model_op`) will not
   #   be assigned. You can turn this filtering off by passing `false`.
   def assign_attributes(attributes = nil, model: nil, without_protection: false, without_nested_models: true)
+    run_policies :before_attr_assign
+
     model ||= self.model
 
     attributes ||= extract_attributes_from_params(model)

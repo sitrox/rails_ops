@@ -1,5 +1,54 @@
 # Changelog
 
+## 1.7.0 (UNRELEASED)
+
+* Introduce new `:before_attr_assign` policy chain which allows to
+  access the `model` instance before the parameters are assigned.
+
+* Fix bug with lazy authorization in `RailsOps::Operation::Model::Update`
+  operation which used a version of the `model` which was missing some
+  attributes.
+
+* Deprecate lazy authorization in `RailsOps::Operation::Model::Update`
+  operations.
+
+### Migrating from earlier versions
+
+* Make sure you use the correct policy chains, depending on the state you
+  need the `model` to be in. If you need the model before the attributes are
+  assigned to the passed-in params, use the `:before_attr_assign` chain.
+  In all other chains, the `model` instance has its attributes assigned to the
+  params you supplied to the operation.
+
+* If you use `lazy` authorizaion in any of your `Update` operations, you are
+  advised to remove them and replace the lazy authorization by a custom functionality.
+  For example, this is the operation before:
+
+  ```ruby
+  class Operations::User::Update < RailsOps::Operation::Model::Update
+    model User
+
+    model_authorization_action :update, lazy: true
+  end
+  ```
+
+  and this is the operation afterwards:
+
+  ```ruby
+  class Operations::User::Update < RailsOps::Operation::Model::Update
+    model User
+
+    # Disable automatically authorizing against the `:update` action
+    model_authorization_action nil
+
+    policy :before_perform do
+      # Using "find_model" to retrieve the model from the database with
+      # the attributes before assigning the params to the model instance.
+      authorize_model! :update, find_model
+    end
+  end
+  ```
+
 ## 1.6.1 (2025-01-24)
 
 * Fix lazy authorization in `RailsOps::Operation::Model::Update` operation

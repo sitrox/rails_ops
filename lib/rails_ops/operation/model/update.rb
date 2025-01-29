@@ -19,8 +19,17 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
 
   policy :before_perform do
     # If the authorization is configured to be lazy, we need to call the authorization
-    # on the copy of the model that we made before assigning the new attributes.
-    authorize_model! model_authorization_action, @model_before_assigning_attributes if self.class._model_authorization_lazy
+    # on a fresh copy of the model, before assigning the attributes. We simply use the `find_model`
+    # method from our parent class and then run the authorization on this instance.
+    if self.class._model_authorization_lazy
+      model_from_database = find_model
+
+      if model_from_database.respond_to?(:parent_op=)
+        model_from_database.parent_op = self
+      end
+
+      authorize_model! model_authorization_action, model_from_database
+    end
   end
 
   def model_authorization
@@ -37,13 +46,8 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     build_nested_model_ops :update
 
     # Perform update authorization BEFORE assigning attributes. If the authorization is lazy,
-    # we copy the model before assigning the attributes, such that we can call the authorization
-    # later on.
-    if self.class._model_authorization_lazy
-      @model_before_assigning_attributes = @model.deep_dup
-    else
-      model_authorization
-    end
+    # we'll call the authorization later on in the `before_perform` block.
+    model_authorization unless self.class._model_authorization_lazy
 
     # Assign attributes
     assign_attributes
