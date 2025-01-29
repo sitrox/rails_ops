@@ -116,7 +116,7 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     adapter_type = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
 
     case adapter_type
-    when :mysql, :mysql2, :oracleenhanced
+    when :mysql, :mysql2, :oracleenhanced, :trilogy
       return 'LOCK IN SHARE MODE'
     when :postgresql
       return 'FOR SHARE'
