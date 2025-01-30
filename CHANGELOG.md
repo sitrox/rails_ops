@@ -1,9 +1,13 @@
 # Changelog
 
-## 1.7.0 (UNRELEASED)
+## 1.7.0 (2025-01-30)
 
 * Introduce new `:before_attr_assign` policy chain which allows to
   access the `model` instance before the parameters are assigned.
+
+* Introduce new `model_includes` DSL method which can be used to eager load
+  associations in Model operations. See the [corresponding section in the README](README.md#including-associated-records)
+  for more information.
 
 * Fix bug with lazy authorization in `RailsOps::Operation::Model::Update`
   operation which used a version of the `model` which was missing some

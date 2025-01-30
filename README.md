@@ -1326,6 +1326,34 @@ end
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
 
+### Including associated records
+
+Normaly, when inheriting from `RailsOps::Operation::Model::Load` (as well as from the
+`Update` and the `Destroy` operations respectively), RailsOps only loads the instance
+of the model specified by the `id` parameter. In some cases, you'd want to eagerly load
+associations of the model, e.g. when you need to access associated records.
+
+For this, RailsOps provides the `model_includes` DSL method, with which you can
+pass-in associations to eager load (the value will simply be passed on to an `includes`
+call). See the following code snipped for an example:
+
+```ruby
+class Operations::User::Load < RailsOps::Operation::Model::Load
+  schema3 do
+    int! :id, cast_str: true
+  end
+
+  model ::User
+
+  # This will result in RailsOps eagerly loading the `posts`
+  # association, as well as the comments and authors of the
+  # comments.
+  # The call that RailsOps will create is:
+  # User.includes(posts: { comments: :author }).find_by(id: params[:id])
+  model_includes posts: { comments: :author }
+end
+```
+
 ### Parameter extraction for create and update
 
 As mentioned before, the `Create` and `Update` base classes provide an
