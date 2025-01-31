@@ -1,4 +1,8 @@
 class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
+  def self.model_authorization_action(*args, **kwargs, &block)
+    original_authorization_action(*args, **kwargs, &block)
+  end
+
   model_authorization_action :update
   lock_mode :exclusive
 

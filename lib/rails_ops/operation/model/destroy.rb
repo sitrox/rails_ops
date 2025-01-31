@@ -1,4 +1,8 @@
 class RailsOps::Operation::Model::Destroy < RailsOps::Operation::Model::Load
+  def self.model_authorization_action(*args, **kwargs, &block)
+    original_authorization_action(*args, **kwargs, &block)
+  end
+
   model_authorization_action :destroy
   lock_mode :exclusive
 

@@ -31,6 +31,11 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
 
   load_model_authorization_action :read
 
+  def self.model_authorization_action(*args, **kwargs, &block)
+    fail 'Using `model_authorization_action` in operations inheriting from RailsOps::Operation::Model::Load ' \
+         'is not allowed, as this action will not be checked in `Load` operations. Use `load_model_authorization_action` instead.'
+  end
+
   def self.lock_model_at_build(enabled = true)
     self._lock_model_at_build = enabled
   end

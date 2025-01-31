@@ -54,6 +54,15 @@ class RailsOps::Operation::Model::LoadTest < ActiveSupport::TestCase
     assert_raises_with_message ArgumentError, 'Too many arguments' do
       Class.new(RailsOps::Operation::Model::Load) do
         model Group
+        load_model_authorization_action :read, :update
+      end
+    end
+  end
+
+  def test_model_authorization_action_not_permitted
+    assert_raises_with_message RuntimeError, /Use `load_model_authorization_action` instead/ do
+      Class.new(RailsOps::Operation::Model::Load) do
+        model Group
         model_authorization_action :read, :update
       end
     end

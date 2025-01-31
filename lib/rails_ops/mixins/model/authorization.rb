@@ -24,6 +24,8 @@ module RailsOps::Mixins::Model::Authorization
       return _model_authorization_action
     end
 
+    alias original_authorization_action model_authorization_action
+
     # This wraps the original method
     # {RailsOps::Mixins::ParamAuthorization::ClassClassMethods.authorize_param}
     # to automatically use `authorize_model_with_authorize_only` and pass the
