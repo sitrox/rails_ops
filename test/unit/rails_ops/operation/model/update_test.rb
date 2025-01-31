@@ -211,4 +211,14 @@ class RailsOps::Operation::Model::UpdateTest < ActiveSupport::TestCase
       op_klass.run!(id: model.id, group: { name: 'new_name' })
     end
   end
+
+  def test_model_authorization_action_permitted
+    assert_nothing_raised do
+      Class.new(RailsOps::Operation::Model::Update) do
+        model Group
+        load_model_authorization_action :foobar
+        model_authorization_action :barfoo
+      end
+    end
+  end
 end
