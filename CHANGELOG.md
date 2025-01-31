@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7.1 (2025-01-31)
+
+* Raise exception when using `model_authorization_action` in operations inheriting
+  directly from `RailsOps::Operation::Model::Load`. In `1.6.0`, this method was
+  renamed to `load_model_authorization_action` for these operations. Using
+  `model_authorization_action` was still possible, but RailsOps silently ignored
+  this. This release ensures that Load operations use the correct DSL method to
+  change authorization actions.
+
 ## 1.7.0 (2025-01-30)
 
 * Introduce new `:before_attr_assign` policy chain which allows to
