@@ -33,3 +33,5 @@ class RailsOps::Operation::Model::Create < RailsOps::Operation::Model
     save!
   end
 end
+
+ActiveSupport.run_load_hooks(:rails_ops_op_model_create, RailsOps::Operation::Model::Create)

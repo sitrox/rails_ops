@@ -61,3 +61,5 @@ class RailsOps::Operation::Model::Update < RailsOps::Operation::Model::Load
     save!
   end
 end
+
+ActiveSupport.run_load_hooks(:rails_ops_op_model_update, RailsOps::Operation::Model::Update)

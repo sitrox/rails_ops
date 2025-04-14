@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.2 (2025-04-14)
+
+* Add lazy load hooks
+
 ## 1.7.1 (2025-01-31)
 
 * Raise exception when using `model_authorization_action` in operations inheriting

@@ -246,3 +246,5 @@ class RailsOps::Operation
     return params.inspect
   end
 end
+
+ActiveSupport.run_load_hooks(:rails_ops_op, RailsOps::Operation)

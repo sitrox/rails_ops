@@ -194,3 +194,5 @@ class RailsOps::Operation::Model < RailsOps::Operation
     fail NotImplementedError, 'Method `build_model` must be implemented.'
   end
 end
+
+ActiveSupport.run_load_hooks(:rails_ops_op_model, RailsOps::Operation::Model)

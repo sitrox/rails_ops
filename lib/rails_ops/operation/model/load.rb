@@ -142,3 +142,5 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
     return nil
   end
 end
+
+ActiveSupport.run_load_hooks(:rails_ops_op_model_load, RailsOps::Operation::Model::Load)

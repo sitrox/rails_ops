@@ -1833,6 +1833,24 @@ Of course, at this point, the operations will need some adaptions, especially th
 [parameter schemas](#validating-params), and the controllers need the logic for the
 success and failure cases, as this depends on your application.
 
+Lazy Load Hooks
+---------------
+
+RailsOps provides the following [Rails Lazy Load
+Hooks](https://api.rubyonrails.org/v7.1.3.4/classes/ActiveSupport/LazyLoadHooks.html):
+
+- `rails_ops_op_model_create` for `RailsOps::Operation::Model::Create`
+- `rails_ops_op_model_destroy` for `RailsOps::Operation::Model::Destroy`
+- `rails_ops_op_model_load` for `RailsOps::Operation::Model::Load`
+- `rails_ops_op_model_update` for `RailsOps::Operation::Model::Update`
+- `rails_ops_op` for `RailsOps::Operation`
+
+Example usage:
+
+```ruby
+ActiveSupport.on_load(:rails_ops_op_model_create) { include MyMixin }
+```
+
 Caveats
 -------
 

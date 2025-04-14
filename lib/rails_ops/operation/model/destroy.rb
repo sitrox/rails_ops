@@ -34,3 +34,5 @@ class RailsOps::Operation::Model::Destroy < RailsOps::Operation::Model::Load
     model.destroy!
   end
 end
+
+ActiveSupport.run_load_hooks(:rails_ops_op_model_destroy, RailsOps::Operation::Model::Destroy)
