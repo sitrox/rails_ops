@@ -25,7 +25,12 @@ module RailsOps::Mixins::SchemaValidation
     # @param *args [Array] Parameters to pass at schema initialization
     # @yield Block to pass at schema initialization
     def schema2(*args, &block)
-      self._op_schema = Schemacop::Schema.new(*args, &block)
+      if args.any? || block_given?
+        self._op_schema = Schemacop::Schema.new(*args, &block)
+      else
+        # Define empty schema (not possible with V2 schema).
+        schema3
+      end
     end
 
     def schema3(type = :hash, *args, **kwargs, &block)

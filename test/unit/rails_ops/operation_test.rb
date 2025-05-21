@@ -198,6 +198,49 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
     end
   end
 
+  def test_no_schema
+    op = Class.new(RailsOps::Operation) do
+      def perform; end
+    end
+
+    assert_nothing_raised do
+      op.run!(foo: :bar)
+    end
+  end
+
+  def test_empty_schema
+    op = Class.new(RailsOps::Operation) do
+      schema
+      def perform; end
+    end
+
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.run!(foo: :bar)
+    end
+  end
+
+  def test_empty_schema2
+    op = Class.new(RailsOps::Operation) do
+      schema2
+      def perform; end
+    end
+
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.run!(foo: :bar)
+    end
+  end
+
+  def test_empty_schema3
+    op = Class.new(RailsOps::Operation) do
+      schema3
+      def perform; end
+    end
+
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.run!(foo: :bar)
+    end
+  end
+
   def test_op_with_schema3(use_default: false)
     op = Class.new(RailsOps::Operation) do
       schema_block = proc do

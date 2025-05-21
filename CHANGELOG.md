@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.3 (2025-05-21)
+
+* Allow defining empty schemas via `schema2` method
+
 ## 1.7.2 (2025-04-14)
 
 * Add lazy load hooks
