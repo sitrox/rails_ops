@@ -287,7 +287,7 @@ end
 Note that both `params` and `osparams` return independent, deep duplicates of
 the original `params` hash to the operation, so the hashes do not correspond.
 
-The hash accessed via `params` is a always `Object::HashWithIndifferentAccess`.
+The hash accessed via `params` is always an `Object::HashWithIndifferentAccess`.
 
 ## Validating params
 
@@ -310,7 +310,7 @@ an operation, as unvalidated params pose a security threat. This can be done in 
 
   This is the recommended way of performing basic params validation. Please see the next section *Schema best practices* for more information.
 
-  See documentation of the Gem `schemacop` for more information on how to
+  See documentation of the gem `schemacop` for more information on how to
   specify schemata.
 
 
@@ -381,7 +381,7 @@ end
 
 Validating that `age` is an integer and `is_active` then should be done with a validation in the `User` model, as this will also populate the model errors, which in turn will display the error in the form. If you were to validate the type of the data here, it would raise a `Schemacop::Exceptions::ValidationError` exception, which you would need to handle seperately.
 
-Finally, when additional, obsolete params are supplied, the schema validation would also fail. To have a similar behavious to the strong params from Rails, which drop non-whitelisted params without raising an exception, you can use the `ignore_obsolete_properties` option. This will simply ignore and drop any params which are not explicitly whitelisted:
+Finally, when additional, obsolete params are supplied, the schema validation would also fail. To have a similar behaviour to the strong params from Rails, which drop non-whitelisted params without raising an exception, you can use the `ignore_obsolete_properties` option. This will simply ignore and drop any params which are not explicitly whitelisted:
 
 ```ruby
 module Operations::User
@@ -400,7 +400,7 @@ end
 
 ### Catching schema validation errors
 
-When an operation is called from a controller (via the `run` or `run!` method) and a schema validation excaption occurs, the controller will respond with an empty body and a status code `400` (bad request). This behaviour is enabled by default, but can be disabled with the `rescue_validation_error_in_controller` config option:
+When an operation is called from a controller (via the `run` or `run!` method) and a schema validation exception occurs, the controller will respond with an empty body and a status code `400` (bad request). This behaviour is enabled by default, but can be disabled with the `rescue_validation_error_in_controller` config option:
 
 ```ruby
 # config/initializers/rails_ops.rb
@@ -582,7 +582,7 @@ authorization ability. Sure this could all be passed using the `params` hash,
 but as this would have to be done for every single operation call, it would be
 quite cumbersome.
 
-For this reason Rails Ops provides a feature called *Contexts*. Contexts are
+For this reason, Rails Ops provides a feature called *Contexts*. Contexts are
 simple instances of {RailsOps::Context} that may or may not be passed to
 operations. Contexts can include the following data:
 
@@ -774,7 +774,7 @@ sub-operation is set to `false` again.
 ### Authorization
 
 Operations called via hooks perform normal authorization per default. You can
-turn this off by switching off the gobal option
+turn this off by switching off the global option
 `config.trigger_hookups_without_authorization`.
 
 Authorization
@@ -807,10 +807,10 @@ end
 
 RailsOps ships with the following backend:
 
-- `RailsOps::AutorizationBackend::Cancancan`
+- `RailsOps::AuthorizationBackend::CanCanCan`
 
-  Offers integration of the `cancancan` Gem (which is a fork of the `cancan`
-  Gem).
+  Offers integration of the `cancancan` gem (which is a fork of the `cancan`
+  gem).
 
 ### Performing authorization
 
@@ -1205,9 +1205,9 @@ class Operations::User::Update < RailsOps::Operation::Model::Load
 end
 ```
 
-One caveat is, that shared locking is only supported for MySQl (MariaDB),
-Postgresql and Oracle DB databases, any other database will always use an
-exlusive lock.
+One caveat is that shared locking is only supported for MySQL (MariaDB),
+PostgreSQL and Oracle DB databases, any other database will always use an
+exclusive lock.
 
 You can also dynamically enable or disable locking by creating an instance
 method `lock_model_at_build?`:
@@ -1328,7 +1328,7 @@ comprehend its source code.
 
 ### Including associated records
 
-Normaly, when inheriting from `RailsOps::Operation::Model::Load` (as well as from the
+Normally, when inheriting from `RailsOps::Operation::Model::Load` (as well as from the
 `Update` and the `Destroy` operations respectively), RailsOps only loads the instance
 of the model specified by the `id` parameter. In some cases, you'd want to eagerly load
 associations of the model, e.g. when you need to access associated records.
@@ -1529,7 +1529,7 @@ sub-operation. Do not change the params inplace but instead return a new hash.
 ### Single-table inheritance
 
 Model operations also support STI models (Single Table Inheritance). However,
-there is the caviat that if you do extend your model in the operation (e.g.
+there is the caveat that if you do extend your model in the operation (e.g.
 `model Animal do { ... }`), RailsOps automatically creates an anonymous subclass
 of the given class (e.g. `Animal`). Operations will always load / create models
 that are instances of this anonymous class.
@@ -1865,7 +1865,7 @@ setting in production mode though.
 
 ## Contributors
 
-This Gem is heavily inspired by the [trailblazer](http://trailblazer.to/) Gem
+This gem is heavily inspired by the [trailblazer](http://trailblazer.to/) gem
 which provides a wonderful, high-level architecture for Rails – beyond just
 operations. Be sure to check this out when trying to decide on an alternative
 Rails architecture.
