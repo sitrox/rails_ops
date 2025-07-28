@@ -79,3 +79,5 @@ Operations should:
 - Document authorization requirements
 - Ensure thread-safety (avoid runtime model definitions)
 - Wrap lines in markdown files to 80 characters whenever possible
+- Remove any trailing whitespace from any lines (ruby, markdown and javascript),
+  also from otherwise empty lines

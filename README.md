@@ -2,8 +2,7 @@
 [![Rubocop check](https://github.com/sitrox/rails_ops/actions/workflows/rubocop.yml/badge.svg)](https://github.com/sitrox/rails_ops/actions/workflows/rubocop.yml)
 [![Gem Version](https://badge.fury.io/rb/rails_ops.svg)](https://badge.fury.io/rb/rails_ops)
 
-rails_ops
-=========
+# rails_ops
 
 This Gem introduces an additional service layer for Rails: *Operations*. An
 operation is in most cases a *business action* or *use case* and may or may not
@@ -18,8 +17,7 @@ To achieve this goal, this Gem provides the following building blocks:
 
 - A way of abstracting model classes for a specific business action.
 
-Requirements & Installation
----------------------------
+## Requirements & Installation
 
 ### Requirements
 
@@ -90,10 +88,9 @@ Requirements & Installation
 
    Taken from [this github issues comment](https://github.com/rails/rails/issues/40126#issuecomment-816275285).
 
-Operation Basics
-----------------
+## Operation Basics
 
-### Placing and naming operations
+### Placing and Naming Operations
 
 - Operations generally reside in `app/operations` and can be nested using
   various subdirectories. They're all inside of the `Operations` namespace.
@@ -110,7 +107,7 @@ Operation Basics
   `MoveToPosition` and so on. Do not name an operation something like
   `UserCreator` or `CreateUserOperation`.
 
-#### Heads-up: Correct namespacing
+#### Heads-up: Correct Namespacing
 
 As explained in the previous section, operations should be namespaced properly.
 Operations can either live within a module or within a class. In most cases,
@@ -160,7 +157,7 @@ Note that, when defining a namespace of which a segment is already known as a
   end
   ```
 
-### Basic operations
+### Basic Operations
 
 Every single operation follows a few basic principles:
 
@@ -186,7 +183,7 @@ class Operations::PrintHelloWorld < RailsOps::Operation
 end
 ```
 
-### Running operations manually
+### Running Operations Manually
 
 There are various ways of instantiating and running an operation. The most
 basic way is the following:
@@ -212,7 +209,7 @@ models or ActiveRecord models, `run` does not only catch the
 `ActiveRecord::RecordInvalid` exception but also every exception that derives
 from {RailsOps::Exceptions::ValidationFailed}.
 
-#### Catching custom exceptions in `run`
+#### Catching Custom Exceptions in `run`
 
 If you'd like to catch a custom exception if the operation is called using
 `run`, you can either derive this exception from
@@ -229,7 +226,7 @@ class Operations::PrintHelloWorld < RailsOps::Operation
 end
 ```
 
-### Returning data from operations
+### Returning Data from Operations
 
 All operations have the same call signatures: `run` always returns `true` or
 `false` while `run!` always returns the operation instance (which allows easy
@@ -248,10 +245,9 @@ end
 puts Operations::GenerateHelloWorld.run!(name: 'John Doe').result
 ```
 
-Params Handling
----------------
+## Params Handling
 
-## Passing params to operations
+### Passing Params to Operations
 
 Each single operation can take a `params` hash. Note that it does not have to be
 in any relation with `ActionController`'s params - it's just a plain ruby hash
@@ -268,7 +264,7 @@ If no params are given, an empty params hash will be used. If a
 `ActionController::Parameters` object is passed, it will be permitted using
 `permit!` and converted into a regular hash.
 
-## Accessing params
+### Accessing Params
 
 For accessing params within an operation, you can use `params` or `osparams`.
 While `params` directly returns the params hash, `osparams` converts them into
@@ -289,7 +285,7 @@ the original `params` hash to the operation, so the hashes do not correspond.
 
 The hash accessed via `params` is always an `Object::HashWithIndifferentAccess`.
 
-## Validating params
+### Validating Params
 
 You're strongly encouraged to perform a validation of the parameters passed to
 an operation, as unvalidated params pose a security threat. This can be done in several ways:
@@ -332,7 +328,7 @@ an operation, as unvalidated params pose a security threat. This can be done in 
 
 - Using a business model (see chapter *Model Operations*).
 
-### Schema best practices
+### Schema Best Practices
 
 As previously mentioned, using schema from the `schemacop` gem is the recommended way to validate params passed in to an operation. In general, it's recommended to use version 3 of schemacop, i.e. either use `schema3` to specify the schema, or set the default schema version to 3:
 
@@ -343,7 +339,7 @@ RailsOps.configure do |config|
 end
 ```
 
-#### Internal code
+#### Internal Code
 
 When writing a schema for an operation which is only used internally (e.g. called from another operation, or called from a part of the code where you control the params, e.g. a rake task), it's recommended to specify the types of all items, as this will catch any mismatched data. For example:
 
@@ -360,7 +356,7 @@ class Operations::PrintHelloWorldWithId < RailsOps::Operation
   end
 ```
 
-#### Called within controllers
+#### Called Within Controllers
 
 On the other hand, operations which are called within controllers (e.g. to encapsulate an update operation of a model) should not assume any types, and instead use model validations (if applicable) to validate the correctness of the data. In this case, the schema should only be used to filter the params. As such, it's recommended to use `obj` to specify params which are not strings, as this will allow anything (but only the specified values). An example would be:
 
@@ -398,7 +394,7 @@ module Operations::User
 end
 ```
 
-### Catching schema validation errors
+### Catching Schema Validation Errors
 
 When an operation is called from a controller (via the `run` or `run!` method) and a schema validation exception occurs, the controller will respond with an empty body and a status code `400` (bad request). This behaviour is enabled by default, but can be disabled with the `rescue_validation_error_in_controller` config option:
 
@@ -413,8 +409,7 @@ Generally, this should be left enabled, as sending invalid data to the controlle
 
 Please note that this behaviour is disabled in development mode, as the full exception messages are useful for debugging purposes.
 
-Policies
---------
+## Policies
 
 Policies are nothing more than blocks of code that run either at operation
 instantiation or before / after execution of the `perform` method and can be
@@ -449,7 +444,7 @@ method. Use policies as much as possible though to keep things separated.
 The return value of the policies is discarded. If a policy needs to fail, raise
 an appropriate exception.
 
-### Policy chains
+### Policy Chains
 
 As mentioned above, policies can be executed at various points in your
 operation's lifecycle. This is possible using *policy chains*:
@@ -521,8 +516,7 @@ It is also important to note, that this block is
 not guaranteed to be run first in the chain, if multiple blocks have set `:prepend_action` to true.
 
 
-Calling sub-operations
-----------------------
+## Calling Sub-Operations
 
 It is possible and encouraged to call operations within operations if necessary.
 As the basic principle is to create one operation per business action, there are
@@ -551,7 +545,7 @@ within the context that is automatically adapted and passed to the sub-operation
 and enables to maintain the complete call stack and allows to pass on context
 information such as the current user.
 
-### A note on validations
+### A Note on Validations
 
 As always when calling operations, you can decide whether an execution should
 raise an exception on validation errors or else just return `false` by using the
@@ -574,8 +568,7 @@ catches any validation errors and re-throws them as
 {RailsOps::Exceptions::SubOpValidationFailed} which is not caught by the
 surrounding op.
 
-Contexts
---------
+## Contexts
 
 Most operations make use of generic parameters like the current user or an
 authorization ability. Sure this could all be passed using the `params` hash,
@@ -625,7 +618,7 @@ operations. Contexts can include the following data:
   called by a hook (true) or by a regular method call (false). We will introduce
   hooks below.
 
-### Instantiating contexts
+### Instantiating Contexts
 
 Contexts behave like a traditional model object and can be instantiated in
 multiple ways:
@@ -638,7 +631,7 @@ context = Context.new
 context.user = current_user
 ```
 
-### Feeding contexts to operations
+### Feeding Contexts to Operations
 
 Contexts are assigned to operations via the operation's constructor:
 
@@ -664,8 +657,7 @@ the parent operation.
 This is called *context spawning* and is performed using the
 {RailsOps::Context.spawn} method.
 
-Hooks
------
+## Hooks
 
 In some cases, certain actions must be hooked in after execution of an
 operation. While this can certainly be done with sub-operations, it is not
@@ -684,7 +676,7 @@ specify which operations should be triggered after which operations. These
 operations are then automatically triggered after the original operation's
 `perform` (in the `run` method).
 
-### Defining hooks
+### Defining Hooks
 
 Hooks are defined in a file named `config/hookup.rb` in your local application.
 In development mode, this file is automatically reloaded on each request so
@@ -736,7 +728,7 @@ end
 In most cases though, situations like these should rather be handled by
 explicitly calling a sub-operation.
 
-### Hook parameters
+### Hook Parameters
 
 For each hook that is called, at set of parameters is passed to the respective
 operations. When calling events manually (see section *Events*), you can
@@ -756,7 +748,7 @@ hooks into the source operation and prepares the params specifically for the
 target operation, which is then called using a sub-operation or the hooking
 system.
 
-### Check if called via hook
+### Check if Called via Hook
 
 You can determine whether your operation has been (directly) called via a hook
 using the `called_via_hook` context method:
@@ -777,8 +769,7 @@ Operations called via hooks perform normal authorization per default. You can
 turn this off by switching off the global option
 `config.trigger_hookups_without_authorization`.
 
-Authorization
--------------
+## Authorization
 
 Rails Ops offers backend-agnostic authorization using so-called
 *authorization backends*.
@@ -787,7 +778,7 @@ Authorization basically happens by calling the method `authorize!` (or
 `authorize_only!`, more on that later) within an operation. What exactly this
 method does depends on the *authorization backend* specified.
 
-### Authorization backends
+### Authorization Backends
 
 Authorization backends are simple classes that supply the method `authorize!`.
 This method, besides the operation instance, can take any number of arguments
@@ -812,7 +803,7 @@ RailsOps ships with the following backend:
   Offers integration of the `cancancan` gem (which is a fork of the `cancan`
   gem).
 
-### Performing authorization
+### Performing Authorization
 
 Authorization is generally performed by calling `authorize!` in an operation.
 The arguments, along with the operation instance, are passed on to the
@@ -853,7 +844,7 @@ end
 
 See section *Policy chains* for more information.
 
-### Ensure that authorization has been performed
+### Ensure That Authorization Has Been Performed
 
 As it is a very common programming mistake to mistakenly omit calling
 authorization, Rails Ops offers a solution for making sure that authorization
@@ -887,7 +878,7 @@ end
 This method otherwise does exactly the same as `authorize!` (in fact, it's the
 underlying method used by it).
 
-### Param authorization
+### Param Authorization
 
 Using the static operation method `authorize_param`, you can perform additional
 authorization checks when specific params are passed to the operation. This
@@ -940,7 +931,7 @@ class Operations::User::Create < RailsOps::Operation::Model::Create
   authorize_param %i(user group_id), :assign_group_id
 ```
 
-### Disabling authorization
+### Disabling Authorization
 
 Sometimes you don't want a specific operation to perform authorization, or you
 don't want to perform any authorization at all.
@@ -1045,8 +1036,7 @@ Rails Ops offers multiple ways of disabling authorization:
   ```
 
 
-Model Operations
-----------------
+## Model Operations
 
 One of the key features of RailsOps is model operations. RailsOps provides
 multiple operation base classes which allow convenient manipulation of active
@@ -1059,7 +1049,7 @@ inherit from {RailsOps::Operation::Model} (which in turn inherits from
 The key principle behind these model classes is to associate *one model class*
 and *one model instance* with a particular operation.
 
-### Setting a model class
+### Setting a Model Class
 
 Using the static method `model`, you can assign a model class that is used in
 the scope of this operation.
@@ -1097,7 +1087,7 @@ class SomeOperation < RailsOps::Operation::Model
 end
 ```
 
-### Obtaining a model instance
+### Obtaining a Model Instance
 
 Model instances can be obtained using the *instance* method `model`, which is
 not to be confused with the *class* method of the same name. Other than the
@@ -1126,7 +1116,7 @@ If no cached instance is found, one is built using the instance method
 but only implemented in its subclasses. You can implement and override this
 method to your liking though.
 
-### Loading models
+### Loading Models
 
 Using the base operation class {RailsOps::Operation::Model::Load}, a model can
 be loaded. This is done by implementing the `build_model` mentioned above. In
@@ -1150,7 +1140,7 @@ order to load a model (in fact, it cannot be run unless you override the
 based on a model instance without actually performing any particular action such
 as updating a model.
 
-#### Specifying ID field
+#### Specifying ID Field
 
 Per default, the model instance is looked up using the field `id` and the ID
 obtained from the method params using `params[:id]`. However, you can customize
@@ -1225,7 +1215,7 @@ class Operations::User::Update < RailsOps::Operation::Model::Load
 end
 ```
 
-### Creating models
+### Creating Models
 
 For creating models, you can use the base class
 {RailsOps::Operation::Model::Create}.
@@ -1255,7 +1245,7 @@ end
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
 
-#### Overriding the perform method
+#### Overriding the Perform Method
 
 While in many cases there is no need for overriding the `perform` method, this
 can be useful i.e. when assigning or altering properties manually:
@@ -1269,7 +1259,7 @@ def perform
 end
 ```
 
-### Updating models
+### Updating Models
 
 For updating models, you can use the base class
 {RailsOps::Operation::Model::Update} which is an extension of the `Load` base
@@ -1304,7 +1294,7 @@ comprehend its source code.
 As with `Create` operations, the `perform` method can be overwritten at your
 liking.
 
-### Destroying models
+### Destroying Models
 
 For destroying models, you can use the base class
 {RailsOps::Operation::Model::Destroy} which is an extension of the `Load` base
@@ -1326,7 +1316,7 @@ end
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
 
-### Including associated records
+### Including Associated Records
 
 Normally, when inheriting from `RailsOps::Operation::Model::Load` (as well as from the
 `Update` and the `Destroy` operations respectively), RailsOps only loads the instance
@@ -1354,7 +1344,7 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
 end
 ```
 
-### Parameter extraction for create and update
+### Parameter Extraction for Create and Update
 
 As mentioned before, the `Create` and `Update` base classes provide an
 implementation of `build_model` that assigns parameters to a model.
@@ -1363,12 +1353,12 @@ The attributes are determined by the operation instance method
 `extract_attributes_from_params` - the name being self-explaining. See its
 source code for implementation details.
 
-### Model authorization
+### Model Authorization
 
 While you can use the standard `authorize!` method (see chapter *Authorization*)
 for authorizing models, RailsOps provides a more convenient integration.
 
-#### Basic authorization
+#### Basic Authorization
 
 Model authorization can be performed via the operation instance methods
 `authorize_model!` and `authorize_model_with_authorize_only!` (see chapter
@@ -1384,7 +1374,7 @@ methods instead of the basic authorization methods for authorizing models.
 If no model is given, the model authorization methods automatically obtain the
 model from the instance method `model`.
 
-#### Automatic authorization
+#### Automatic Authorization
 
 All model operation classes provide the operation instance method
 `model_authorization` which is automatically run at model instantiation (this is
@@ -1426,7 +1416,7 @@ end
 Note that using the different model base classes, this is already set to a
 sensible default. See the respective class' source code for details.
 
-#### Lazy model update authorization
+#### Lazy Model Update Authorization
 
 *Please note that using lazy model update authorization is deprecated any may
 be removed in a future release. See the changelog for instructions on how to
@@ -1449,7 +1439,7 @@ class Operations::User::Update < RailsOps::Operation::Model::Update
 end
 ```
 
-### Model nesting
+### Model Nesting
 
 Using active record, multiple nested models can be saved at once by using
 `accepts_nested_attributes_for`. While this is generally supported by RailsOps,
@@ -1495,7 +1485,7 @@ class User
 end
 ```
 
-#### Param key
+#### Param Key
 
 When nesting a model operation, the sub operation is called automatically by
 RailsOps. For this purpose, it needs to know which `param_key` to use for
@@ -1510,7 +1500,7 @@ using the option `param_key`, e.g.:
 nest_model_op :group, Operations::Group::Create, param_key: :my_custom_key
 ```
 
-#### Custom parameters
+#### Custom Parameters
 
 In the above examples, all `group_attributes` are automatically passed to the
 sub operation. To customize this further, provide a block to the `nest_model_op`
@@ -1526,7 +1516,7 @@ This block receives the params hash as it would be passed to the sub operation
 and allows to modify it. The block's return value is then passed to the
 sub-operation. Do not change the params inplace but instead return a new hash.
 
-### Single-table inheritance
+### Single-Table Inheritance
 
 Model operations also support STI models (Single Table Inheritance). However,
 there is the caveat that if you do extend your model in the operation (e.g.
@@ -1554,16 +1544,478 @@ bird.class    # => Class "Bird", extending "Animal"
 op_bird.class # => Anonymous class, extending "Animal", not "Bird"
 ```
 
-Record extension and virtual records
-------------------------------------
+## Record Extension and Virtual Records
 
+RailsOps provides powerful features for extending ActiveRecord models and
+creating virtual records without affecting your actual model classes. This is
+achieved through the use of ActiveType and anonymous class generation.
 
-Transactions
-------------
+### Virtual Models
 
+Virtual models are non-persisted models that behave like ActiveRecord models
+but exist only in memory. They're useful for:
 
-Controller Integration
-----------------------
+- Form objects that don't map directly to database tables
+- Temporary data structures for complex operations
+- Aggregating data from multiple sources
+
+RailsOps provides `RailsOps::VirtualModel` which extends `ActiveType::Object`:
+
+```ruby
+class Operations::Contact::Create < RailsOps::Operation::Model::Create
+  model do
+    # Virtual attributes
+    attribute :full_name, :string
+    attribute :email, :string
+    attribute :message, :text
+    attribute :newsletter_opt_in, :boolean, default: false
+    
+    # Validations work just like regular models
+    validates :full_name, :email, :message, presence: true
+    validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  end
+  
+  def perform
+    # Process the virtual model data
+    ContactMailer.contact_form(
+      name: model.full_name,
+      email: model.email,
+      message: model.message
+    ).deliver_later
+    
+    # Optionally subscribe to newsletter
+    if model.newsletter_opt_in
+      NewsletterService.subscribe(model.email)
+    end
+  end
+end
+```
+
+### Model Extension
+
+When you specify a model with a block in an operation, RailsOps creates an
+anonymous subclass that extends your model without modifying the original:
+
+```ruby
+class Operations::User::Import < RailsOps::Operation::Model::Create
+  model User do
+    # These changes only apply within this operation
+    attribute :import_source, :string
+    attribute :skip_notifications, :boolean, default: false
+    
+    validates :import_source, presence: true
+    
+    # Override methods
+    def name=(value)
+      super(value.strip.titleize)
+    end
+    
+    # Add callbacks specific to this operation
+    before_save :normalize_phone_number
+    
+    private
+    
+    def normalize_phone_number
+      self.phone = PhoneNumberService.normalize(phone) if phone.present?
+    end
+  end
+  
+  def perform
+    model.imported_at = Time.current
+    super
+    
+    unless model.skip_notifications
+      UserMailer.welcome(model).deliver_later
+    end
+  end
+end
+```
+
+### Virtual Attributes
+
+Virtual attributes allow you to add non-persisted attributes to your models
+that behave like regular attributes:
+
+```ruby
+class Operations::Order::Checkout < RailsOps::Operation::Model::Update
+  model Order do
+    # Virtual attributes for checkout process
+    attribute :card_number, :string
+    attribute :card_cvv, :string
+    attribute :card_exp_month, :integer
+    attribute :card_exp_year, :integer
+    attribute :save_card, :boolean, default: false
+    
+    # Validations for virtual attributes
+    validates :card_number, presence: true, length: { is: 16 }
+    validates :card_cvv, presence: true, length: { in: 3..4 }
+    validates :card_exp_month, inclusion: { in: 1..12 }
+    validates :card_exp_year, numericality: { 
+      greater_than_or_equal_to: Date.current.year 
+    }
+    
+    # Virtual attribute for computed values
+    attribute :total_with_tax, :decimal
+    
+    before_validation :calculate_total_with_tax
+    
+    private
+    
+    def calculate_total_with_tax
+      self.total_with_tax = total * (1 + tax_rate)
+    end
+  end
+  
+  def perform
+    # Process payment with virtual attributes
+    payment_result = PaymentGateway.charge(
+      amount: model.total_with_tax,
+      card_number: model.card_number,
+      cvv: model.card_cvv,
+      exp_month: model.card_exp_month,
+      exp_year: model.card_exp_year
+    )
+    
+    if payment_result.success?
+      model.payment_id = payment_result.transaction_id
+      model.paid_at = Time.current
+      super # Save the order
+      
+      # Optionally save card for future use
+      if model.save_card
+        CreatePaymentMethod.run!(
+          user: model.user,
+          token: payment_result.card_token
+        )
+      end
+    else
+      fail PaymentError, payment_result.error_message
+    end
+  end
+end
+```
+
+### Combining Real and Virtual Models
+
+You can create operations that work with both persisted and virtual data:
+
+```ruby
+class Operations::Report::Generate < RailsOps::Operation::Model
+  model do
+    attribute :start_date, :date
+    attribute :end_date, :date
+    attribute :include_archived, :boolean, default: false
+    attribute :format, :string, default: 'pdf'
+    
+    validates :start_date, :end_date, presence: true
+    validate :end_date_after_start_date
+    
+    private
+    
+    def end_date_after_start_date
+      return unless start_date && end_date
+      errors.add(:end_date, 'must be after start date') if end_date < start_date
+    end
+  end
+  
+  def perform
+    scope = Order.where(created_at: model.start_date..model.end_date)
+    scope = scope.includes(:archived) if model.include_archived
+    
+    report_data = ReportBuilder.new(scope).generate
+    
+    case model.format
+    when 'pdf'
+      ReportPdfGenerator.new(report_data).to_pdf
+    when 'csv'
+      ReportCsvGenerator.new(report_data).to_csv
+    else
+      report_data
+    end
+  end
+end
+```
+
+## Transactions
+
+RailsOps operations work seamlessly with ActiveRecord transactions. When
+working with database operations, it's crucial to ensure data consistency,
+especially when multiple models are involved.
+
+### Automatic Transaction Handling
+
+Model operations that inherit from `Create`, `Update`, or `Destroy` base
+classes automatically wrap their database operations in transactions:
+
+```ruby
+class Operations::Order::Process < RailsOps::Operation::Model::Update
+  def perform
+    # Everything here is wrapped in a transaction
+    model.status = 'processing'
+    model.processed_at = Time.current
+    super # Saves the order
+    
+    # If this fails, the order changes are rolled back
+    OrderItem.where(order: model).update_all(status: 'processing')
+    InventoryService.reserve_items(model.items)
+  end
+end
+```
+
+### Manual Transaction Control
+
+For operations that need explicit transaction control:
+
+```ruby
+class Operations::Account::Transfer < RailsOps::Operation
+  schema3 do
+    obj! :from_account_id
+    obj! :to_account_id
+    obj! :amount, cast_str: true
+  end
+  
+  def perform
+    from_account = Account.find(params[:from_account_id])
+    to_account = Account.find(params[:to_account_id])
+    
+    ActiveRecord::Base.transaction do
+      # Lock accounts to prevent concurrent modifications
+      from_account.lock!
+      to_account.lock!
+      
+      # Check balance
+      if from_account.balance < params[:amount]
+        fail InsufficientFundsError
+      end
+      
+      # Perform transfer
+      from_account.decrement!(:balance, params[:amount])
+      to_account.increment!(:balance, params[:amount])
+      
+      # Create transaction records
+      Transaction.create!(
+        account: from_account,
+        amount: -params[:amount],
+        transaction_type: 'debit',
+        description: "Transfer to account #{to_account.id}"
+      )
+      
+      Transaction.create!(
+        account: to_account,
+        amount: params[:amount],
+        transaction_type: 'credit',
+        description: "Transfer from account #{from_account.id}"
+      )
+    end
+  end
+end
+```
+
+### Nested Operations and Transactions
+
+When using nested model operations, transactions are handled intelligently to
+ensure all operations succeed or fail together:
+
+```ruby
+class Operations::Invoice::CreateWithItems < RailsOps::Operation::Model::Create
+  model Invoice
+  
+  schema3 do
+    hsh! :invoice do
+      str! :number
+      obj! :customer_id
+      arr! :items do
+        hsh! do
+          str! :description
+          obj! :quantity
+          obj! :unit_price
+        end
+      end
+    end
+  end
+  
+  def perform
+    # This entire block is wrapped in a single transaction
+    ActiveRecord::Base.transaction do
+      # Save the invoice
+      super
+      
+      # Create invoice items
+      params[:invoice][:items].each do |item_params|
+        run_sub! Operations::InvoiceItem::Create,
+          invoice_item: item_params.merge(invoice_id: model.id)
+      end
+      
+      # Update totals
+      model.update!(total: calculate_total)
+    end
+  end
+  
+  private
+  
+  def calculate_total
+    model.invoice_items.sum('quantity * unit_price')
+  end
+end
+```
+
+### Transaction Isolation Levels
+
+For operations requiring specific isolation levels:
+
+```ruby
+class Operations::Booking::Create < RailsOps::Operation
+  def perform
+    ActiveRecord::Base.transaction(isolation: :serializable) do
+      event = Event.find(params[:event_id])
+      
+      # Check availability with SERIALIZABLE isolation
+      if event.available_seats <= 0
+        fail NoSeatsAvailableError
+      end
+      
+      # Create booking
+      booking = Booking.create!(
+        event: event,
+        user: context.user,
+        seats: params[:seats]
+      )
+      
+      # Decrement available seats
+      event.decrement!(:available_seats, params[:seats])
+      
+      booking
+    end
+  rescue ActiveRecord::SerializationFailure
+    # Retry logic for serialization conflicts
+    retry_count ||= 0
+    retry_count += 1
+    retry if retry_count < 3
+    
+    fail BookingConflictError, 'Please try again'
+  end
+end
+```
+
+### Rollback on Exception
+
+When saving models in multiple steps within a `perform` method, you may need to
+ensure that validation errors properly roll back the transaction. RailsOps
+provides `with_rollback_on_exception` for this purpose:
+
+```ruby
+class Operations::User::ComplexUpdate < RailsOps::Operation::Model::Update
+  def perform
+    # First save happens automatically via super
+    super
+    
+    # Additional saves need special handling for proper rollback
+    with_rollback_on_exception do
+      # Update related models
+      model.profile.bio = params[:bio]
+      model.profile.save! # If this fails, the user changes are rolled back
+      
+      # Update settings
+      model.settings.notifications = params[:notifications]
+      model.settings.save! # If this fails, everything is rolled back
+    end
+  end
+end
+```
+
+This is particularly important when using `run` (without bang) because
+validation errors from subsequent saves won't automatically roll back the
+transaction:
+
+```ruby
+class Operations::Order::Process < RailsOps::Operation::Model::Update
+  def perform
+    super # Saves the order
+    
+    # Without with_rollback_on_exception, if this fails, the order
+    # is still saved (when called with run instead of run!)
+    with_rollback_on_exception do
+      model.line_items.each do |item|
+        item.status = 'processed'
+        item.save! # Validation error here rolls back everything
+      end
+    end
+  end
+end
+```
+
+### After Commit Callbacks
+
+For operations that need to perform actions after the transaction commits:
+
+```ruby
+class Operations::User::Create < RailsOps::Operation::Model::Create
+  model User
+  
+  def perform
+    super # Creates the user within a transaction
+    
+    # This runs after the transaction commits
+    model.after_commit_actions.each do |action|
+      case action
+      when :send_welcome_email
+        UserMailer.welcome(model).deliver_later
+      when :sync_to_crm
+        CrmSyncJob.perform_later(model)
+      when :create_default_settings
+        CreateUserSettingsJob.perform_later(model)
+      end
+    end
+  end
+end
+
+# Or using Rails' after_commit callback in the model extension:
+class Operations::Order::Complete < RailsOps::Operation::Model::Update
+  model Order do
+    after_commit :send_completion_notification, on: :update
+    
+    private
+    
+    def send_completion_notification
+      OrderMailer.completed(self).deliver_later
+    end
+  end
+  
+  def perform
+    model.status = 'completed'
+    model.completed_at = Time.current
+    super
+  end
+end
+```
+
+### Important Notes on Transactions
+
+1. **Validation Errors**: When using `run` (without bang), validation errors
+   are caught and won't roll back the transaction. Use `run!` for
+   sub-operations to ensure transaction rollback on validation errors.
+
+2. **External Services**: Be careful when calling external services within
+   transactions. Long-running external calls can cause database locks:
+
+   ```ruby
+   def perform
+     ActiveRecord::Base.transaction do
+       model.save!
+       
+       # DON'T: This could lock the database for a long time
+       # ExternalApi.slow_request(model)
+     end
+     
+     # DO: Call external services after the transaction
+     ExternalApi.slow_request(model)
+   end
+   ```
+
+3. **Nested Transactions**: Rails uses savepoints for nested transactions,
+   which are fully supported by RailsOps operations.
+
+## Controller Integration
 
 While RailsOps certainly does not have to be used from a controller, it
 provides a mixin which extends controller classes with functionality that lets
@@ -1581,7 +2033,7 @@ class ApplicationController
 end
 ```
 
-### Basic usage
+### Basic Usage
 
 The basic concept behind controller integration is to instantiate and
 potentially run a single operation per request. Most of this guide refers to
@@ -1599,7 +2051,7 @@ class SomeController < ApplicationController
 end
 ```
 
-### Separating instantiation and execution
+### Separating Instantiation and Execution
 
 In the previous example, we instantiated and ran an operation in a single
 statement. While this might be feasible for some "fire-and-forget" controller
@@ -1647,12 +2099,12 @@ def update_username
 end
 ```
 
-### Checking for operations
+### Checking for Operations
 
 Using the method `op?`, you can check whether an operation has already been
 instantiated (using `op`).
 
-### Model shortcut
+### Model Shortcut
 
 RailsOps conveniently provides you with a `model` instance method, which is a
 shortcut for `op.model`. This is particularly useful since this is available as
@@ -1661,7 +2113,7 @@ a view helper method as well, see next section.
 You can check whether a model is available by using the `model?` method, which
 is available in both controllers and views.
 
-### View helper methods
+### View Helper Methods
 
 The following controller methods are automatically provided as helper methods
 which can be used in views:
@@ -1705,7 +2157,7 @@ You can also combine these two approaches:
 op SomeOperation, some_param: op_params.slice(:some_param, :some_other_param)
 ```
 
-### Authorization ensuring
+### Authorization Ensuring
 
 For security reasons, RailsOps automatically checks after each action whether
 authorization has been performed. This is to avoid serving an action's response
@@ -1733,7 +2185,7 @@ automatically created. The following fields are set automatically:
 - `session` (uses the `session` controller method)
 - `url_options` (uses the `url_options` controller method)
 
-### Multiple operations per request
+### Multiple Operations per Request
 
 RailsOps does not currently support calling multiple operations in a single
 controller action out-of-the-box. You need to instantiate and run it manually.
@@ -1741,11 +2193,9 @@ controller action out-of-the-box. You need to instantiate and run it manually.
 Another approach is to create a parent operation which calls multiple
 sub-operations, see section *Calling sub-operations* for more information.
 
-Operation Inheritance
----------------------
+## Operation Inheritance
 
-Generators
-----------
+## Generators
 
 RailsOps features a generator to easily create a structure for common CRUD-style
 constructs. The generator creates the CRUD operations, some empty view files, a
@@ -1833,8 +2283,7 @@ Of course, at this point, the operations will need some adaptions, especially th
 [parameter schemas](#validating-params), and the controllers need the logic for the
 success and failure cases, as this depends on your application.
 
-Lazy Load Hooks
----------------
+## Lazy Load Hooks
 
 RailsOps provides the following [Rails Lazy Load
 Hooks](https://api.rubyonrails.org/v7.1.3.4/classes/ActiveSupport/LazyLoadHooks.html):
@@ -1851,10 +2300,9 @@ Example usage:
 ActiveSupport.on_load(:rails_ops_op_model_create) { include MyMixin }
 ```
 
-Caveats
--------
+## Caveats
 
-### Eager loading in development mode
+### Eager Loading in Development Mode
 
 Eager loading operation classes containing models with nested models or
 operations can be very slow in performance. In production mode, the same process
