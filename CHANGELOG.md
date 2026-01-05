@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+* Improve README documentation for transactions section: clarify that RailsOps
+  model operations do not automatically start transactions
+* Fix STI example in README to correctly show `op.model.class` instead of
+  `op_bird.class`
+* Fix incorrect `nest_model_op` example in nested operations documentation
+
 ## 1.7.3 (2025-05-21)
 
 * Allow defining empty schemas via `schema2` method

@@ -1467,7 +1467,6 @@ class Operations::Group::Create < RailsOps::Operation::Model::Create
   end
 
   model ::Group
-  nest_model_op :group, Operations::Group::Create
 end
 ```
 
@@ -1538,10 +1537,10 @@ class LoadAnimal < RailsOps::Operation::Model::Load
 end
 
 bird = Bird.create
-op_bird = LoadAnimal.new(id: bird.id)
+op = LoadAnimal.new(id: bird.id)
 
-bird.class    # => Class "Bird", extending "Animal"
-op_bird.class # => Anonymous class, extending "Animal", not "Bird"
+bird.class        # => Bird (extending Animal)
+op.model.class    # => Anonymous class extending Animal, not Bird
 ```
 
 ## Record Extension and Virtual Records
@@ -1569,12 +1568,12 @@ class Operations::Contact::Create < RailsOps::Operation::Model::Create
     attribute :email, :string
     attribute :message, :text
     attribute :newsletter_opt_in, :boolean, default: false
-    
+
     # Validations work just like regular models
     validates :full_name, :email, :message, presence: true
     validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   end
-  
+
   def perform
     # Process the virtual model data
     ContactMailer.contact_form(
@@ -1582,7 +1581,7 @@ class Operations::Contact::Create < RailsOps::Operation::Model::Create
       email: model.email,
       message: model.message
     ).deliver_later
-    
+
     # Optionally subscribe to newsletter
     if model.newsletter_opt_in
       NewsletterService.subscribe(model.email)
@@ -1602,28 +1601,28 @@ class Operations::User::Import < RailsOps::Operation::Model::Create
     # These changes only apply within this operation
     attribute :import_source, :string
     attribute :skip_notifications, :boolean, default: false
-    
+
     validates :import_source, presence: true
-    
+
     # Override methods
     def name=(value)
       super(value.strip.titleize)
     end
-    
+
     # Add callbacks specific to this operation
     before_save :normalize_phone_number
-    
+
     private
-    
+
     def normalize_phone_number
       self.phone = PhoneNumberService.normalize(phone) if phone.present?
     end
   end
-  
+
   def perform
     model.imported_at = Time.current
     super
-    
+
     unless model.skip_notifications
       UserMailer.welcome(model).deliver_later
     end
@@ -1645,27 +1644,27 @@ class Operations::Order::Checkout < RailsOps::Operation::Model::Update
     attribute :card_exp_month, :integer
     attribute :card_exp_year, :integer
     attribute :save_card, :boolean, default: false
-    
+
     # Validations for virtual attributes
     validates :card_number, presence: true, length: { is: 16 }
     validates :card_cvv, presence: true, length: { in: 3..4 }
     validates :card_exp_month, inclusion: { in: 1..12 }
-    validates :card_exp_year, numericality: { 
-      greater_than_or_equal_to: Date.current.year 
+    validates :card_exp_year, numericality: {
+      greater_than_or_equal_to: Date.current.year
     }
-    
+
     # Virtual attribute for computed values
     attribute :total_with_tax, :decimal
-    
+
     before_validation :calculate_total_with_tax
-    
+
     private
-    
+
     def calculate_total_with_tax
       self.total_with_tax = total * (1 + tax_rate)
     end
   end
-  
+
   def perform
     # Process payment with virtual attributes
     payment_result = PaymentGateway.charge(
@@ -1675,12 +1674,12 @@ class Operations::Order::Checkout < RailsOps::Operation::Model::Update
       exp_month: model.card_exp_month,
       exp_year: model.card_exp_year
     )
-    
+
     if payment_result.success?
       model.payment_id = payment_result.transaction_id
       model.paid_at = Time.current
       super # Save the order
-      
+
       # Optionally save card for future use
       if model.save_card
         CreatePaymentMethod.run!(
@@ -1706,24 +1705,24 @@ class Operations::Report::Generate < RailsOps::Operation::Model
     attribute :end_date, :date
     attribute :include_archived, :boolean, default: false
     attribute :format, :string, default: 'pdf'
-    
+
     validates :start_date, :end_date, presence: true
     validate :end_date_after_start_date
-    
+
     private
-    
+
     def end_date_after_start_date
       return unless start_date && end_date
       errors.add(:end_date, 'must be after start date') if end_date < start_date
     end
   end
-  
+
   def perform
     scope = Order.where(created_at: model.start_date..model.end_date)
     scope = scope.includes(:archived) if model.include_archived
-    
+
     report_data = ReportBuilder.new(scope).generate
-    
+
     case model.format
     when 'pdf'
       ReportPdfGenerator.new(report_data).to_pdf
@@ -1738,206 +1737,99 @@ end
 
 ## Transactions
 
-RailsOps operations work seamlessly with ActiveRecord transactions. When
-working with database operations, it's crucial to ensure data consistency,
-especially when multiple models are involved.
+When working with database operations, it's crucial to ensure data consistency
+using transactions, especially when multiple models are involved.
 
-### Automatic Transaction Handling
+### Transaction Behavior in Model Operations
 
-Model operations that inherit from `Create`, `Update`, or `Destroy` base
-classes automatically wrap their database operations in transactions:
+It's important to understand that RailsOps model operations do NOT automatically
+start any transactions.
+
+To ensure all operations succeed or fail together, you must explicitly wrap them
+in a transaction:
 
 ```ruby
 class Operations::Order::Process < RailsOps::Operation::Model::Update
   def perform
-    # Everything here is wrapped in a transaction
-    model.status = 'processing'
-    model.processed_at = Time.current
-    super # Saves the order
-    
-    # If this fails, the order changes are rolled back
-    OrderItem.where(order: model).update_all(status: 'processing')
-    InventoryService.reserve_items(model.items)
-  end
-end
-```
-
-### Manual Transaction Control
-
-For operations that need explicit transaction control:
-
-```ruby
-class Operations::Account::Transfer < RailsOps::Operation
-  schema3 do
-    obj! :from_account_id
-    obj! :to_account_id
-    obj! :amount, cast_str: true
-  end
-  
-  def perform
-    from_account = Account.find(params[:from_account_id])
-    to_account = Account.find(params[:to_account_id])
-    
     ActiveRecord::Base.transaction do
-      # Lock accounts to prevent concurrent modifications
-      from_account.lock!
-      to_account.lock!
-      
-      # Check balance
-      if from_account.balance < params[:amount]
-        fail InsufficientFundsError
-      end
-      
-      # Perform transfer
-      from_account.decrement!(:balance, params[:amount])
-      to_account.increment!(:balance, params[:amount])
-      
-      # Create transaction records
-      Transaction.create!(
-        account: from_account,
-        amount: -params[:amount],
-        transaction_type: 'debit',
-        description: "Transfer to account #{to_account.id}"
-      )
-      
-      Transaction.create!(
-        account: to_account,
-        amount: params[:amount],
-        transaction_type: 'credit',
-        description: "Transfer from account #{from_account.id}"
-      )
+      model.status = 'processing'
+      model.processed_at = Time.current
+      super # Saves the order
+
+      # Now if this fails, everything is rolled back
+      OrderItem.where(order: model).update_all(status: 'processing')
+      InventoryService.reserve_items(model.items)
     end
   end
 end
 ```
 
-### Nested Operations and Transactions
-
-When using nested model operations, transactions are handled intelligently to
-ensure all operations succeed or fail together:
-
-```ruby
-class Operations::Invoice::CreateWithItems < RailsOps::Operation::Model::Create
-  model Invoice
-  
-  schema3 do
-    hsh! :invoice do
-      str! :number
-      obj! :customer_id
-      arr! :items do
-        hsh! do
-          str! :description
-          obj! :quantity
-          obj! :unit_price
-        end
-      end
-    end
-  end
-  
-  def perform
-    # This entire block is wrapped in a single transaction
-    ActiveRecord::Base.transaction do
-      # Save the invoice
-      super
-      
-      # Create invoice items
-      params[:invoice][:items].each do |item_params|
-        run_sub! Operations::InvoiceItem::Create,
-          invoice_item: item_params.merge(invoice_id: model.id)
-      end
-      
-      # Update totals
-      model.update!(total: calculate_total)
-    end
-  end
-  
-  private
-  
-  def calculate_total
-    model.invoice_items.sum('quantity * unit_price')
-  end
-end
-```
-
-### Transaction Isolation Levels
-
-For operations requiring specific isolation levels:
-
-```ruby
-class Operations::Booking::Create < RailsOps::Operation
-  def perform
-    ActiveRecord::Base.transaction(isolation: :serializable) do
-      event = Event.find(params[:event_id])
-      
-      # Check availability with SERIALIZABLE isolation
-      if event.available_seats <= 0
-        fail NoSeatsAvailableError
-      end
-      
-      # Create booking
-      booking = Booking.create!(
-        event: event,
-        user: context.user,
-        seats: params[:seats]
-      )
-      
-      # Decrement available seats
-      event.decrement!(:available_seats, params[:seats])
-      
-      booking
-    end
-  rescue ActiveRecord::SerializationFailure
-    # Retry logic for serialization conflicts
-    retry_count ||= 0
-    retry_count += 1
-    retry if retry_count < 3
-    
-    fail BookingConflictError, 'Please try again'
-  end
-end
-```
+Typically though, transactions are opened on a higher level and outside of
+operations, e.g. in controller methods.
 
 ### Rollback on Exception
 
-When saving models in multiple steps within a `perform` method, you may need to
-ensure that validation errors properly roll back the transaction. RailsOps
-provides `with_rollback_on_exception` for this purpose:
+When using `run` (without bang), validation errors are caught and may not cause
+transaction rollback. The `with_rollback_on_exception` helper ensures that
+exceptions within its block are re-raised as `RollbackRequired`, which will
+cause a rollback even when using `run`:
 
 ```ruby
 class Operations::User::ComplexUpdate < RailsOps::Operation::Model::Update
   def perform
-    # First save happens automatically via super
-    super
-    
-    # Additional saves need special handling for proper rollback
-    with_rollback_on_exception do
-      # Update related models
-      model.profile.bio = params[:bio]
-      model.profile.save! # If this fails, the user changes are rolled back
-      
-      # Update settings
-      model.settings.notifications = params[:notifications]
-      model.settings.save! # If this fails, everything is rolled back
+    ActiveRecord::Base.transaction do
+      super # Saves the user
+
+      # Without with_rollback_on_exception, validation errors here won't
+      # roll back the transaction when the operation is called with run
+      with_rollback_on_exception do
+        model.profile.bio = params[:bio]
+        model.profile.save! # If this fails, transaction is rolled back
+
+        model.settings.notifications = params[:notifications]
+        model.settings.save! # If this fails, transaction is rolled back
+      end
+    end
+  end
+end
+
+class UsersController < ApplicationController
+  def update
+    ActiveRecord::Base.transaction do
+      if run Operations::User::ComplexUpdate
+        render json: { status: :success }
+      else
+        render json: { status: :validation_error }
+      end
     end
   end
 end
 ```
 
-This is particularly important when using `run` (without bang) because
-validation errors from subsequent saves won't automatically roll back the
-transaction:
+**Important**: `with_rollback_on_exception` only works within an existing
+transaction. It doesn't create a transaction - it just ensures exceptions
+cause rollback:
 
 ```ruby
 class Operations::Order::Process < RailsOps::Operation::Model::Update
   def perform
-    super # Saves the order
-    
-    # Without with_rollback_on_exception, if this fails, the order
-    # is still saved (when called with run instead of run!)
+    # PROBLEMATIC: Each save creates its own transaction
+    super # Order is saved and committed in its own transaction
+
     with_rollback_on_exception do
-      model.line_items.each do |item|
-        item.status = 'processed'
-        item.save! # Validation error here rolls back everything
+      model.line_items.each { |item| item.update!(status: 'processed') }
+    end
+  end
+end
+
+# CORRECT: Wrap in a transaction
+class Operations::Order::Process < RailsOps::Operation::Model::Update
+  def perform
+    ActiveRecord::Base.transaction do
+      super # Order is saved
+
+      with_rollback_on_exception do
+        model.line_items.each { |item| item.update!(status: 'processed') }
       end
     end
   end
@@ -1946,48 +1838,44 @@ end
 
 ### After Commit Callbacks
 
-For operations that need to perform actions after the transaction commits:
+When no explicit transaction is used, each `save!` opens and commits its own
+transaction. You can use Rails' after_commit callbacks in your model
+extensions for actions that should only run after successful database commits:
 
 ```ruby
+# Using after_commit callbacks in model extension
 class Operations::User::Create < RailsOps::Operation::Model::Create
-  model User
-  
-  def perform
-    super # Creates the user within a transaction
-    
-    # This runs after the transaction commits
-    model.after_commit_actions.each do |action|
-      case action
-      when :send_welcome_email
-        UserMailer.welcome(model).deliver_later
-      when :sync_to_crm
-        CrmSyncJob.perform_later(model)
-      when :create_default_settings
-        CreateUserSettingsJob.perform_later(model)
-      end
+  model User do
+    after_commit :send_notifications, on: :create
+
+    private
+
+    def send_notifications
+      UserMailer.welcome(self).deliver_later
+      CrmSyncJob.perform_later(self)
     end
   end
 end
 
-# Or using Rails' after_commit callback in the model extension:
+# Or handle it manually after the operation
 class Operations::Order::Complete < RailsOps::Operation::Model::Update
-  model Order do
-    after_commit :send_completion_notification, on: :update
-    
-    private
-    
-    def send_completion_notification
-      OrderMailer.completed(self).deliver_later
-    end
-  end
-  
   def perform
-    model.status = 'completed'
-    model.completed_at = Time.current
-    super
+    ActiveRecord::Base.transaction do
+      model.status = 'completed'
+      model.completed_at = Time.current
+      super
+    end
+
+    # This runs after the transaction commits successfully
+    # If there was an exception, we never get here
+    OrderMailer.completed(model).deliver_later
   end
 end
 ```
+
+**Note**: Be careful with after_commit callbacks when using transactions.
+They fire after each transaction commits, not after all nested transactions
+complete.
 
 ### Important Notes on Transactions
 
@@ -2002,11 +1890,11 @@ end
    def perform
      ActiveRecord::Base.transaction do
        model.save!
-       
+
        # DON'T: This could lock the database for a long time
        # ExternalApi.slow_request(model)
      end
-     
+
      # DO: Call external services after the transaction
      ExternalApi.slow_request(model)
    end
