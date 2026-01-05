@@ -2320,4 +2320,4 @@ Rails architecture.
 
 ## Copyright
 
-Copyright © 2017 - 2025 Sitrox. See `LICENSE` for further details.
+Copyright © 2017 - 2026 Sitrox. See `LICENSE` for further details.
