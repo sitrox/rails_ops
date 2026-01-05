@@ -125,7 +125,7 @@ GEM
     marcel (1.0.4)
     method_source (1.0.0)
     mini_mime (1.1.5)
-    minitest (5.23.1)
+    minitest (5.27.0)
     mutex_m (0.2.0)
     net-imap (0.4.10)
       date
@@ -258,6 +258,7 @@ DEPENDENCIES
   appraisal
   bundler
   cancancan
+  minitest (~> 5.25)
   pry
   rails_ops!
   rake

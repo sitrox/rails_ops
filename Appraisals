@@ -13,12 +13,15 @@ end
 
 appraise 'rails-7.0' do
   gem 'rails', '~> 7.0.1'
+  gem 'active_type', '< 2.7.0'
 end
 
 appraise 'rails-6.1' do
   gem 'rails', '~> 6.1.4'
+  gem 'active_type', '< 2.7.0'
 end
 
 appraise 'rails-6.0' do
   gem 'rails', '~> 6.0.4'
+  gem 'active_type', '< 2.7.0'
 end

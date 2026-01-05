@@ -2,9 +2,11 @@
 
 source 'https://rubygems.org'
 
+gem 'active_type', '< 2.7.0'
 gem 'appraisal'
 gem 'bundler'
 gem 'cancancan'
+gem 'minitest', '~> 5.25'
 gem 'pry'
 gem 'rails', '~> 6.0.4'
 gem 'rake'

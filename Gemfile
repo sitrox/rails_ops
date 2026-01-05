@@ -7,6 +7,7 @@ gemspec
 gem 'appraisal'
 gem 'bundler'
 gem 'cancancan'
+gem 'minitest', '~> 5.25'
 gem 'pry'
 gem 'rake'
 gem 'rubocop', '1.70.0'
