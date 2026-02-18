@@ -15,6 +15,7 @@ task :gemspec do
     spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
     spec.require_paths = ['lib']
     spec.licenses      = ['MIT']
+    spec.homepage       = 'https://github.com/sitrox/rails_ops'
 
     spec.add_dependency 'active_type', '>= 1.3.0'
     spec.add_dependency 'minitest'

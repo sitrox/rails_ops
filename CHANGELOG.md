@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.5 (2026-02-18)
+
+* Add GitHub URL as homepage in gemspec.
+
 ## 1.7.4 (2026-02-18)
 
 * Add `:before_model_validation` policy chain for model operations that runs
