@@ -11,6 +11,7 @@ module RailsOps::Mixins::Policies
     before_perform
     after_perform
     before_nested_model_ops
+    before_model_validation
     before_model_save
   ].freeze
 
@@ -31,6 +32,13 @@ module RailsOps::Mixins::Policies
       # operation, i.e. it needs to implement the `build_model` method.
       if chain == :before_attr_assign && !method_defined?(:assign_attributes)
         fail 'Policy :before_attr_assign may not be used unless your operation defines the `assign_attributes` method!'
+      end
+
+      # The `before_model_validation` chain is only allowed if the operation
+      # is a model operation, i.e. it needs to implement the `build_model`
+      # method.
+      if chain == :before_model_validation && !method_defined?(:build_model)
+        fail 'Policy :before_model_validation may not be used unless your operation defines the `build_model` method!'
       end
 
       self._policy_chains = _policy_chains.dup

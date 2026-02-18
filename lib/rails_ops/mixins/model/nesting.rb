@@ -168,6 +168,11 @@ module RailsOps::Mixins::Model::Nesting
   def perform_nested_model_ops!
     fail 'Nested model operations can only be performed once.' if nested_model_ops_performed?
 
+    # Run before_model_validation policies. This is the correct place for
+    # attribute cleanup and sanitization as the model attributes are
+    # assigned but validation has not yet run.
+    run_policies :before_model_validation
+
     # Validate the whole model hierarchy. Since we're calling 'model' here, this
     # line also makes sure a model is built.
     model.validate!

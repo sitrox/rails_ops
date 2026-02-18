@@ -1,7 +1,10 @@
 # Changelog
 
-## Unreleased
+## 1.7.4 (2026-02-18)
 
+* Add `:before_model_validation` policy chain for model operations that runs
+  right before `model.validate!`, suitable for attribute cleanup and
+  sanitization.
 * Improve README documentation for transactions section: clarify that RailsOps
   model operations do not automatically start transactions
 * Fix STI example in README to correctly show `op.model.class` instead of

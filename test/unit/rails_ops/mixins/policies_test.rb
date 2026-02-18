@@ -85,6 +85,99 @@ class RailsOps::Mixins::PoliciesTest < ActiveSupport::TestCase
     end
   end
 
+  def test_before_model_validation_sequence
+    group = Group.create!
+
+    op = Class.new(RailsOps::Operation::Model::Update) do
+      attr_reader :sequence
+
+      model Group
+
+      policy :before_attr_assign do
+        @sequence = []
+      end
+
+      policy :before_nested_model_ops do
+        @sequence << :before_nested_model_ops
+      end
+
+      policy :before_model_validation do
+        @sequence << :before_model_validation
+      end
+
+      policy :before_model_save do
+        @sequence << :before_model_save
+      end
+
+      def perform
+        @sequence << :before_save
+        save!
+        @sequence << :after_save
+      end
+    end
+
+    result = op.run!(id: group.id)
+    assert_equal %i[
+      before_save
+      before_nested_model_ops
+      before_model_validation
+      before_model_save
+      after_save
+    ], result.sequence
+  end
+
+  def test_before_model_validation_needs_build_model
+    assert_raises RuntimeError, match: /Policy :before_model_validation may not be used unless your operation defines the `build_model` method!/ do
+      Class.new(RailsOps::Operation) do
+        policy :before_model_validation do
+          # Nothing needed here
+        end
+      end
+    end
+  end
+
+  def test_before_model_validation_attribute_sanitization
+    op = Class.new(RailsOps::Operation::Model::Create) do
+      model Group
+
+      policy :before_model_validation do
+        # Simulate role-dependent attribute cleanup: nil out color
+        # when name is "restricted".
+        model.color = nil if model.name == 'restricted'
+      end
+    end
+
+    # With name "restricted", the policy should nil out color before
+    # validation runs.
+    result = op.run!(group: { name: 'restricted', color: 'red' })
+    assert_equal 'restricted', result.model.name
+    assert_nil result.model.color
+
+    # With a different name, color should be preserved.
+    result = op.run!(group: { name: 'normal', color: 'blue' })
+    assert_equal 'normal', result.model.name
+    assert_equal 'blue', result.model.color
+  end
+
+  def test_before_model_validation_runs_before_validation
+    # Add a validation to Group that rejects color "invalid", then
+    # use a before_model_validation policy to fix it before validate!
+    # runs. If the policy runs at the right time, the operation
+    # succeeds.
+    op = Class.new(RailsOps::Operation::Model::Create) do
+      model Group do
+        validates :color, exclusion: { in: ['invalid'] }
+      end
+
+      policy :before_model_validation do
+        model.color = 'fixed' if model.color == 'invalid'
+      end
+    end
+
+    result = op.run!(group: { name: 'test', color: 'invalid' })
+    assert_equal 'fixed', result.model.color
+  end
+
   def test_prepend_action
     op = Class.new(RailsOps::Operation) do
       attr_reader :sequence

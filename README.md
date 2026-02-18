@@ -479,6 +479,17 @@ operation's lifecycle. This is possible using *policy chains*:
   its descendants. Policies in this chain run after nested model operations are
   performed before performing any nested model operations.
 
+- `:before_model_validation`
+
+  This only applies to operations deriving from `RailsOps::Operation::Model`
+  and its descendants. Policies in this chain run right before
+  `model.validate!` is called inside `perform_nested_model_ops!`. This is
+  the correct place for attribute cleanup and sanitization — for example,
+  nilling out attributes that are irrelevant based on another attribute's
+  value (e.g. role-dependent fields after a form reload). At this point
+  the model's attributes are already assigned, so you can inspect and
+  modify them before validation runs.
+
 - `:after_perform`
 
   Policies in this chain run immediately after the `perform` method is called.
