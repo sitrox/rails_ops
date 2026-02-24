@@ -1169,15 +1169,21 @@ end
 
 #### Customizing the Lookup Relation
 
-By default, `Load` operations look up the model using the relation returned
-by `self.class.model` (i.e. the model class itself). If you need to use a
-custom relation — for example to apply a scope, join additional tables, or
-restrict visibility — you can override the `protected` method
-`find_model_relation`.
+By default, `Load` operations look up the model using the class specified
+via the `model` DSL method. If you need to customize the lookup — for
+example to apply a scope, join additional tables, or restrict visibility
+— you can override the `protected` method `find_model_relation`.
 
-Since `Update` and `Destroy` operations inherit from `Load`, this hook is
-available in all of them. For example, you can scope an `Update` operation
-so that it only finds records belonging to the current user's organization:
+The conditions from the returned relation are **merged** into the
+operation's model class, so the loaded record is always an instance of
+the correct (possibly extended) model type. This means model extensions
+defined via `model do ... end` (e.g. validations, callbacks) are always
+preserved.
+
+Since `Update` and `Destroy` operations inherit from `Load`, this hook
+is available in all of them. For example, you can scope an `Update`
+operation so that it only finds records belonging to the current user's
+organization:
 
 ```ruby
 class Operations::User::Update < RailsOps::Operation::Model::Update
@@ -1191,9 +1197,8 @@ class Operations::User::Update < RailsOps::Operation::Model::Update
 end
 ```
 
-The returned object must be an ActiveRecord relation (or the model class
-itself, which acts as one). Locking and eager loading via `model_includes`
-are applied on top of whatever relation this method returns.
+Locking and eager loading via `model_includes` are applied on top of
+the merged relation.
 
 #### Locking
 

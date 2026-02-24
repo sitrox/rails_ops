@@ -1,14 +1,21 @@
 # Changelog
 
+## 1.7.7 (2026-02-24)
+
+* Fix `find_model_relation` to merge the returned relation's conditions
+  into the operation's model class. Previously, overriding the method
+  with a relation on the base class (e.g. `User.where(...)`) would
+  bypass model extensions defined via `model do ... end`. The loaded
+  record is now always an instance of the correct (possibly extended)
+  model type.
+
 ## 1.7.6 (2026-02-24)
 
 * Add `find_model_relation` hook to `RailsOps::Operation::Model::Load`.
   This protected method can be overridden in subclasses to customize the
   relation used for looking up the model, e.g. to apply scopes or use a
   different base query. Since `Update` and `Destroy` inherit from `Load`,
-  the hook is available in all model operations that load a record. The
-  default implementation returns `self.class.model`, preserving existing
-  behavior.
+  the hook is available in all model operations that load a record.
 
 ## 1.7.5 (2026-02-18)
 

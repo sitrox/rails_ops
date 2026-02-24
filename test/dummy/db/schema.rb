@@ -15,6 +15,11 @@ ActiveRecord::Schema.define do
     t.boolean :planted, null: false, default: true
   end
 
+  create_table :users, force: true do |t|
+    t.string :name
+    t.references :group
+  end
+
   create_table :computers, force: true do |t|
     t.string :name
     t.references :mainboard

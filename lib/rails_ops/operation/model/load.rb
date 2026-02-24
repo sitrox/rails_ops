@@ -79,8 +79,10 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
       fail "Param #{model_id_field.inspect} must be given."
     end
 
-    # Obtain relation
-    relation = find_model_relation
+    # Obtain relation, always starting from the operation's model class
+    # to ensure the loaded record is of the correct (possibly extended)
+    # type, then merge in any custom conditions from find_model_relation.
+    relation = self.class.model.all.merge(find_model_relation)
 
     # Express intention to lock if required
     relation = lock_relation(relation)
@@ -112,23 +114,25 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
 
   protected
 
-  # Returns the base relation used by {#find_model} to look up the model
-  # record. Override this method in subclasses to customize the lookup
-  # relation, e.g. to apply scopes or restrict visibility.
+  # Returns a relation whose conditions are merged into the operation's
+  # model class when looking up the record. Override this method in
+  # subclasses to customize the lookup, e.g. to apply scopes or
+  # restrict visibility.
   #
-  # The returned object must respond to `find_by!` (i.e. be an
-  # `ActiveRecord::Relation` or the model class itself). Locking and
-  # eager loading via {.model_includes} are applied on top of this
-  # relation.
+  # The conditions from this relation are merged onto
+  # `self.class.model`, so the loaded record is always an instance of
+  # the operation's (possibly extended) model class. This means model
+  # extensions defined via `model do ... end` are preserved.
   #
-  # @return [ActiveRecord::Relation] the relation to query against
+  # @return [ActiveRecord::Relation] the relation whose conditions are
+  #   merged into the model class
   #
   # @example Scoping to the current user's organization
   #   def find_model_relation
   #     User.where(organization: context.user.organization)
   #   end
   def find_model_relation
-    self.class.model
+    self.class.model.all
   end
 
   private

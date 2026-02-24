@@ -74,7 +74,7 @@ class RailsOps::Operation::Model::LoadTest < ActiveSupport::TestCase
     assert_equal g, op.model
   end
 
-  def test_find_model_relation_override
+  def test_find_model_relation_with_where
     g1 = Group.create(name: 'visible')
     g2 = Group.create(name: 'hidden')
 
@@ -93,5 +93,50 @@ class RailsOps::Operation::Model::LoadTest < ActiveSupport::TestCase
     assert_raise ActiveRecord::RecordNotFound do
       cls.new(id: g2.id)
     end
+  end
+
+  def test_find_model_relation_with_joins
+    g1 = Group.create(name: 'with_users')
+    g2 = Group.create(name: 'empty')
+    User.create(name: 'Alice', group: g1)
+
+    cls = Class.new(RailsOps::Operation::Model::Load) do
+      model Group
+
+      protected
+
+      def find_model_relation
+        Group.joins(:users).where(users: { name: 'Alice' })
+      end
+    end
+
+    assert_equal g1, cls.new(id: g1.id).model
+
+    assert_raise ActiveRecord::RecordNotFound do
+      cls.new(id: g2.id)
+    end
+  end
+
+  def test_find_model_relation_preserves_model_extensions
+    g = Group.create(name: 'test')
+
+    cls = Class.new(RailsOps::Operation::Model::Load) do
+      model Group do
+        def custom_method
+          'extended'
+        end
+      end
+
+      protected
+
+      def find_model_relation
+        Group.where(name: 'test')
+      end
+    end
+
+    op = cls.new(id: g.id)
+    assert_equal 'extended', op.model.custom_method
+    assert op.model.class < Group
+    assert_not_equal Group, op.model.class
   end
 end
