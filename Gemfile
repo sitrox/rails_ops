@@ -7,6 +7,7 @@ gemspec
 gem 'appraisal'
 gem 'bundler'
 gem 'cancancan'
+gem 'connection_pool', '< 3' # 3.x requires Ruby >= 3.2
 gem 'minitest', '~> 5.25'
 gem 'pry'
 gem 'rake'
