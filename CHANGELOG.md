@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.6 (2026-02-24)
+
+* Add `find_model_relation` hook to `RailsOps::Operation::Model::Load`.
+  This protected method can be overridden in subclasses to customize the
+  relation used for looking up the model, e.g. to apply scopes or use a
+  different base query. Since `Update` and `Destroy` inherit from `Load`,
+  the hook is available in all model operations that load a record. The
+  default implementation returns `self.class.model`, preserving existing
+  behavior.
+
 ## 1.7.5 (2026-02-18)
 
 * Add GitHub URL as homepage in gemspec.

@@ -1167,6 +1167,34 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
 end
 ```
 
+#### Customizing the Lookup Relation
+
+By default, `Load` operations look up the model using the relation returned
+by `self.class.model` (i.e. the model class itself). If you need to use a
+custom relation — for example to apply a scope, join additional tables, or
+restrict visibility — you can override the `protected` method
+`find_model_relation`.
+
+Since `Update` and `Destroy` operations inherit from `Load`, this hook is
+available in all of them. For example, you can scope an `Update` operation
+so that it only finds records belonging to the current user's organization:
+
+```ruby
+class Operations::User::Update < RailsOps::Operation::Model::Update
+  model User
+
+  protected
+
+  def find_model_relation
+    User.where(organization: context.user.organization)
+  end
+end
+```
+
+The returned object must be an ActiveRecord relation (or the model class
+itself, which acts as one). Locking and eager loading via `model_includes`
+are applied on top of whatever relation this method returns.
+
 #### Locking
 
 In most cases when you load a model, you might want to lock the corresponding

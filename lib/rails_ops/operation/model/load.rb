@@ -79,8 +79,8 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
       fail "Param #{model_id_field.inspect} must be given."
     end
 
-    # Get model class
-    relation = self.class.model
+    # Obtain relation
+    relation = find_model_relation
 
     # Express intention to lock if required
     relation = lock_relation(relation)
@@ -108,6 +108,27 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
 
   def extract_id_from_params
     params[model_id_field]
+  end
+
+  protected
+
+  # Returns the base relation used by {#find_model} to look up the model
+  # record. Override this method in subclasses to customize the lookup
+  # relation, e.g. to apply scopes or restrict visibility.
+  #
+  # The returned object must respond to `find_by!` (i.e. be an
+  # `ActiveRecord::Relation` or the model class itself). Locking and
+  # eager loading via {.model_includes} are applied on top of this
+  # relation.
+  #
+  # @return [ActiveRecord::Relation] the relation to query against
+  #
+  # @example Scoping to the current user's organization
+  #   def find_model_relation
+  #     User.where(organization: context.user.organization)
+  #   end
+  def find_model_relation
+    self.class.model
   end
 
   private

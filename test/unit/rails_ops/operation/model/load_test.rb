@@ -67,4 +67,31 @@ class RailsOps::Operation::Model::LoadTest < ActiveSupport::TestCase
       end
     end
   end
+
+  def test_find_model_relation_default
+    g = Group.create(name: 'default')
+    op = BASIC_OP.new(id: g.id)
+    assert_equal g, op.model
+  end
+
+  def test_find_model_relation_override
+    g1 = Group.create(name: 'visible')
+    g2 = Group.create(name: 'hidden')
+
+    cls = Class.new(RailsOps::Operation::Model::Load) do
+      model Group
+
+      protected
+
+      def find_model_relation
+        Group.where(name: 'visible')
+      end
+    end
+
+    assert_equal g1, cls.new(id: g1.id).model
+
+    assert_raise ActiveRecord::RecordNotFound do
+      cls.new(id: g2.id)
+    end
+  end
 end
