@@ -245,6 +245,78 @@ end
 puts Operations::GenerateHelloWorld.run!(name: 'John Doe').result
 ```
 
+#### Practical Example: Non-Model Business Logic Operation
+
+Operations don't have to involve models. Use the base `RailsOps::Operation`
+class for business logic, background tasks, or service calls:
+
+```ruby
+module Operations::Cache
+  class Rebuild < RailsOps::Operation
+    schema3 do
+      boo? :include_archived, default: false
+      boo? :rebuild_counters, default: true
+    end
+
+    # Internal use only (called from background jobs)
+    without_authorization
+
+    protected
+
+    def perform
+      rebuild_counters if osparams.rebuild_counters
+      rebuild_search_index
+    end
+
+    private
+
+    def rebuild_counters
+      Category.find_each do |category|
+        Category.reset_counters(category.id, :articles)
+      end
+    end
+
+    def rebuild_search_index
+      Article.where(indexed: false).find_each(&:update_search_index!)
+    end
+  end
+end
+```
+
+#### Practical Example: Find-or-Create Pattern
+
+A common pattern for idempotent operations that either find an existing record
+or create a new one. Since this doesn't fit neatly into `Model::Create` or
+`Model::Load`, use the base `RailsOps::Operation` and expose the result via
+`attr_reader`:
+
+```ruby
+module Operations::Tag
+  class FindOrCreate < RailsOps::Operation
+    schema3 do
+      str! :name
+      str? :color
+    end
+
+    without_authorization
+
+    attr_reader :model
+
+    protected
+
+    def perform
+      @model = ::Tag.find_or_create_by!(name: osparams.name) do |tag|
+        tag.color = osparams.color || '#000000'
+      end
+    rescue ActiveRecord::RecordNotUnique
+      # Race condition: another process created the record between
+      # our SELECT and INSERT. Just find the existing one.
+      @model = ::Tag.find_by!(name: osparams.name)
+    end
+  end
+end
+```
+
 ## Params Handling
 
 ### Passing Params to Operations
@@ -526,6 +598,51 @@ In this case the model is not yet set. That will happen later in the `:on_init` 
 It is also important to note, that this block is
 not guaranteed to be run first in the chain, if multiple blocks have set `:prepend_action` to true.
 
+#### Practical Example: State Validation Policies
+
+Use policies to validate preconditions based on the model's state. This is
+particularly useful in model operations where you want to reject the operation
+before `perform` runs:
+
+```ruby
+module Operations::Article
+  class Publish < RailsOps::Operation::Model::Update
+    schema3 do
+      int! :id
+    end
+
+    model ::Article
+
+    # Ensure the article is still a draft before publishing.
+    # Runs at instantiation time (i.e. when the model is loaded).
+    policy :on_init do
+      unless model.draft?
+        fail 'Only draft articles can be published.'
+      end
+    end
+
+    # Ensure the article has required content.
+    # Runs just before perform is called.
+    policy do
+      if model.body.blank?
+        fail RailsOps::Exceptions::ValidationFailed,
+             'Article body cannot be empty.'
+      end
+    end
+
+    protected
+
+    def perform
+      model.status = 'published'
+      model.published_at = Time.current
+      super
+    end
+  end
+end
+```
+
+Use `:on_init` for checks that should prevent even *displaying* a form, and
+`:before_perform` (the default) for checks that should prevent *submitting* it.
 
 ## Calling Sub-Operations
 
@@ -578,6 +695,49 @@ validation errors raised by a sub-operation. For this case, calling `run_sub!`
 catches any validation errors and re-throws them as
 {RailsOps::Exceptions::SubOpValidationFailed} which is not caught by the
 surrounding op.
+
+#### Practical Example: Composing Operations
+
+Here is a realistic example of an operation that uses sub-operations to compose
+a complex workflow:
+
+Building on the `Article::Publish` example from the *Policies* section, here
+is a version that also triggers sub-operations after publishing:
+
+```ruby
+module Operations::Article
+  class PublishWithNotification < RailsOps::Operation::Model::Update
+    schema3 do
+      int! :id
+    end
+
+    model ::Article
+
+    protected
+
+    def perform
+      model.status = 'published'
+      model.published_at = Time.current
+      super # Save the article
+
+      with_rollback_on_exception do
+        run_sub! Operations::Cache::Rebuild, rebuild_counters: true
+        run_sub! Operations::Notification::Send,
+                 template: 'article_published',
+                 record_id: model.id,
+                 record_type: 'Article'
+      end
+    end
+  end
+end
+```
+
+Note the use of `with_rollback_on_exception`: if any sub-operation fails after
+`super` has already saved the article, the exception is re-raised as
+`RailsOps::Exceptions::RollbackRequired`, which is not caught by `run` and
+therefore causes a surrounding transaction to roll back. Without it, the article
+could remain saved even if the notification fails (since `run` catches standard
+validation errors). See section *Transactions* for more details.
 
 ## Contexts
 
@@ -1046,7 +1206,6 @@ Rails Ops offers multiple ways of disabling authorization:
   end
   ```
 
-
 ## Model Operations
 
 One of the key features of RailsOps is model operations. RailsOps provides
@@ -1360,6 +1519,124 @@ end
 As this base class is very minimalistic, it is recommended to fully read and
 comprehend its source code.
 
+### Practical Example: Complete CRUD Operation Set
+
+Here is a complete, minimal CRUD set for a single model using `schema3`:
+
+```ruby
+# app/operations/category/load.rb
+module Operations::Category
+  class Load < RailsOps::Operation::Model::Load
+    schema3 do
+      int! :id
+    end
+
+    model ::Category
+  end
+end
+
+# app/operations/category/create.rb
+module Operations::Category
+  class Create < RailsOps::Operation::Model::Create
+    schema3 do
+      hsh? :category do
+        str? :name
+        str? :description
+      end
+    end
+
+    model ::Category
+  end
+end
+
+# app/operations/category/update.rb
+module Operations::Category
+  class Update < RailsOps::Operation::Model::Update
+    schema3 do
+      int! :id
+      hsh? :category do
+        str? :name
+        str? :description
+      end
+    end
+
+    model ::Category
+  end
+end
+
+# app/operations/category/destroy.rb
+module Operations::Category
+  class Destroy < RailsOps::Operation::Model::Destroy
+    schema3 do
+      int! :id
+    end
+
+    model ::Category
+  end
+end
+```
+
+For `Create` and `Update`, parameter extraction happens automatically: the
+params nested under the model's `param_key` (`:category`) are assigned to the
+model. No `perform` method is needed — the base class handles `save!`.
+
+### Practical Example: Setting Defaults on Create
+
+Override `build_model` to set default values or assign associations that aren't
+part of the user's input:
+
+```ruby
+module Operations::Article
+  class Create < RailsOps::Operation::Model::Create
+    schema3 do
+      hsh? :article do
+        str? :title
+        str? :body
+        int? :category_id
+      end
+    end
+
+    model ::Article
+
+    protected
+
+    def build_model
+      super # Builds the model and assigns params from :article key
+      model.author = context.user
+      model.status = 'draft'
+    end
+  end
+end
+```
+
+`super` in `build_model` creates a new model instance and assigns the
+attributes from params. After `super`, you can set additional attributes.
+
+### Practical Example: Overriding `build_model` in Update
+
+In `Update` operations, `build_model` first loads the record (via `Load`), then
+assigns the params. Override it to modify the model after loading:
+
+```ruby
+module Operations::Token
+  class MarkUsed < RailsOps::Operation::Model::Update
+    schema3 do
+      int! :id
+    end
+
+    model ::Token
+    without_authorization
+
+    protected
+
+    def build_model
+      super # Loads the record and assigns params
+      model.used_at = Time.current
+    end
+  end
+end
+```
+
 ### Including Associated Records
 
 Normally, when inheriting from `RailsOps::Operation::Model::Load` (as well as from the
@@ -1385,6 +1662,46 @@ class Operations::User::Load < RailsOps::Operation::Model::Load
   # The call that RailsOps will create is:
   # User.includes(posts: { comments: :author }).find_by(id: params[:id])
   model_includes posts: { comments: :author }
+end
+```
+
+#### Practical Example: Load Operation for Show Pages
+
+A common pattern for "show" pages: a `Load` operation that provides helper
+methods for loading related data in the view:
+
+```ruby
+module Operations::Frontend::Articles
+  class Show < RailsOps::Operation::Model::Load
+    model ::Article
+    model_includes [:tags, :category, { comments: :author }]
+
+    def recent_comments(limit: 10)
+      model.comments.order(created_at: :desc).limit(limit)
+    end
+
+    def related_articles
+      @related_articles ||= ::Article
+        .where(category_id: model.category_id)
+        .where.not(id: model.id)
+        .limit(5)
+    end
+
+    protected
+
+    # Load operations don't need perform logic, but the base class
+    # raises NotImplementedError, so we override with a no-op.
+    def perform; end
+  end
+end
+```
+
+In the controller:
+
+```ruby
+def show
+  op Operations::Frontend::Articles::Show
+  # In the view: op.model, op.recent_comments, op.related_articles
 end
 ```
 
@@ -1480,6 +1797,43 @@ class Operations::User::Update < RailsOps::Operation::Model::Update
   # `lazy`, the authorization will only run when the operation is actually
   # *performed*, and not already at instantiation.
   model_authorization_action :update, lazy: true
+end
+```
+
+#### Practical Example: Custom Authorization Actions
+
+For operations beyond standard CRUD (e.g., archiving, classifying, publishing),
+specify custom authorization actions:
+
+```ruby
+module Operations::Article
+  class Archive < RailsOps::Operation::Model::Update
+    schema3 do
+      int! :id
+    end
+
+    load_model_authorization_action :read
+    model_authorization_action :archive
+
+    model ::Article
+
+    protected
+
+    def perform
+      model.archived = true
+      model.archived_at = Time.current
+      model.archived_by = context.user
+      super
+    end
+  end
+end
+```
+
+In your ability file, define the custom action:
+
+```ruby
+can :archive, Article do |article|
+  article.author_id == user.id || user.admin?
 end
 ```
 
@@ -1733,6 +2087,51 @@ class Operations::Order::Checkout < RailsOps::Operation::Model::Update
       end
     else
       fail PaymentError, payment_result.error_message
+    end
+  end
+end
+```
+
+#### Practical Example: Virtual Datetime Fields for Forms
+
+A very common use case is adding virtual datetime attributes for form inputs
+that need to be transformed before saving:
+
+```ruby
+module Operations::Event
+  class Create < RailsOps::Operation::Model::Create
+    schema3 do
+      hsh? :event do
+        str? :title
+        str? :virtual_start_datetime
+        str? :virtual_end_datetime
+        boo? :all_day
+      end
+    end
+
+    model ::Event do
+      attribute :virtual_start_datetime, :datetime
+      attribute :virtual_end_datetime, :datetime
+
+      validates :virtual_start_datetime, presence: true, unless: :all_day?
+      validates :virtual_end_datetime, presence: true, unless: :all_day?
+      validates :virtual_end_datetime,
+                comparison: { greater_than_or_equal_to: :virtual_start_datetime },
+                if: -> { !all_day? && virtual_start_datetime.present? }
+    end
+
+    protected
+
+    def build_model
+      super
+
+      if model.all_day?
+        model.start_date = model.virtual_start_datetime&.beginning_of_day
+        model.end_date = model.virtual_end_datetime&.end_of_day
+      else
+        model.start_date = model.virtual_start_datetime
+        model.end_date = model.virtual_end_datetime
+      end
     end
   end
 end
@@ -2126,6 +2525,103 @@ Another approach is to create a parent operation which calls multiple
 sub-operations, see section *Calling sub-operations* for more information.
 
 ## Operation Inheritance
+
+Operations support standard Ruby class inheritance. This is useful when multiple
+models share the same operation pattern. Create an abstract base operation and
+then inherit from it for each model:
+
+```ruby
+# app/operations/base/toggle_active.rb
+module Operations::Base
+  class ToggleActive < RailsOps::Operation::Model::Update
+    schema3 do
+      int! :id
+    end
+
+    protected
+
+    def perform
+      model.active = !model.active
+      super
+    end
+  end
+end
+
+# app/operations/category/toggle_active.rb
+module Operations::Category
+  class ToggleActive < Operations::Base::ToggleActive
+    model ::Category
+  end
+end
+
+# app/operations/tag/toggle_active.rb
+module Operations::Tag
+  class ToggleActive < Operations::Base::ToggleActive
+    model ::Tag
+  end
+end
+```
+
+The base class defines the common schema and behavior. Subclasses only need to
+specify the `model`. This avoids duplicating logic across many operations.
+
+Schemas, policies, and authorization settings are all inherited. Subclasses can
+add additional policies or override methods as needed.
+
+### Practical Example: Bulk Insert Operation Base
+
+Another common base class is for bulk insert operations:
+
+```ruby
+module Operations::Base
+  class BulkCreate < RailsOps::Operation
+    BATCH_SIZE = 500
+
+    without_authorization
+
+    protected
+
+    def perform
+      unique_ids = ids_to_insert.uniq
+      return if unique_ids.empty?
+
+      now = Time.current
+
+      unique_ids.each_slice(self.class::BATCH_SIZE) do |batch|
+        records = build_records(batch, now)
+        target_class.insert_all!(records)
+      rescue ActiveRecord::RecordNotUnique
+        # Race condition: filter out already-existing records and retry
+        existing = existing_ids_for(batch)
+        new_records = records.reject { |r| existing.include?(r[id_column]) }
+        target_class.insert_all!(new_records) if new_records.any?
+      end
+    end
+
+    private
+
+    def ids_to_insert
+      fail NotImplementedError
+    end
+
+    def build_records(_batch, _now)
+      fail NotImplementedError
+    end
+
+    def target_class
+      fail NotImplementedError
+    end
+
+    def id_column
+      :id
+    end
+
+    def existing_ids_for(_batch)
+      fail NotImplementedError
+    end
+  end
+end
+```
 
 ## Generators
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.8 (2026-03-12)
+
+* Add practical examples throughout README covering non-model operations,
+  find-or-create patterns, state validation policies, sub-operation
+  composition, complete CRUD sets, model defaults, custom authorization
+  actions, virtual datetime fields, operation inheritance, and load
+  operations for show pages.
+
 ## 1.7.7 (2026-02-24)
 
 * Fix `find_model_relation` to merge the returned relation's conditions
