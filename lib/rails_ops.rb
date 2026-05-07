@@ -1,4 +1,5 @@
 require 'active_type'
+require 'concurrent/map'
 require 'schemacop'
 require 'request_store'
 require 'ostruct'

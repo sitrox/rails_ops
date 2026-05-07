@@ -193,8 +193,168 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
         end
       end
     end.new
-    assert_raises RailsOps::Exceptions::RollbackRequired do
+    RailsOps.deprecator.silence do
+      assert_raises RailsOps::Exceptions::RollbackRequired do
+        op.run
+      end
+    end
+  end
+
+  def test_with_rollback_on_exception_emits_deprecation_warning
+    # Use a fresh call site to bypass the per-process deduplication cache
+    # used by `with_rollback_on_exception`.
+    op = Class.new(RailsOps::Operation) do
+      class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
+        def perform
+          with_rollback_on_exception do
+            # No-op; we only care about the deprecation warning being
+            # emitted on entry.
+          end
+        end
+      RUBY
+    end.new
+
+    messages = []
+    previous_behavior = RailsOps.deprecator.behavior
+    RailsOps.deprecator.behavior = ->(msg, _callstack, _name, _gem) { messages << msg }
+    begin
       op.run
+    ensure
+      RailsOps.deprecator.behavior = previous_behavior
+    end
+
+    assert_match(/with_rollback_on_exception.*deprecated/, messages.join("\n"))
+  end
+
+  def test_with_rollback_on_exception_deduplicates_per_call_site
+    op = Class.new(RailsOps::Operation) do
+      class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
+        def perform
+          with_rollback_on_exception do
+            # No-op
+          end
+        end
+      RUBY
+    end
+
+    messages = []
+    previous_behavior = RailsOps.deprecator.behavior
+    RailsOps.deprecator.behavior = ->(msg, _callstack, _name, _gem) { messages << msg }
+    begin
+      op.new.run
+      op.new.run
+      op.new.run
+    ensure
+      RailsOps.deprecator.behavior = previous_behavior
+    end
+
+    assert_equal 1, messages.size, 'expected the warning to fire once per call site'
+  end
+
+  # When `run` is called inside an outer transaction and the operation does a
+  # save followed by a validation error, the save must be rolled back even
+  # though `run` swallows the error and returns `false`. Without the savepoint
+  # wrapping inside `run`, the partial write would leak into the outer
+  # transaction.
+  def test_run_rolls_back_partial_writes_when_inside_outer_transaction
+    op_class = Class.new(RailsOps::Operation::Model::Create) do
+      model Group
+
+      def perform
+        super
+        fail RailsOps::Exceptions::ValidationFailed, 'post-save check failed'
+      end
+    end
+
+    ActiveRecord::Base.transaction do
+      count_before = Group.count
+      refute op_class.run(group: { name: 'partial', color: 'red' })
+      assert_equal count_before, Group.count, 'expected save to be rolled back'
+    end
+  end
+
+  # `run!` keeps its existing behavior: validation errors propagate, the
+  # savepoint logic in `run` is not on the call path.
+  def test_run_bang_still_raises_inside_transaction
+    op_class = Class.new(RailsOps::Operation::Model::Create) do
+      model Group
+
+      def perform
+        super
+        fail RailsOps::Exceptions::ValidationFailed, 'post-save check failed'
+      end
+    end
+
+    assert_raises RailsOps::Exceptions::ValidationFailed do
+      ActiveRecord::Base.transaction do
+        op_class.run!(group: { name: 'partial', color: 'red' })
+      end
+    end
+  end
+
+  # Successful `run` calls inside a transaction still commit the model save.
+  def test_run_persists_model_on_success_inside_transaction
+    op_class = Class.new(RailsOps::Operation::Model::Create) do
+      model Group
+    end
+
+    ActiveRecord::Base.transaction do
+      count_before = Group.count
+      assert op_class.run(group: { name: 'fine', color: 'green' })
+      assert_equal count_before + 1, Group.count
+    end
+  end
+
+  # `run_sub` (non-bang) delegates to `run`, so a child operation that saves
+  # and then fails validation must not leak partial state into the parent
+  # transaction.
+  def test_run_sub_rolls_back_partial_writes_in_child_op
+    child_op = Class.new(RailsOps::Operation::Model::Create) do
+      model Group
+
+      def perform
+        super
+        fail RailsOps::Exceptions::ValidationFailed, 'post-save check failed'
+      end
+    end
+
+    parent_op = Class.new(RailsOps::Operation) do
+      attr_reader :sub_result
+
+      define_method(:perform) do
+        @sub_result = run_sub(child_op, group: { name: 'child', color: 'blue' })
+      end
+    end
+
+    ActiveRecord::Base.transaction do
+      count_before = Group.count
+      op = parent_op.new
+      op.run!
+      refute op.sub_result, 'expected run_sub to return false on child validation error'
+      assert_equal count_before, Group.count, 'expected child op save to be rolled back'
+    end
+  end
+
+  # The same protection applies when the failing exception is
+  # `ActiveRecord::RecordInvalid` (raised by `model.save!` on a real
+  # model validation failure), which is the more common production case.
+  def test_run_rolls_back_partial_writes_on_active_record_record_invalid
+    op_class = Class.new(RailsOps::Operation::Model::Create) do
+      model Group
+
+      def perform
+        super
+        # Trigger a real ActiveRecord::RecordInvalid on a separate record.
+        invalid = Group.new
+        invalid.errors.add(:base, 'invalid')
+        fail ActiveRecord::RecordInvalid, invalid
+      end
+    end
+
+    ActiveRecord::Base.transaction do
+      count_before = Group.count
+      refute op_class.run(group: { name: 'partial', color: 'red' })
+      assert_equal count_before, Group.count, 'expected save to be rolled back'
     end
   end
 

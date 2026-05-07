@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.8.0 (2026-05-07)
+
+* `Operation#run` (non-bang) now wraps the call to `run!` in a
+  SAVEPOINT whenever a database transaction is already open. This
+  ensures that partial writes performed before a validation error are
+  rolled back even though `run` swallows the error and returns
+  `false`. `run_sub` benefits from the same protection transitively.
+  Behavior outside of an open transaction is unchanged, and the
+  behavior of `run!` / `run_sub!` is unchanged.
+* Deprecate `with_rollback_on_exception`. The helper now emits an
+  `ActiveSupport::Deprecation` warning via `RailsOps.deprecator` and
+  will be removed in RailsOps 2.0. The savepoint added to `run` makes
+  it obsolete for the common "save then do more work" pattern. For
+  non-validation errors that should trigger a rollback, raise
+  `RailsOps::Exceptions::RollbackRequired` directly.
+
 ## 1.7.8 (2026-03-12)
 
 * Add practical examples throughout README covering non-model operations,

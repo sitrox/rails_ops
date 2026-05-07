@@ -14,6 +14,12 @@ class RailsOps::Operation
     Symbol
   ].freeze
 
+  # Tracks which call sites have already emitted the deprecation warning
+  # for {with_rollback_on_exception}. Keyed by `"<path>:<lineno>"` so the
+  # warning fires at most once per call location across the process,
+  # avoiding log spam in long-running servers and per-request hot paths.
+  WITH_ROLLBACK_DEPRECATION_SEEN = Concurrent::Map.new
+
   attr_reader :params
   attr_reader :context
 
@@ -102,8 +108,26 @@ class RailsOps::Operation
 
   # Runs the operation using {run!} but rescues certain exceptions. Returns
   # `true` on success, otherwise `false`.
+  #
+  # If a database transaction is already open when {run} is called, the call
+  # to {run!} is wrapped in a savepoint via
+  # `ActiveRecord::Base.transaction(requires_new: true)`. This ensures that
+  # any database writes performed by the operation are rolled back if a
+  # validation error is raised, even though that error is then caught here
+  # and converted into a `false` return value. This eliminates the most
+  # common reason for using {with_rollback_on_exception}.
+  #
+  # When no transaction is open, behavior is identical to calling {run!}
+  # directly: the caller is responsible for atomicity.
   def run
-    run!
+    if ActiveRecord::Base.connection.transaction_open?
+      ActiveRecord::Base.transaction(requires_new: true) do
+        run!
+      end
+    else
+      run!
+    end
+
     return true
   rescue *validation_errors
     return false
@@ -186,44 +210,37 @@ class RailsOps::Operation
     end
   end
 
-  # Yields the given block and rethrows any possible exception as a
+  # Yields the given block and rethrows any possible `StandardError` as a
   # {RailsOps::Exceptions::RollbackRequired} exception.
   #
-  # For illustration of potential use cases, consider the following example:
+  # @deprecated Since 1.8.0, validation errors raised inside {run} no
+  #   longer leak partial database writes: {run} wraps the call to
+  #   {run!} in a SAVEPOINT whenever an outer transaction is open, so
+  #   any prior `model.save!` is rolled back automatically before
+  #   {run} returns `false`. This helper is therefore obsolete for
+  #   the common "save then do more work" pattern and will be
+  #   removed in RailsOps 2.0.
   #
-  #     class User::Create < RailsOps::Operation::Model::Create
-  #       def perform
-  #         super # Saves the user
+  #   To convert a non-validation `StandardError` into a rollback
+  #   signal that escapes {run}'s rescue, raise
+  #   {RailsOps::Exceptions::RollbackRequired} directly, e.g.
+  #   `fail RailsOps::Exceptions::RollbackRequired, e, e.backtrace`.
   #
-  #         model.some_field = 'some value'
-  #         model.save! # Throws validation error
-  #       end
-  #     end
-  #
-  #     User::Create.run(user: { some: :values })
-  #
-  # Since this operation is run without the bang method, validation errors are
-  # caught and won't result in the transaction beeing rolled back. However, the
-  # `super` call already saved the user while the exception happens only at
-  # the manual call to `model.save!`. Thus the user will still be in the DB,
-  # despite the fact that the second update didn't run.
-  #
-  # The correct example would therefore be:
-  #
-  #     class User::Create < RailsOps::Operation::Model::Create
-  #       def perform
-  #         super # Saves the user
-  #
-  #         with_rollback_on_exception do
-  #           model.some_field = 'some value'
-  #           model.save! # Throws validation error
-  #         end
-  #       end
-  #     end
-  #
-  # This method is one possible solution for issue #28535. There might be a more
-  # elegant and transparent approach as explained in the issue.
+  #   Originally introduced for issue #28535.
   def with_rollback_on_exception(&_block)
+    location = caller_locations(1, 1)&.first
+    location_key = location && "#{location.path}:#{location.lineno}"
+    if location_key.nil? || WITH_ROLLBACK_DEPRECATION_SEEN.put_if_absent(location_key, true).nil?
+      RailsOps.deprecator.warn(
+        '`with_rollback_on_exception` is deprecated and will be removed ' \
+        'in RailsOps 2.0. Validation errors raised inside `run` are now ' \
+        'rolled back automatically via a SAVEPOINT, so this helper is no ' \
+        'longer required for the common "save then do more work" pattern. ' \
+        'For non-validation errors that should trigger a rollback, raise ' \
+        '`RailsOps::Exceptions::RollbackRequired` directly.',
+        caller_locations(1)
+      )
+    end
     yield
   rescue StandardError => e
     fail RailsOps::Exceptions::RollbackRequired, e, e.backtrace

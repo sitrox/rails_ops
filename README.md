@@ -720,24 +720,22 @@ module Operations::Article
       model.published_at = Time.current
       super # Save the article
 
-      with_rollback_on_exception do
-        run_sub! Operations::Cache::Rebuild, rebuild_counters: true
-        run_sub! Operations::Notification::Send,
-                 template: 'article_published',
-                 record_id: model.id,
-                 record_type: 'Article'
-      end
+      run_sub! Operations::Cache::Rebuild, rebuild_counters: true
+      run_sub! Operations::Notification::Send,
+               template: 'article_published',
+               record_id: model.id,
+               record_type: 'Article'
     end
   end
 end
 ```
 
-Note the use of `with_rollback_on_exception`: if any sub-operation fails after
-`super` has already saved the article, the exception is re-raised as
-`RailsOps::Exceptions::RollbackRequired`, which is not caught by `run` and
-therefore causes a surrounding transaction to roll back. Without it, the article
-could remain saved even if the notification fails (since `run` catches standard
-validation errors). See section *Transactions* for more details.
+Validation errors raised by either sub-operation propagate up — `run_sub!`
+re-raises any `validation_errors` as
+`RailsOps::Exceptions::SubOpValidationFailed`, which escapes the parent's
+`run` and rolls back the surrounding transaction. If the parent is invoked
+via `run` (non-bang), the savepoint added in 1.8.0 ensures `super`'s save
+is rolled back too. See section *Transactions* for more details.
 
 ## Contexts
 
@@ -2210,28 +2208,67 @@ end
 Typically though, transactions are opened on a higher level and outside of
 operations, e.g. in controller methods.
 
-### Rollback on Exception
+### Automatic Savepoint Around `run`
 
-When using `run` (without bang), validation errors are caught and may not cause
-transaction rollback. The `with_rollback_on_exception` helper ensures that
-exceptions within its block are re-raised as `RollbackRequired`, which will
-cause a rollback even when using `run`:
+Since version 1.8.0, `RailsOps::Operation#run` (the non-bang variant)
+automatically wraps the operation in a SAVEPOINT whenever a database
+transaction is already open. If the operation raises a validation error
+partway through `perform`, the savepoint is rolled back before `run`
+catches the error and returns `false`. This eliminates the most common
+reason to reach for `with_rollback_on_exception`.
+
+```ruby
+class Operations::User::Create < RailsOps::Operation::Model::Create
+  def perform
+    super # Saves the user
+    something_else! # If this raises ActiveRecord::RecordInvalid, the
+                    # save above is rolled back automatically when the
+                    # operation is invoked through `run`.
+  end
+end
+
+# Caller (controller, job, etc.):
+ActiveRecord::Base.transaction do
+  if Operations::User::Create.run(user: { name: 'Alice' })
+    # success path
+  else
+    # validation error — partial writes have already been rolled back
+  end
+end
+```
+
+A savepoint is only created if a transaction is already open at the time
+of the call. Without an outer transaction (rake tasks, console sessions,
+some background jobs), `run` calls `run!` directly and behavior is
+unchanged: the caller is expected to open a transaction if it wants
+atomicity. `run!` itself is never wrapped — exceptions propagate naturally
+and the surrounding transaction (if any) rolls back.
+
+`run_sub` (non-bang) benefits from the same protection transitively, since
+it delegates to `.run` on the sub-operation.
+
+### Rollback on Exception (Non-Validation Errors)
+
+The savepoint above only protects against **validation errors**
+(`RailsOps::Exceptions::ValidationFailed` and
+`ActiveRecord::RecordInvalid`). For other `StandardError` subclasses that
+should also trigger a rollback when `run` is used, the
+`with_rollback_on_exception` helper re-raises them as
+`RailsOps::Exceptions::RollbackRequired`, which is not part of
+`validation_errors` and therefore propagates up through `run` and rolls
+back the surrounding transaction:
 
 ```ruby
 class Operations::User::ComplexUpdate < RailsOps::Operation::Model::Update
   def perform
-    ActiveRecord::Base.transaction do
-      super # Saves the user
+    super # Saves the user — validation errors here are handled by the
+          # automatic savepoint in `run`.
 
-      # Without with_rollback_on_exception, validation errors here won't
-      # roll back the transaction when the operation is called with run
-      with_rollback_on_exception do
-        model.profile.bio = params[:bio]
-        model.profile.save! # If this fails, transaction is rolled back
-
-        model.settings.notifications = params[:notifications]
-        model.settings.save! # If this fails, transaction is rolled back
-      end
+    with_rollback_on_exception do
+      ExternalApi.call!(model) # raises a custom StandardError on failure;
+                               # converted into RollbackRequired so the
+                               # outer transaction rolls back even when
+                               # the operation is invoked via `run`.
     end
   end
 end
@@ -2250,7 +2287,7 @@ end
 ```
 
 **Important**: `with_rollback_on_exception` only works within an existing
-transaction. It doesn't create a transaction - it just ensures exceptions
+transaction. It doesn't create a transaction — it just ensures exceptions
 cause rollback:
 
 ```ruby
@@ -2260,7 +2297,9 @@ class Operations::Order::Process < RailsOps::Operation::Model::Update
     super # Order is saved and committed in its own transaction
 
     with_rollback_on_exception do
-      model.line_items.each { |item| item.update!(status: 'processed') }
+      ExternalApi.charge!(model) # Raises a custom StandardError on failure;
+                                 # the order has already been committed and
+                                 # cannot be rolled back.
     end
   end
 end
@@ -2269,10 +2308,13 @@ end
 class Operations::Order::Process < RailsOps::Operation::Model::Update
   def perform
     ActiveRecord::Base.transaction do
-      super # Order is saved
+      super # Order is saved within the surrounding transaction
 
       with_rollback_on_exception do
-        model.line_items.each { |item| item.update!(status: 'processed') }
+        ExternalApi.charge!(model) # Custom StandardError is converted into
+                                   # RollbackRequired, which propagates
+                                   # through `run` and rolls back the
+                                   # transaction including `super`.
       end
     end
   end
@@ -2322,9 +2364,13 @@ complete.
 
 ### Important Notes on Transactions
 
-1. **Validation Errors**: When using `run` (without bang), validation errors
-   are caught and won't roll back the transaction. Use `run!` for
-   sub-operations to ensure transaction rollback on validation errors.
+1. **Validation Errors**: When `run` (without bang) is called inside an
+   open transaction, RailsOps wraps the operation in a SAVEPOINT so that
+   any partial writes are rolled back before the caught validation error
+   is converted into a `false` return value. `run_sub` benefits from the
+   same protection. Use `run!` / `run_sub!` when you want validation
+   errors to propagate and roll back the surrounding transaction
+   directly.
 
 2. **External Services**: Be careful when calling external services within
    transactions. Long-running external calls can cause database locks:
