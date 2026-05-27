@@ -450,6 +450,79 @@ class RailsOps::OperationTest < ActiveSupport::TestCase
     end
   end
 
+  def test_schema2_with_kwargs
+    op = Class.new(RailsOps::Operation) do
+      schema2 policy_chain: :on_init do
+        req :id, :integer
+      end
+      def perform; end
+    end
+
+    op.run!(id: 1)
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.run!(id: 'not_an_integer')
+    end
+  end
+
+  def test_schema2_with_kwargs_only
+    op = Class.new(RailsOps::Operation) do
+      schema2 policy_chain: :on_init
+      def perform; end
+    end
+
+    assert op._op_schema.is_a?(Schemacop::Schema2)
+  end
+
+  def test_schema3_with_kwargs
+    op = Class.new(RailsOps::Operation) do
+      schema3 :hash, title: 'test' do
+        int! :id
+      end
+      def perform; end
+    end
+
+    op.run!(id: 1)
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.run!(id: 'not_an_integer')
+    end
+  end
+
+  def test_schema_default_v2_with_kwargs
+    original = RailsOps.config.default_schemacop_version
+    RailsOps.config.default_schemacop_version = 2
+    op = Class.new(RailsOps::Operation) do
+      schema policy_chain: :on_init do
+        req :id, :integer
+      end
+      def perform; end
+    end
+
+    op.run!(id: 1)
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.run!(id: 'not_an_integer')
+    end
+  ensure
+    RailsOps.config.default_schemacop_version = original
+  end
+
+  def test_schema_default_v3_with_kwargs
+    original = RailsOps.config.default_schemacop_version
+    RailsOps.config.default_schemacop_version = 3
+    op = Class.new(RailsOps::Operation) do
+      schema title: 'test' do
+        int! :id
+      end
+      def perform; end
+    end
+
+    op.run!(id: 1)
+    assert_raises Schemacop::Exceptions::ValidationError do
+      op.run!(id: 'not_an_integer')
+    end
+  ensure
+    RailsOps.config.default_schemacop_version = original
+  end
+
   def test_op_with_schema_default
     RailsOps.config.default_schemacop_version = 3
     test_op_with_schema3(use_default: true)

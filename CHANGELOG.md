@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.8.1 (2026-05-27)
+
+* Add explicit `**kwargs` forwarding to `schema2` and `schema`. These
+  methods never properly supported keyword arguments — it only appeared
+  to work under Ruby 2 due to its implicit hash-to-kwargs conversion.
+  Calls like `schema2 policy_chain: :on_init do ... end` now work
+  correctly on all supported Ruby versions.
+
+  Internal reference: `#149499`.
+
 ## 1.8.0 (2026-05-07)
 
 * `Operation#run` (non-bang) now wraps the call to `run!` in a

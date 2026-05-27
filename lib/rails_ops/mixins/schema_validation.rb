@@ -22,27 +22,44 @@ module RailsOps::Mixins::SchemaValidation
     # Only one schema can be active at a time. Defining multiple schemata or
     # defining schemas in a subclass always override previously defined schemas.
     #
-    # @param *args [Array] Parameters to pass at schema initialization
+    # @param *args [Array] Positional parameters to pass at schema
+    #   initialization
+    # @param **kwargs [Hash] Keyword arguments to pass at schema
+    #   initialization
     # @yield Block to pass at schema initialization
-    def schema2(*args, &block)
-      if args.any? || block_given?
-        self._op_schema = Schemacop::Schema.new(*args, &block)
+    def schema2(*args, **kwargs, &block)
+      if args.any? || kwargs.any? || block_given?
+        self._op_schema = Schemacop::Schema.new(*args, **kwargs, &block)
       else
         # Define empty schema (not possible with V2 schema).
         schema3
       end
     end
 
+    # @param type [Symbol] Root node type (default: `:hash`)
+    # @param *args [Array] Positional parameters to pass at schema
+    #   initialization
+    # @param **kwargs [Hash] Keyword arguments to pass at schema
+    #   initialization
+    # @yield Block to pass at schema initialization
     def schema3(type = :hash, *args, **kwargs, &block)
       self._op_schema = Schemacop::Schema3.new(type, *args, **kwargs, &block)
     end
 
-    def schema(*args, &block)
+    # Delegates to {#schema2} or {#schema3} based on
+    # {RailsOps.config.default_schemacop_version}.
+    #
+    # @param *args [Array] Positional parameters to pass at schema
+    #   initialization
+    # @param **kwargs [Hash] Keyword arguments to pass at schema
+    #   initialization
+    # @yield Block to pass at schema initialization
+    def schema(*args, **kwargs, &block)
       case RailsOps.config.default_schemacop_version
       when 2
-        schema2(*args, &block)
+        schema2(*args, **kwargs, &block)
       when 3
-        schema3(*args, &block)
+        schema3(*args, **kwargs, &block)
       else
         fail 'Schemacop schema versions supported are 2 and 3.'
       end
