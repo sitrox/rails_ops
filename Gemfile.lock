@@ -132,7 +132,7 @@ GEM
     mini_mime (1.1.5)
     minitest (5.27.0)
     mutex_m (0.3.0)
-    net-imap (0.4.24)
+    net-imap (0.5.15)
       date
       net-protocol
     net-pop (0.1.2)
