@@ -6,7 +6,7 @@ PATH
       minitest
       rails (> 4)
       request_store
-      schemacop (>= 3.0.0, <= 3.1)
+      schemacop (>= 3.0.0, < 4)
 
 GEM
   remote: https://rubygems.org/
@@ -223,9 +223,9 @@ GEM
       parser (>= 3.3.1.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.4)
-    schemacop (3.0.22)
+    schemacop (3.1.1)
       activesupport (>= 4.0)
-      ruby2_keywords (= 0.0.4)
+      ruby2_keywords (>= 0.0.4)
     securerandom (0.4.1)
     simplecov (0.22.0)
       docile (~> 1.1)

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.2 (2026-09-09)
+
+* Relax the `schemacop` requirement from `>= 3.0.0`, `<= 3.1` to `>= 3.0.0`,
+  `< 4`. `<= 3.1` excluded every release after `3.1.0`, so an application
+  could not resolve `schemacop` `3.1.1` alongside RailsOps.
+
 ## 1.8.1 (2026-05-27)
 
 * Add explicit `**kwargs` forwarding to `schema2` and `schema`. These

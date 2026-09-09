@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency(%q<minitest>.freeze, [">= 0"])
   s.add_runtime_dependency(%q<rails>.freeze, ["> 4"])
   s.add_runtime_dependency(%q<request_store>.freeze, [">= 0"])
-  s.add_runtime_dependency(%q<schemacop>.freeze, [">= 3.0.0", "<= 3.1"])
+  s.add_runtime_dependency(%q<schemacop>.freeze, [">= 3.0.0", "< 4"])
 end
