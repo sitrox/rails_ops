@@ -139,4 +139,39 @@ class RailsOps::Operation::Model::LoadTest < ActiveSupport::TestCase
     assert op.model.class < Group
     assert_not_equal Group, op.model.class
   end
+
+  def test_lock_model_at_build_follows_global_config
+    g = Group.create
+    op = BASIC_OP.new(id: g.id)
+
+    assert op.lock_model_at_build?
+    assert op.send(:lock_relation, Group.all).lock_value
+
+    with_lock_models_at_build(false) do
+      assert_not op.lock_model_at_build?
+      assert_not op.send(:lock_relation, Group.all).lock_value
+    end
+  end
+
+  def test_lock_model_at_build_per_operation_overrides_global_config
+    g = Group.create
+    disabled = Class.new(BASIC_OP) { lock_model_at_build false }
+    enabled = Class.new(BASIC_OP) { lock_model_at_build }
+
+    assert_not disabled.new(id: g.id).lock_model_at_build?
+
+    with_lock_models_at_build(false) do
+      assert enabled.new(id: g.id).lock_model_at_build?
+    end
+  end
+
+  private
+
+  def with_lock_models_at_build(value)
+    previous = RailsOps.config.lock_models_at_build
+    RailsOps.config.lock_models_at_build = value
+    yield
+  ensure
+    RailsOps.config.lock_models_at_build = previous
+  end
 end

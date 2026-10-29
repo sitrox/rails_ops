@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.9.0 (2026-10-29)
+
+* Lock models at build again. Since 1.5.5, `Load`, `Update` and `Destroy`
+  operations loaded their model without a lock unless the operation itself
+  called `lock_model_at_build`; the global setting
+  `RailsOps.config.lock_models_at_build`, which defaults to `true`, had no
+  effect.
+
+  This is a minor release because operations now take row locks they have
+  not taken for a long time. Look out for new lock waits or deadlocks after
+  upgrading, especially where an operation first inserts a row that refers
+  to a record through a foreign key and then updates that record. Turn
+  locking off per operation with `lock_model_at_build false`, or for the
+  whole application with `config.lock_models_at_build = false`.
+
 ## 1.8.2 (2026-09-09)
 
 * Relax the `schemacop` requirement from `>= 3.0.0`, `<= 3.1` to `>= 3.0.0`,

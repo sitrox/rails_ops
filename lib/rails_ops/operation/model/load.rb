@@ -45,7 +45,7 @@ class RailsOps::Operation::Model::Load < RailsOps::Operation::Model
   end
 
   def lock_model_at_build?
-    self.class._lock_model_at_build?
+    self.class.lock_model_at_build?
   end
 
   # Method to set the lock mode, which can either be :exclusive to use
